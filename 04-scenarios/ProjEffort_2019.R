@@ -33,12 +33,13 @@ PathScen<-"H:/FLR/WGBAST18/Scenarios/" # scenario results
 
 # ===============
 
-Model<-"2019"
+#Model<-"2019"
+Model<-"Testebo"
 
 #stocknames<-read.table(paste0(PathData,"rivernames.txt")) # proper names
-stock_indices<-c(1:16)
+stock_indices<-c(1:17)
 Nstocks<-length(stock_indices) # number of stocks
-AU<-c(1,1,1,1,2,2,2,2,2,2,2,2,3,4,4,2)
+AU<-c(1,1,1,1,2,2,2,2,2,2,2,2,3,4,4,2,3)
 
 #! Set the 'choice' for Mps scenario according to the preferred mean in the
 #! autocorrelation analysis
@@ -46,7 +47,7 @@ choice<-"MED"
 
 # =============================================================
 #! Removal scenarios for the future
-EffScen<-6
+EffScen<-5
 
 #for(EffScen in 1:6){
 set.seed(6789)
@@ -468,11 +469,11 @@ while(apu==0){
             
             error<-exp(rnorm(1, sd = sqrt(1/precisionBH[s])))        #mean is 0
             
-            #In unit 4 the smolts recruit a year earlier
-            if(r>13 & r<16){
+            #In unit 4 and in Testebo the smolts recruit a year earlier
+            if(r==14 | r==15 | r==17){
               WsalmStock[1,(y+1),r,1,s]<-as.numeric(E*error/(BH_alpha[s,r]+BH_beta[s,r]*E))
             }
-            else{ #stocks other than 14 & 15
+            else{ #stocks other than 14, 15, 17
               if(y<(yBreak+NumFutYears -1)){          # for(y in (yBreak+1):(yBreak+NumFutYears))
                 WsalmStock[1,(y+2),r,1,s]<-as.numeric(E*error/(BH_alpha[s,r]+BH_beta[s,r]*E))
               }

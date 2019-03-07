@@ -2,6 +2,7 @@
 
 make_JAGS_data*
 WGBAST_JAGS*
+plotfunctions.r
 
 \figures
 
@@ -18,3 +19,9 @@ WGBAST_JAGS*
 *.jpeg
 *.png
 *.Rproj
+
+
+01-submodels/Aland
+05-results/EggsPerPSPC*
+05-results/stats*
+04-scenarios/tmp

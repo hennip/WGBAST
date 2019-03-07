@@ -31,11 +31,13 @@ PathData<-"C:/Users/412hpulkkin/Dropbox/WGBAST/JAGS/data_2018/" # extra input fi
 PathScen<-"H:/FLR/WGBAST18/Scenarios/" # scenario results 
 # ===============
 
-Model<-"2019"
+#Model<-"2019"
+Model<-"Testebo"
 select_case<-2 #new SR parameterisation 
 
 # Fetch JAGS model
-load(file="H:/FLR/WGBAST18/newSR_final2018-04-22.RData")
+#load(file="H:/FLR/WGBAST18/newSR_final2018-04-22.RData")
+load(file="O:/FLR/WGBAST18/dev_test_Testeboan2019-02-18.RData")
 
 d<-as.matrix(chains)
 
@@ -43,8 +45,8 @@ d<-as.matrix(chains)
 #RiverNames<-c("Torne", "Simo","Kalix","Rane","Pite","Aby","Byske","Rickle","Savaran",
 #             "Ume","Ore","Logde","Ljungan","Morrum","Eman","Kage")
 
-AU<-c(1,1,1,1,2,2,2,2,2,2,2,2,3,4,4,2)
-stock_indices<-c(1:16)
+AU<-c(1,1,1,1,2,2,2,2,2,2,2,2,3,4,4,2,3)
+stock_indices<-c(1:17)
 Nstocks<-length(stock_indices) # number of stocks
 
 set.seed(12345) #set the random number seed
@@ -130,7 +132,7 @@ for(y in 1:nYears){
     prop_fem[y,3:6,10]<-rep(Ume_prop_fem[y],4)}
   else{ 
     prop_fem[y,3:6,10]<-rep(mean(Ume_prop_fem[(yBreak-1):(yBreak+1)]),4)}   #average of last 3 years
-  for(r in 11:16){
+  for(r in 11:17){ # Added Testebo!
     prop_fem[y,2:6,r]<-prop_fem_tmp
   }
 }
@@ -242,7 +244,7 @@ for(loop in 1:10){
   
   p.ladder<-array(NA, dim=c(years[3],Nstocks,sims[3]))
   surv_migr<-array(NA, dim=c(years[3],Nstocks,sims[3]))
-  
+
   # 1st index: age (G/MSW) 2nd index: AU
   qctnW<-array(NA, dim=c(2,4,sims[3]))
   qctnR<-array(NA, dim=c(2,4,sims[3]))
@@ -263,7 +265,6 @@ for(loop in 1:10){
       x1<-paste0("surv_migr[",y+years[1]-1987,",",s,"]")      
       p.ladder[y,stock_indices[s],]<-d[sims[1]:sims[2],grep(x,colnames(d),fixed=TRUE)]
       surv_migr[y,stock_indices[s],]<-d[sims[1]:sims[2],grep(x1,colnames(d),fixed=TRUE)]
-      
     } 
   }
   for(y in (yBreak+1):(nYears)){ 
@@ -914,9 +915,10 @@ for(loop in 1:10){
       # fishery is determined by
       # 8/12 = May-Dec
       for(r in 1:Nstocks){
-        PFAtmpW[a,y,r,1,]<-PropCW[y-a+6]*WsalmStock[a,y,r,1,]*exp(-((WsalmNatMort[a,y,r,1,]*(11/12))+
-                                                                      (WsalmNatMort[a,y,r,1,]*F_seal[y,a,AU[r]]/12)+
-                                                                      (WsalmNatMort[2,y,r,1,]*(4/12))))
+        PFAtmpW[a,y,r,1,]<-PropCW[y-a+6]*WsalmStock[a,y,r,1,]*
+                          exp(-((WsalmNatMort[a,y,r,1,]*(11/12))+
+                                  (WsalmNatMort[a,y,r,1,]*F_seal[y,a,AU[r]]/12)+
+                                  (WsalmNatMort[2,y,r,1,]*(4/12))))
         
         WODN_Ctmp[a,y,r,1,]<-WsalmStock[a,y,r,1,]*exp(-(WsalmNatMort[a,y,r,1,]*(7/12)))*
           exp(-(WsalmNatMort[a,y,r,1,]*F_seal[y,a,AU[r]]/12))*WODN_HRtmp[a,y,r,1,]
@@ -929,8 +931,10 @@ for(loop in 1:10){
           exp(-(WsalmNatMort[a,y,r,1,]*F_seal[y,a,AU[r]]/12))-WODN_Ctmp[a,y,r,1,]
       }
       for(u in 1:4){
-        PFAtmpR[a,y,u,1,]<-PropCR[y-a+6]*RsalmStock[a,y,u,1,]*exp(-((RsalmNatMort[a,y,u,1,]*(11/12))+
-                                                                      (RsalmNatMort[a,y,u,1,]*F_seal[y,a,u]/12)+(RsalmNatMort[2,y,u,1,]*(4/12))))
+        PFAtmpR[a,y,u,1,]<-PropCR[y-a+6]*RsalmStock[a,y,u,1,]*
+                          exp(-((RsalmNatMort[a,y,u,1,]*(11/12))+
+                                  (RsalmNatMort[a,y,u,1,]*F_seal[y,a,u]/12)+
+                                  (RsalmNatMort[2,y,u,1,]*(4/12))))
         
         RODN_Ctmp[a,y,u,1,]<-RsalmStock[a,y,u,1,]*exp(-(RsalmNatMort[a,y,u,1,]*(7/12)))*
           exp(-(RsalmNatMort[a,y,u,1,]*F_seal[y,a,u]/12))*RODN_HRtmp[a,y,u,1,]
