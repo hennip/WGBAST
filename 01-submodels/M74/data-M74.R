@@ -22,13 +22,13 @@ library(coda)
 
 source("00-functions/tidy-functions.r")
 
-pathM74<-"H:/Biom/SubE_M74/2019/"
+pathM74<-"H:/Projects/WGBAST/SubE_M74/2020/"
 
 # FI data
 
-dat<-read_xlsx(path=str_c(pathM74,"dat/orig/Finnish_M74_data-2018_paivitetty.xlsx"), 
-              col_names = T, guess_max = 10000, sheet=1, na="")   
-  
+dat<-read_xlsx(path=str_c(pathM74,"dat/orig/Finnish_M74_data-2019_paivitetty.xlsx"), 
+              col_names = T, guess_max = 10000, sheet=1, na=c("", "NA"))   
+
 df<-dat%>%
   mutate(river=fct_recode(RIVER,
                                     "1"="Simo",
@@ -42,12 +42,21 @@ df<-dat%>%
   mutate(year=FEMALE_YEAR-1984)%>%
   mutate(Eggs=ifelse(is.na(eggs)==F,eggs,ifelse(year<10,100,115)))%>%
   mutate(eggs=Eggs)%>%
-  mutate(surv_eggs=round(eggs*(1-(YSFM/100)),0) )%>%
+  mutate(surv_eggs=round(eggs*(1-(YSFM/100)),0) )
+
+
+df<-df%>%
+  #filter(is.na(M74)==F)%>%
   mutate(M74_mort=fct_recode(M74,
                              "1"="Ei",
+                             "1"="EI",
                              "2"="M74"))%>%
-  # mort100 is 2 if 100% mortality, 1 if <100% and NA if M74 unknown (XX should not appear anywhere)
-  mutate(mortality100=ifelse(is.na(M74)==F, ifelse(is.na(M74_100)==F, ifelse(M74_100==100,2,"XX"),1),NA ))
+  mutate(M74_mort=as.numeric(M74_mort))%>%
+  mutate(M74_100_2=ifelse(M74_100=="M74100",100,M74_100))%>%
+# mort100 is 2 if 100% mortality, 1 if <100% and NA if M74 unknown (XX should not appear anywhere)
+mutate(mortality100=ifelse(is.na(M74)==F, ifelse(is.na(M74_100_2)==F, ifelse(M74_100_2==100,2,"XX"),1),NA ))
+
+filter(df, mortality100=="XX")
 
 dfFI<-df%>% 
   mutate(M74=as.numeric(M74_mort))%>%
@@ -57,7 +66,7 @@ dfFI<-df%>%
 df1<-read_tsv(str_c(pathM74,"dat/der/M74dataSE16.txt"), col_names = T)
               
 # New Swedish M74 data
-df2<-read_xlsx(str_c(pathM74,"dat/der/Swedish_M74_data_17-18.xlsx"), na="NA")%>%
+df2<-read_xlsx(str_c(pathM74,"dat/der/Swedish_M74_data_18-19.xlsx"), na="NA")%>%
   mutate(stock=fct_recode(river,
                        "11"="Dal", "10"="Ljusnan", "8"="Indals", "7"="Angerman",
                        "6"="Ume", "5"="Skellefte", "4"="Lule"
@@ -70,12 +79,12 @@ df2<-read_xlsx(str_c(pathM74,"dat/der/Swedish_M74_data_17-18.xlsx"), na="NA")%>%
 
 # add missing data for swedish stocks with no recent M74 data, plus for unsampled stock 
 df3<-tibble(
-  yy=32, #2017
+  yy=33, #2018, add +1 each year
   stock=c(9,12,13), # Ljungan, Morrum, unsampled stock
   Females=100,
   xx=as.numeric(NA)
 )
-df4<-df3%>%mutate(yy=yy+1) # 2018
+df4<-df3%>%mutate(yy=yy+1) # assessment year-1
   
 dfSE<-df2%>%
   full_join(df3)%>%
@@ -92,19 +101,18 @@ dfSE<-df2%>%
 # input to BUGS:
 
 length(dfFI$eggs)
-# 1562
+# 1699
 length(dfSE$xx)
-# 330
+# 337
 
 dfFI.bugs<-dfFI%>%
   select(eggs, year, river, surv_eggs, M74, mortality100)
 
 dfSE.bugs<-dfSE
   
-write_csv(dfFI.bugs, str_c(pathM74,"prg/input/M74dataFI18.csv"))
-write_csv(dfSE.bugs, str_c(pathM74,"prg/input/M74dataSE18.csv"))
+write_csv(dfFI.bugs, str_c(pathM74,"prg/input/M74dataFI19.csv"))
+write_csv(dfSE.bugs, str_c(pathM74,"prg/input/M74dataSE19.csv"))
 
-#write_tsv(dfSE.bugs, str_c(pathM74,"prg/input/M74dataSE18.txt"))
 
 
 # wrangle for figures
