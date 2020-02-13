@@ -3,6 +3,7 @@
 make_JAGS_data*
 WGBAST_JAGS*
 plotfunctions.r
+app*
 
 \figures
 

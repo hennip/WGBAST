@@ -1,3 +1,7 @@
+# Note!!! Not sure why this is here. Maybe the idea was to modify data for JAGS?
+# Anyway seems to do the same stuff as data-M74.r, so please use that as long 
+# as BUGS model is used.
+
 library(rjags)
 library(runjags)
 library(tidyverse)

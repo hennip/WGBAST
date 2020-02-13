@@ -6,14 +6,14 @@
 # years are in the same chain) 
 # ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 
-mean1<-read_tsv(str_c(pathM74,"/prg/output/coda_mean_M74_19.txt"), col_names = c("s", "mean1"))
-mean2<-read_tsv(str_c(pathM74,"/prg/output/coda_mean2_M74_19.txt"), col_names = c("s", "mean2"))
+mean1<-read_tsv(str_c(pathM74,"/prg/output/coda_mean_M74_20.txt"), col_names = c("s", "mean1"))
+mean2<-read_tsv(str_c(pathM74,"/prg/output/coda_mean2_M74_20.txt"), col_names = c("s", "mean2"))
 
 # change format, otherwise the loops below won't work 
 mean1<-as.data.frame(mean1)
 mean2<-as.data.frame(mean2)
 
-Years<-c(1985:2017) #spawning years, UPDATE this according to assessment year !!!!
+Years<-c(1985:2018) #spawning years, add +1 each year
 Rivers<-c(1:14)
 
 length(Rivers)*length(Years)
@@ -40,51 +40,53 @@ for(y in 1:(length(Years))){
 
 for(r in 1:length(Rivers)){
   df<-boxplot.bugs.df2(mean_M74, r ,1:length(Years))%>%
-    mutate(River=r)
+    mutate(stock=r)
   ifelse(r>1, df2<-bind_rows(df2,df),df2<-df)
 }
 
-df.bugs<-as.tibble(setNames(df2,c("Year","q5","q25","q50","q75","q95","River")))%>%
-  select(River, everything())%>%
-  mutate(YEAR=Year+1984)  %>%
-  mutate(river=as.factor(River))
+df.bugs<-as_tibble(setNames(df2,c("Year","q5","q25","q50","q75","q95","stock")))%>%
+  select(stock, everything())%>%
+  mutate(YEAR=Year+1984)  #%>%
+#  mutate(river=as.factor(stock))
 
 df.bugs
+dfM74
 
 df1<-full_join(df.bugs, dfM74)%>%
-  mutate(river=as.numeric(river))%>%
-  arrange(river)%>% # Arranges rivers into ascending order
-  mutate(river=as.factor(river))%>%
+  arrange(stock)%>% # Arranges rivers into ascending order
+  mutate(river=as.factor(stock))%>%
   mutate(rivername=fct_recode(river,
                               Simojoki="1", Tornionjoki="2", Kemijoki="3", Iijoki="4",
                               Luleälven="5",Skellefteälven="6",Umeälven="7",Ångermanälven="8",
                               Indalsälven="9",Ljungan="10",Ljusnan="11",Dalälven="12",
                               Morrumsån="13",`Unsampled stock`="14"))
 
+
+
 windows()
-  ggplot(df1, aes(YEAR))+
+  ggplot(df1, aes(x=YEAR,group=YEAR,
+                  ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95))+
+    geom_boxplot(stat = "identity")+
     theme_bw()+
-    geom_boxplot(
-    aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
-    stat = "identity")+
     labs(x="Year", y="Proportion", title="")+
     geom_point(aes(YEAR,ysfm), shape=2)+
     geom_point(aes(YEAR,propM74), shape=1)+
     facet_wrap(~rivername)+
     scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
-    theme(title = element_text(size=15), axis.text = element_text(size=12), strip.text = element_text(size=15))
+    theme(title = element_text(size=15), 
+          axis.text = element_text(size=12), strip.text = element_text(size=15))
   
-
 
 # F 4.2.2.3
 #######################
 
 for(r in 1:length(Rivers)){
   df<-boxplot.bugs.df2(mean2_M74, r ,1:length(Years))%>%
-    mutate(River=r)
+    mutate(stock=r)
   ifelse(r>1, df2<-bind_rows(df2,df),df2<-df)
 }
 
+  
 
 df.bugs<-as.tibble(setNames(df2,c("Year","q5","q25","q50","q75","q95","River")))%>%
   select(River, everything())%>%
@@ -101,7 +103,7 @@ df.bugs
 
 df1<-filter(df.bugs, River==1 | River ==2 | River==14, Year>1990)
 
-ggplot(df1, aes(Year))+
+ggplot(df1, aes(Year, group=Year))+
   theme_bw()+
   geom_boxplot(
     aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
