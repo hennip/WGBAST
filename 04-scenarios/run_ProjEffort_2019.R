@@ -130,7 +130,7 @@ source(paste0(PathFiles,"InitArrays.r"))
 # =============================================================
 
 # Run projections
-source("ProjEffort_loops_2019_LR_EPR.r")
+source("ProjEffort_loops.r")
 
 
 # =============================================================
@@ -153,6 +153,7 @@ Perform_Stats <- c(
   "MigrW","MigrR",
   "Migr_Tornio","Migr_Simo","Migr_AU1W","Migr_AU13W",
   "Migr_AU1R","Migr_AU13R","Migr_AU13tot",
+  "MorrumSeaCatch",
   "PFAW", "PFAR",
   "WOLLCtot", "ROLLCtot",
   "WCTNCtot", "RCTNCtot"
