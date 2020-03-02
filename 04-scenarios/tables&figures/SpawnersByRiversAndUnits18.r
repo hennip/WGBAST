@@ -9,19 +9,21 @@
 
 rm(list=ls(all=TRUE))
 library(coda)
+library(xlsx)
 
-PathScen<-"H:/FLR/WGBAST18/Scenarios/" # scenario results 
-PathOut<-"H:/Biom/Scenarios/2018/prg/" # output
+#PathScen<-"H:/FLR/WGBAST18/Scenarios/" # scenario results 
+#PathOut<-"H:/Biom/Scenarios/2018/prg/" # output
+PathScen<-"C:/output/scen/" # scenario results 
+PathOut<-"H:/Projects/WGBAST/Scenarios/2019/prg/" # output
 
 
 ################################################################################
 #! #############################################################################
 # Version of the estimation model
-#Model<-"Orig"
-Model<-"New_SR"
+Model<-"2019_LR_EPR"
 
 # Time
-LastHistYear<-2017
+LastHistYear<-2018    
 LastPredYear<-2032
 Years<-c(1992:LastPredYear)
 length(Years)
@@ -32,7 +34,7 @@ length(Years)
 choice<-"MED"  
 
 #! Effort 
-EffScen<-1 
+EffScen<-5 
 # ?????????????????????????????????????????????????????????????????
 
 
