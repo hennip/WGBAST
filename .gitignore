@@ -1,9 +1,12 @@
 
-
+Inputs_2019_LR_EPR*
+ProjEffort_2019_LR_EPR*
 make_JAGS_data*
 WGBAST_JAGS*
 plotfunctions.r
 app*
+launch*
+FLHM*
 
 \figures
 

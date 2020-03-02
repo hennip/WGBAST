@@ -3,6 +3,14 @@
 iniAgeQuantW<-array(NA, dim = c(6,years[3],Nstocks,2,1000))
 iniAgeQuantR<-array(NA, dim = c(6,years[3],4,2,1000))
 
+R0<-array(0,dim=c(years[3],Nstocks,1000))
+FecW<-array(0,dim=c(6,years[3],1000))
+FecR<-array(0,dim=c(6,years[3],1000))
+Etot<-array(0,dim=c(years[3],Nstocks,1000))
+W_age<-array(0,dim=c(Nstocks,years[3],6,1000))
+EPRW<-array(0,dim=c(years[3],Nstocks,1000))   #first year is yBreak+1 (year of assessment) 
+
+
 # Pre fishery abundances for wild and reared
 PFAW<-array(NA, dim=c(6,years[3],Nstocks,2,1000))
 PFAR<-array(NA, dim=c(6,years[3],4,2,1000))
@@ -28,6 +36,7 @@ temp2R<-iniAgeQuantR
 UmeRiverCatch<-array(NA, dim=c((yBreak+NumFutYears), 1000))
 UmeCoastCatch<-array(NA, dim=c((yBreak+NumFutYears), 1000))
 UmeSeaCatch<-array(NA, dim=c((yBreak+NumFutYears), 1000))
+MorrumSeaCatch<-array(NA, dim=c((yBreak+NumFutYears), 1000))
 #RepCatchTotal<-array(NA, dim=c((yBreak+NumFutYears), 1000))
 #RepRiverTotal<-array(NA, dim=c((yBreak+NumFutYears), 1000))
 TornioRiverCatch<-array(NA, dim=c((yBreak+NumFutYears), 1000))
