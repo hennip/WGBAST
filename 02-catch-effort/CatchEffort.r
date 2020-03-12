@@ -13,14 +13,14 @@ library(gridExtra)
 
 
 min_year<-2000
-max_year<-2018
+max_year<-2019
 years<-min_year:max_year
 NumYears<-length(years)
 
-pathIn<-"H:/Biom/FullLifeHistoryModel/2019/"
+pathIn<-"H:/Projects/WGBAST/FLHM/2020/"
 
-df<-read_xlsx(str_c(pathIn, "dat/orig/catch&effort/WGBAST_Catch_2019_St_Petersburg_18022018.xlsx"),
-              range="A1:Q12996", # Update!
+df<-read_xlsx(str_c(pathIn, "dat/orig/catch&effort/WGBAST_Catch_2020_Tarto.xlsx"),
+              range="A1:Q13936", # Update!
               sheet="Catch data", col_names = T, guess_max = 8000, na=c("",".", "NaN"))%>%
   filter(YEAR>2005)%>% # Include results only 2009 onwards, catch DB has only updates from those years 
   mutate(NUMB=parse_double(NUMB))%>%
@@ -124,7 +124,6 @@ ODN%>%select(-Effort)%>%
   group_by(Myear)%>%
   summarise(Catch=sum(Catch)) # if there were NA's you'd see it here
 
-# ignore minor 2014 catch
 # This produces a bit strange results, especially a huge catch for 2001 in both methods. Check,
 # but in the mean time just leave ODN as it is in the Catch&Effort file.
 
@@ -146,6 +145,7 @@ ifelse(pl==1,
        )
 
 OLL<-full_join(Ger_OLL, Den_OLL)%>%
+  full_join(Lat_OLL)%>%
   full_join(Fin_OLL)%>%
   full_join(Swe_OLL)%>%
   full_join(PolC_OLLx)
@@ -283,9 +283,15 @@ cbind(yearx,COT_AU1, COT_AU2, COT_AU3)
 #########################
 
 salmon%>%
-  filter(YEAR==2018, F_TYPE=="RECR", FISHERY=="O", GEAR=="AN")%>%
+  filter(YEAR>2017, F_TYPE=="RECR", FISHERY=="O", GEAR=="AN")%>%
+  group_by(YEAR)%>%
   summarise(Catch=sum(NUMB))
   
 salmon%>%
-  filter(YEAR==2018,F_TYPE=="RECR", FISHERY=="C", GEAR=="AN")%>%
+  filter(YEAR>2015,F_TYPE=="RECR", FISHERY=="C", GEAR=="AN")%>%
+  group_by(YEAR)%>%
   summarise(Catch=sum(NUMB))
+
+
+
+
