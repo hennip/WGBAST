@@ -511,6 +511,7 @@ while(apu==0){
         TornioSeaCatch[y,i]<-sum(CatchSeaW[,y,1,1,s], na.rm = T)
         UmeRiverCatch[y,i]<-sum(WRF_Ctmp[,y,10,2,s], na.rm = T)
         UmeSeaCatch[y,i]<-sum(CatchSeaW[,y,10,1,s], na.rm = T)
+        MorrumRiverCatch[y,i]<-sum(WRF_Ctmp[,y,14,2,s], na.rm = T)
         MorrumSeaCatch[y,i]<-sum(CatchSeaW[,y,14,1,s], na.rm = T)
         
         # This calculates the number of smolts which survive from the post

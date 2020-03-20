@@ -153,7 +153,7 @@ Perform_Stats <- c(
   "MigrW","MigrR",
   "Migr_Tornio","Migr_Simo","Migr_AU1W","Migr_AU13W",
   "Migr_AU1R","Migr_AU13R","Migr_AU13tot",
-  "MorrumSeaCatch",
+  "MorrumSeaCatch","MorrumRiverCatch",
   "PFAW", "PFAR",
   "WOLLCtot", "ROLLCtot",
   "WCTNCtot", "RCTNCtot"

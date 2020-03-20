@@ -13,7 +13,7 @@ library(xlsx)
 
 #PathScen<-"H:/FLR/WGBAST18/Scenarios/" # scenario results 
 #PathOut<-"H:/Biom/Scenarios/2018/prg/" # output
-PathScen<-"C:/output/scen/" # scenario results 
+PathScen<-"C:/output/wgbast/scen/" # scenario results 
 PathOut<-"H:/Projects/WGBAST/Scenarios/2019/prg/" # output
 
 

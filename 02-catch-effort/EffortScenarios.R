@@ -9,7 +9,7 @@
 #Run first CatchEffort.r
 source("02-catch-effort/CatchEffort.r")
 
-yearX<-2018 # Assessment year -1
+yearX<-2019 # Assessment year -1
 
 # =======================================================================
 # Longlining:
@@ -44,16 +44,25 @@ full_join(tmp,DenE_OLL)%>%
 PolE_OLL%>%filter(YEAR==yearX)# check if there's data on HYR2 of last year
 
 # if HYR2 Effort is partly or completely missing, replace with HYR2 data from previous year
-#PolE_OLL<-PolE_OLL%>%
-#  mutate(Effort=ifelse(YEAR==yearX & HYR==2, 
-#                       PolE_OLL$Effort[length(PolE_OLL$Effort)-2],Effort))
 
+# PolE_OLL%>%filter(YEAR==yearX-1, HYR==2)# HYR2 of last year
+# 
+# tmp1<-filter(PolE_OLL, YEAR==yearX-1, HYR==2)%>% 
+#   ungroup()%>%
+#   mutate(YEAR=YEAR+1) # Assessement year -1 HYR 2 -> use prev years effort
+# # 
+# # PolE_OLL<-PolE_OLL%>%
+# #   mutate(Effort=ifelse(YEAR==yearX & HYR==2, 
+# #                        PolE_OLL$Effort[length(PolE_OLL$Effort)-2],Effort))
+# 
 
 tmp<-filter(PolE_OLL, YEAR==yearX, HYR==1)%>% 
   ungroup()%>%
   mutate(YEAR=YEAR+1) # Assessement year HYR 1 -> use prev years effort on HYR 1
 
-full_join(tmp,PolE_OLL)%>%
+full_join(tmp, tmp1)%>% # if HYR 2 data missing
+full_join(PolE_OLL)%>%
+#  full_join(tmp,PolE_OLL)%>% # if HYR 2 data not missing
   mutate(Myear=ifelse(HYR==2, YEAR, YEAR-1))%>% # Model year
   ungroup()%>%
   group_by(Myear)%>%
@@ -61,14 +70,14 @@ full_join(tmp,PolE_OLL)%>%
 # 
 # # Trolling
 # # ==================
-# (OLL_CPUE<-full_join(OLL_E,OLL_C)%>%
-#   mutate(CPUE=Catch/Effort)%>%
-#   filter(Myear<yearX))
-# 
-# OLL_CPUE%>%
-#   filter(Myear<yearX& Myear>(yearX-5))%>% 
-#   summarise(CPUE=sum(Catch)/sum(Effort))%>%# Average over 2013-2016
-#   mutate(YEAR=yearX)
+#  (OLL_CPUE<-full_join(OLL_E,OLL_C)%>%
+#    mutate(CPUE=Catch/Effort)%>%
+#    filter(Myear<yearX))
+# # 
+#  OLL_CPUE%>%
+#    filter(Myear<yearX& Myear>(yearX-5))%>% 
+#    summarise(CPUE=sum(Catch)/sum(Effort))%>%# Average over 2013-2016
+#    mutate(YEAR=yearX)
 # 
 # # Plug the above value into Catch&Effort.xlsx F75
 
