@@ -45,16 +45,16 @@ PolE_OLL%>%filter(YEAR==yearX)# check if there's data on HYR2 of last year
 
 # if HYR2 Effort is partly or completely missing, replace with HYR2 data from previous year
 
-# PolE_OLL%>%filter(YEAR==yearX-1, HYR==2)# HYR2 of last year
-# 
-# tmp1<-filter(PolE_OLL, YEAR==yearX-1, HYR==2)%>% 
-#   ungroup()%>%
-#   mutate(YEAR=YEAR+1) # Assessement year -1 HYR 2 -> use prev years effort
-# # 
-# # PolE_OLL<-PolE_OLL%>%
-# #   mutate(Effort=ifelse(YEAR==yearX & HYR==2, 
-# #                        PolE_OLL$Effort[length(PolE_OLL$Effort)-2],Effort))
-# 
+PolE_OLL%>%filter(YEAR==yearX-1, HYR==2)# HYR2 of last year
+
+tmp1<-filter(PolE_OLL, YEAR==yearX-1, HYR==2)%>%
+  ungroup()%>%
+  mutate(YEAR=YEAR+1) # Assessement year -1 HYR 2 -> use prev years effort
+#
+# PolE_OLL<-PolE_OLL%>%
+#   mutate(Effort=ifelse(YEAR==yearX & HYR==2,
+#                        PolE_OLL$Effort[length(PolE_OLL$Effort)-2],Effort))
+
 
 tmp<-filter(PolE_OLL, YEAR==yearX, HYR==1)%>% 
   ungroup()%>%
@@ -113,6 +113,7 @@ cbind(
 (tmp2<-Fin_OLL%>%mutate(Effort_FI=Effort)%>%select(-Effort,-Catch))
 (tmp3<-DenE_OLL%>%mutate(Effort_DK=Effort)%>%select(-Effort))
 (tmp4<-SweE_OLL%>%mutate(Effort_SE=Effort)%>%select(-Effort))
+3(tmp5<-LatE_OLL%>%mutate(Effort_LT=Effort)%>%select(-Effort))
 
 tmp<-full_join(tmp1, tmp2)%>%
   full_join(tmp3)%>%

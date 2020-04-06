@@ -20,7 +20,7 @@ NumYears<-length(years)
 pathIn<-"H:/Projects/WGBAST/FLHM/2020/"
 
 df<-read_xlsx(str_c(pathIn, 
-                    "dat/orig/catch&effort/WGBAST_Catch_2020_Tartu_24032020.xlsx"),
+                    "dat/orig/catch&effort/WGBAST_Catch_2020_Tartu_02042020_ver2.xlsx"),
               range="A1:Q13936", # Update!
               sheet="Catch data", col_names = T, guess_max = 8000, na=c("",".", "NaN"))%>%
   filter(YEAR>2005)%>% # Include results only 2009 onwards, catch DB has only updates from those years 
