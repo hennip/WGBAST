@@ -11,11 +11,9 @@ for(loop in 1:10){
   #loop<-1
   # We will write the simulation results to the sim folder using 10 Rdata-files 
   # under these names 
-  if(choice=="MED"){  
-    BH_dataFile<-
+  BH_dataFile<-
       paste0(PathScen, "ScenHist_JAGSmodel", Model,"_",loop,".RData") # name to separate historical part from future projections?
-  }
-  
+
   #Sims stores the numbers for the simulation in the MCMC chain
   sims<-c(1+100*(loop-1),100*loop)   #1st and last indices of sims
   sims<-c(sims[],sims[2]-sims[1]+1)   #add number of sims as 3rd member of sims
@@ -186,13 +184,13 @@ for(loop in 1:10){
     }
   }
   
+  
   #FUTURE RELEASES
   # Number of released smolts is assumed to be the same as last year (yBreak)
-  RsalmStock[1,(yBreak+1):years[3],1,1,]<-RsalmStock[1,(yBreak),1,1,]
-  RsalmStock[1,(yBreak+1):years[3],2,1,]<-RsalmStock[1,(yBreak),2,1,]
-  RsalmStock[1,(yBreak+1):years[3],3,1,]<-RsalmStock[1,(yBreak),3,1,]
-  RsalmStock[1,(yBreak+1):years[3],4,1,]<-RsalmStock[1,(yBreak),4,1,] 
-  
+  for(u in 1:4){
+    RsalmStock[1,(yBreak+1):years[3],u,1,]<-RsalmStock[1,(yBreak),u,1,]
+  }
+
   #Estimated numbers-at-age starting in May 1992 
   # Loop over the different age groups. 
   # Grilse or 1SW salmon from the 2nd age group (a=2), 
@@ -284,19 +282,26 @@ for(loop in 1:10){
   }
   
   # Future
+  # Update!!!
   for(y in (yBreak+1):years[3]){ 
     for(s in 1:sims[3]){
       cL<-rnorm(1,mean=mucL[s],sd=sqrt(1/taucL[s]))
       lw<-c()
       lr<-c()
       
-      # Temperature estimates updated 29/3/2019
+      # Temperature estimates 2020
+      #note that normally break points should be 
+      # y==yBreak +1 and y> yBreak+1
       if(y==(yBreak+1)){ # 2019
-        Temp<-rnorm(1,mean=5.5,sd=0.1926)
+        Temp<-rnorm(1,mean=mean_Temp1,sd=sd_Temp1)
       }
-      if(y>(yBreak+1)){ #2020->
-        Temp<-rnorm(1,mean=4.196,sd=1.232)
+      if(y==(yBreak+2)){ # 2020
+        Temp<-rnorm(1,mean=mean_Temp2,sd=sd_Temp2)
       }
+      if(y>(yBreak+2)){ #2021->
+        Temp<-rnorm(1,mean=mean_Temp3,sd=sd_Temp3)
+      }
+     
       
       for(a in 2:5){
         lw[a]<-rnorm(1,mean=cL+bL[a-1,s]+delta[a-1,s]*Temp,
@@ -333,33 +338,33 @@ for(loop in 1:10){
   ################################################################
   
   #! AUTOCORRELATION ANALYSIS, will be updated annually
-  #! Last update 29/03/2019
   ## Stable mean on logit scale
-  
   #! Average mortality during 4 year period
-  if(choice=="MED") {mu<--1.8}    # median survival 2014-2017
-  w<-0.85     
-  sigma2<-0.63
+  mu<-mu_mps    
+  w<-w_mps     
+  sigma2<-sigma2_mps
   
   ####
   ## code for autoregressive M74 process
   #! Last update 29/03/2019
+  #! No update on 2020 assessment!!!
   ####
   ## AutoC coefficient  on logit scale
-  wM74<- 0.861
+  wM74<- w_m74
   
   ## Stable mean on logit scale
-  muM74<- -1.6     # 85% survival
+  muM74<- mu_m74    
   
   ## Marginal variance  on logit scale
-  sigma2M74<-0.9
+  sigma2M74<-sigma2_m74
   ####
   
   M74<-as.matrix(sims[1]:sims[2])
   
   #Use (yBreak -1) if want to discard the last years's estimate (year yBreak has no M74 data)
   for(y in 1:(yBreak-1)){ 
-    x<-paste0(PathData,"M74/M74[" ,y+years[1]-1987,"]CODAchain1.txt")
+  #y<-yBreak-4
+      x<-paste0(PathData,"M74/M74[" ,y+years[1]-1987,"].txt")
     i<-read.table(x)
     M74<-cbind(M74,i[sims[1]:sims[2],2])
   }
@@ -397,12 +402,7 @@ for(loop in 1:10){
   # Mps scenarios for the future
   #=============
   
-  # These are the parameters of a beta distribution which adjust 
-  # MpsR depending on MpsW
-  #! Update these annually using script Ra_Rb.r
-  #! Updated 29/03/2019
-  Rmu<-0.224
-  Reta<-0.400
+
   
   for(y in yBreak:years[3]){
     for(i in 1:sims[3]){
@@ -766,8 +766,7 @@ for(loop in 1:10){
         # The number of migrating fish by age in August after the coastal gillnet 
         # fishery is given by
         WsalmStock[a,y,r,2,]<-(WsalmStock[a,y,r,2,]*
-                                 exp(-(WsalmNatMort[a,y,r,2,]*F_seal[y,a,AU[r]]/12))-WCGN_Ctmp[a,y,r,2,])*
-          p.ladder[a,y,r,]
+      exp(-(WsalmNatMort[a,y,r,2,]*F_seal[y,a,AU[r]]/12))-WCGN_Ctmp[a,y,r,2,])*p.ladder[a,y,r,]
       } 
       
       for(u in 1:4){
@@ -890,6 +889,7 @@ for(loop in 1:10){
       # for 1 full year, starting from May 1st till May 1st the next year.
       # The oldest salmon die.
       WsalmStock[2:6,(y+1),,1,]<-WsalmStock[1:5,y,,1,]*exp(-(WsalmNatMort[1:5,y,,1,]*3/12))
+      RsalmStock[2:6,(y+1),,1,]<-RsalmStock[1:5,y,,1,]*exp(-(RsalmNatMort[1:5,y,,1,]*3/12))
     }
     
     WsalmStock[,y,,1,]<-tempW[,y,,1,]
@@ -972,6 +972,21 @@ for(loop in 1:10){
   
   #!POPULATION MODEL ENDS HERE  
   #!##########################################################################
+  BS_data <- c(
+    "PropCR","PropCW",
+    "PFAtmpW","PFAtmpR",
+    "WsalmStock","RsalmStock","WsalmNatMort","RsalmNatMort",
+    "WsalmMatRate","RsalmMatRate","F_seal","R_zero","BH_alpha","BH_beta","M74",
+    "precisionBH", "BH_z","EffortICES", "EffortAssesUnit",
+    "WOLL_HRtmp","WODN_HRtmp","WCDN_HRtmp","WCGN_HRtmp","WCTN_HRtmp","WRF_HRtmp", 
+    "ROLL_HRtmp","RODN_HRtmp","RCDN_HRtmp","RCGN_HRtmp","RCTN_HRtmp","RRF_HRtmp", 
+    "WOLL_Ctmp", "WODN_Ctmp", "WCDN_Ctmp", "WCGN_Ctmp", "WCTN_Ctmp", "WRF_Ctmp",
+    "ROLL_Ctmp", "RODN_Ctmp", "RCDN_Ctmp", "RCGN_Ctmp", "RCTN_Ctmp", "RRF_Ctmp", 
+    "yBreak", "sims", 
+    "qlW", "qlR", "qdR","qdW",
+    "qctnW","qctnR", "qcgnW", "qcgnR",
+    "Mps_All","Mps_AllR","Etot_tmp","M74_All","prop_fem","p.ladder","surv_migr",
+    "pmat","pimm","smat","simm","EPR","EPR_M74","K")
   
   
   save(list = BS_data, file = BH_dataFile)

@@ -35,10 +35,8 @@ while(apu==0){
   
   # save the data for each of the pieces of the MCMC chain
   for(loop in 1:10){
-    
-    if(choice=="MED"){
-      BH_dataFile<-paste0(PathScen, "ScenHist_JAGSmodel", Model,"_",loop,".RData") 
-    }
+# loop<-1    
+    BH_dataFile<-paste0(PathScen, "ScenHist_JAGSmodel", Model,"_",loop,".RData") 
     load(BH_dataFile)
     
     # Target for history
@@ -56,7 +54,8 @@ while(apu==0){
     
     #yBreak corresponds to the last historical year 
     for(y in (yBreak+1):(yBreak+NumFutYears)){
-      #y<-yBreak+1
+    # for(y in (yBreak+1):(yBreak+1)){
+        #y<-yBreak+1
       
       #y<-yBreak+NumFutYears
       #River harvest assume the same as last historic year
@@ -310,6 +309,7 @@ while(apu==0){
       }
       # 9/12: May-Feb
       for(a in 2:6){
+        #a<-2
         # PFAs on 1 July              
         # the year of pfa is the same as the year of winter fishing
         PFAtmpW[a,y,,1,]<-PropCW[y-a+6]*WsalmStock[a,y,,1,]*exp(-(WsalmNatMort[a,y,,1,]*((8+6)/12)))
@@ -610,7 +610,6 @@ while(apu==0){
   
   # =============================================================
   # Check if total removal is what we wanted:
-  library(coda)
   
   year<-c(1992:LastPredYear)
   length(year)
