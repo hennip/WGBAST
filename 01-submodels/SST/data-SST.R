@@ -18,14 +18,16 @@ library(tidyverse)
 library(readxl)
 library(lubridate)
 library(stringr)
+library(writexl)
+library(readxl)
 
 # Path for input data
-pathIn<-"H:/Biom/FullLifeHistoryModel/2018/dat/orig/SST/"
+pathIn<-"H:/Projects/WGBAST/FLHM/2020/dat/orig/SST/"
 
 #############
 # Data from 8 stations
 
-(dat1<-read_xlsx(str_c(pathIn,"SMHI tempdata 8 stations jan1980-feb2018.xlsx"),
+(dat1<-read_xlsx(str_c(pathIn,"SMHI tempdata 8 stations jan1980-mar2020.xlsx"),
                 sheet="Data", na=c("","NaN")))%>%
   select(Station, Year, Month,Day,Depth,Temperature)
 
@@ -54,9 +56,10 @@ dat1
 #############
 # Knolls Grund -data (station nr. 9)
 
-dat2<-read_xlsx(str_c(pathIn,"Knolls_grund_tom_21_march_2018.xlsx"),
-               sheet=1, skip=6,col_names = T, range="A8:E51422")%>%
-  setNames(c("Date", "Time", "Temperature", "Quality", "Depth"))
+dat2<-read_xlsx(str_c(pathIn,"SST Knolls grund -30 March 2020.xlsx"),
+               sheet=1, skip=2,col_names = T, range="A3:B69824", guess_max = 100000)%>%
+  setNames(c("Date", "SST"))
+#setNames(c("Date", "Time", "Temperature", "Quality", "Depth"))
 #setNames(c("Date", "Temperature", "Quality", "Depth"))
 dat2
 
@@ -68,7 +71,9 @@ dat2<-dat2%>%
   filter(Month<5)%>%
   mutate(year=Year-1991)%>%
   mutate(station=9)%>%
-  select(Temperature, Year, Month, Day, year, station)
+  #select(Temperature, Year, Month, Day, year, station)%>%
+  mutate(Temperature=parse_double(SST))%>%
+select(Temperature, Year, Month, Day, year, station)
 
 
 ###################
@@ -95,7 +100,7 @@ extra.year
 df.bugs<-full_join(df.bugs,extra.year, by=NULL)
 #View(df.bugs)
 
-write_csv(df.bugs, path="submodels/SST/data.bugs.csv")
+write_xlsx(df.bugs, path="01-submodels/SST/data.bugs.xlsx")
 # copy paste data (year, month & sst) from excel to OpenBUGS using paste special -> unicode text
 # change column names as year[]	month[]	SST[]
 # Add text END at the bottom of the data file and press ENTER (empty line is needed at the end of the file)

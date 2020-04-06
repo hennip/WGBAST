@@ -18,7 +18,7 @@ df.plot<-df.bugs %>%
    group_by(year, Month)%>%
    summarise(sst=mean(sst.station), # mean SST per month
              sd.sst=sd(sst.station, na.rm=T))%>%
-  mutate(month=parse_factor(Month, levels=c(1:4)))%>%
+  mutate(month=factor(Month, levels=c(1:4)))%>%
   mutate(Year=year+1991)
 
 df.plot
@@ -33,8 +33,8 @@ ggplot(df.plot) +
 
 
 # Expected April temperatures (median & 95% PI) from the model
-(april<-read_csv("submodels/SST/output-aprilSST.csv",skip=4))
-april<-mutate(april,Year=parse_double(year))%>%
+(april<-read_xlsx("01-submodels/SST/output-aprilSST.xlsx",skip=3))
+april<-mutate(april,Year=year)%>%
 select(-year)
 
 df.obs<-filter(df.plot, Month==4)
