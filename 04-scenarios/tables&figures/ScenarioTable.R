@@ -4,34 +4,17 @@
   
 rm(list=ls(all=TRUE))
 
-library(coda)
-################################################################################
-#! #############################################################################
-# Version of the estimation model
-#Model<-"New_SR"
-Model<-"_FullPLmisrep"
 
-# Time
-LastHistYear<-2017
-LastPredYear<-2032
-year<-c(1992:LastPredYear)
-length(year)
-Nyears<-length(year)
-Nstocks<-16
-# ?????????????????????????????????????????????????????????????????
 # Scenarios
-#! Mps
-choice<-"MED"  
-
 #! Effort 
 EffScen<-5 
 
 #for(EffScen in 1:6){
-# ?????????????????????????????????????????????????????????????????
-PathScen<-"H:/FLR/WGBAST18/Scenarios/" # scenario results 
+source("C:/Rprojects/WGBAST/04-scenarios/paths_scens.r")
+source("C:/Rprojects/WGBAST/04-scenarios/scens_stuff.r")
 
 #Load the file containing stats
-File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen",EffScen,".RData")
+File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")
 
 File
 load(File)
@@ -90,14 +73,14 @@ for(s in 1:1000){
 
 
 cbind(c(1992:LastPredYear),c(1:Nyears))
-# ??????????????????????????????????????
-# calendar year 2019 is year 28 for trapnetting and 
-# year 27 for offshore fisheries
-yCTN<-28 
-yOLL<-27
+# ===============================================
+# calendar year 2021 is year 30 for trapnetting and 
+# year 29 for offshore fisheries
+yCTN<-30 
+yOLL<-29
 
 # Save relevant calculations
-tulos<-cbind(
+df<-cbind(
 rbind("TotCatch", stats(CalC_tot, yCTN)) ,
 rbind("River", stats(CatchRiver, yCTN)) ,
 rbind("SpawnerTot", stats(SpawnerTOT, yCTN)),
@@ -108,15 +91,12 @@ rbind("PFA MSW", stats(PFA_MSW, yOLL))#,
 #rbind("CalC/PFA1",stats(CalC_tot, yCTN)[1]/stats(PFA,yCTN))       
 )
 
-tulos
+df<-as.data.frame(df)
 
 #stats(CalC_tot, yCTN)[1]/stats(PFA,yCTN)
 
-write.table(tulos, file=paste0(
-"H:/Biom/Scenarios/2018/prg/ScenTable2018_EScen",EffScen,"_",Model,".csv"), 
-sep=",")
-# ??????????????????????????????????????
-}
+write_xlsx(df, paste0(PathScen,"ScenTable2018_EScen",EffScen,"_",Model,".xlsx"))
+#}
 
 
 

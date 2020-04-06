@@ -14,17 +14,27 @@ while(apu==0){
   }
   
   # First value is for interim year (assessment year) and next for future years
-  ScenE_OLL_SWE<-c(0,0)
-  ScenE_OLL_FIN<-c(0,0)
-  ScenE_OLL_DEN<-E_OLL_DEN*Coef # hundred thousand hookdays      
-  ScenE_OLL_PL<-E_OLL_PL*Coef
-  ScenE_OLL_TROLLING<-E_OLL_TROLLING*CoefTrollingF 
-  propTrolling<-(E_OLL_TROLLING[1]*CoefTrollingF)/((E_OLL_DEN[1]+E_OLL_PL[1])*Coef+E_OLL_TROLLING[1]*CoefTrollingF) # only used for checking
+   ScenE_OLL_SWE<-c(0,0)
+   ScenE_OLL_FIN<-c(0,0)
+  # ScenE_OLL_DEN<-E_OLL_DEN*Coef # hundred thousand hookdays      
+  # ScenE_OLL_PL<-E_OLL_PL*Coef
+  # ScenE_OLL_TROLLING<-E_OLL_TROLLING*CoefTrollingF 
+  # propTrolling<-(E_OLL_TROLLING[1]*CoefTrollingF)/((E_OLL_DEN[1]+E_OLL_PL[1])*Coef+E_OLL_TROLLING[1]*CoefTrollingF) # only used for checking
+  # 
+  # ScenE_CTN_FIN_30<-E_CTN_FIN_30*Coef # thousand trapdays
+  # ScenE_CTN_SWE_30<-E_CTN_SWE_30*Coef                 
+  # ScenE_CTN_FIN_31<-E_CTN_FIN_31*Coef       
+  # ScenE_CTN_SWE_31<-E_CTN_SWE_31*Coef
   
-  ScenE_CTN_FIN_30<-E_CTN_FIN_30*Coef # thousand trapdays
-  ScenE_CTN_SWE_30<-E_CTN_SWE_30*Coef                 
-  ScenE_CTN_FIN_31<-E_CTN_FIN_31*Coef       
-  ScenE_CTN_SWE_31<-E_CTN_SWE_31*Coef      
+  # 2020 assessment
+  ScenE_OLL_DEN<-c(E_OLL_DEN[1],E_OLL_DEN[2]*Coef) # hundred thousand hookdays      
+  ScenE_OLL_PL<-c(E_OLL_PL[1],E_OLL_PL[2]*Coef) # hundred thousand hookdays      
+  ScenE_OLL_TROLLING<-c(E_OLL_TROLLING[1],E_OLL_TROLLING[2]*CoefTrollingF) 
+  
+  ScenE_CTN_FIN_30<-c(E_CTN_FIN_30[1],E_CTN_FIN_30[2]*Coef) # thousand trapdays
+  ScenE_CTN_SWE_30<-c(E_CTN_SWE_30[1],E_CTN_SWE_30[2]*Coef)                 
+  ScenE_CTN_FIN_31<-c(E_CTN_FIN_31[1],E_CTN_FIN_31[2]*Coef)       
+  ScenE_CTN_SWE_31<-c(E_CTN_SWE_31[1],E_CTN_SWE_31[2]*Coef)
   
   # =============================================================
 

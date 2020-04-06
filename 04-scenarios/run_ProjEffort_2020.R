@@ -112,14 +112,22 @@ yOLL<-29
 # =============================================================
 # Update level of effort based on most recent efforts in Effort_ICES.txt files (data-folder in dropbox)
 # First value is for interim year (assessment year) and next for future years
-E_OLL_DEN<-c(rep(0.42,2)) # hundred thousand hookdays      
-E_OLL_PL<-c(rep(13.5,2))
-E_OLL_TROLLING<-c(rep(6.56,2)) 
+# E_OLL_DEN<-c(rep(0.42,2)) # hundred thousand hookdays
+# E_OLL_PL<-c(rep(13.5,2))
+# E_OLL_TROLLING<-c(rep(6.56,2))
+# 
+ E_CTN_FIN_30<-c(rep(3.1,2)) # thousand trapdays
+ E_CTN_SWE_30<-c(rep(3.7,2))                 
+ E_CTN_FIN_31<-c(rep(4.9,2))       
+ E_CTN_SWE_31<-c(rep(5.0,2)) 
 
-E_CTN_FIN_30<-c(rep(3.9,2)) # thousand trapdays
-E_CTN_SWE_30<-c(rep(4.8,2))                 
-E_CTN_FIN_31<-c(rep(5.6,2))       
-E_CTN_SWE_31<-c(rep(7.7,2)) 
+# In 2020 assessment the first value for LL/trolling effort is for winter 2018/2019,
+# the second value is winter 2019/2020 and onwards
+# and the third value is for future years
+E_OLL_DEN<-c(0.77,0.77) # hundred thousand hookdays
+E_OLL_PL<-c(2.83,2.83)
+E_OLL_TROLLING<-c(5.34,5.34)
+
 
 # Initialise arrays
 source(paste0(PathFiles,"InitArrays.r"))
@@ -157,7 +165,7 @@ Perform_Stats <- c(
 )
 
 # Save to RData-file
-File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen",EffScen,".RData")
+File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")
 save(list = Perform_Stats, file = File)
 
 
