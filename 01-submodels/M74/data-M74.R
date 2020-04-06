@@ -109,7 +109,7 @@ length(dfSE$xx)
 # 337
 
 dfFI.bugs<-dfFI%>%
-  select(eggs, year, river, surv_eggs, M74, mortality100)
+  select(eggs, year, rivername, surv_eggs, M74, mortality100)
 
 dfSE.bugs<-dfSE
   

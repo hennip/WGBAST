@@ -1,6 +1,5 @@
 
-
-
+source("01-submodels/M74/data-M74.r")
 ## ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 # Input mean2_M74 and mean_M74 codas from one file (note! all rivers and 
 # years are in the same chain) 
