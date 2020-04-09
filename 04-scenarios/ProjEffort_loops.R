@@ -1,10 +1,28 @@
 # This file correspond to ProjEffort_2019_LR_EPR.r
 
 
+# Function used in the optimisation. Suggests a new value based on two previous values
+
+nextpoint=function(x1,x2,y1,y2,target){
+  b=(y2-y1)/(x2-x1)
+  a=y1-b*x1
+  return((target-a)/b)
+}
+
+
+
 # while loop is for finding the effort that creates target removal
+
+
+
+
+
+
+
 apu<-0
+iter<-0
 while(apu==0){
-  
+  iter<-iter+1
   CoefRiverF<-1
   
   Coef<-Coef1*Coef2
@@ -14,17 +32,17 @@ while(apu==0){
   }
   
   # First value is for interim year (assessment year) and next for future years
-   ScenE_OLL_SWE<-c(0,0)
-   ScenE_OLL_FIN<-c(0,0)
-  # ScenE_OLL_DEN<-E_OLL_DEN*Coef # hundred thousand hookdays      
-  # ScenE_OLL_PL<-E_OLL_PL*Coef
-  # ScenE_OLL_TROLLING<-E_OLL_TROLLING*CoefTrollingF 
-  # propTrolling<-(E_OLL_TROLLING[1]*CoefTrollingF)/((E_OLL_DEN[1]+E_OLL_PL[1])*Coef+E_OLL_TROLLING[1]*CoefTrollingF) # only used for checking
-  # 
-  # ScenE_CTN_FIN_30<-E_CTN_FIN_30*Coef # thousand trapdays
-  # ScenE_CTN_SWE_30<-E_CTN_SWE_30*Coef                 
-  # ScenE_CTN_FIN_31<-E_CTN_FIN_31*Coef       
-  # ScenE_CTN_SWE_31<-E_CTN_SWE_31*Coef
+  ScenE_OLL_SWE<-c(0,0)
+  ScenE_OLL_FIN<-c(0,0)
+  #ScenE_OLL_DEN<-E_OLL_DEN*Coef # hundred thousand hookdays      
+  #ScenE_OLL_PL<-E_OLL_PL*Coef
+  #ScenE_OLL_TROLLING<-E_OLL_TROLLING*CoefTrollingF 
+  #propTrolling<-(E_OLL_TROLLING[1]*CoefTrollingF)/((E_OLL_DEN[1]+E_OLL_PL[1])*Coef+E_OLL_TROLLING[1]*CoefTrollingF) # only used for checking
+  
+  #ScenE_CTN_FIN_30<-E_CTN_FIN_30*Coef # thousand trapdays
+  #ScenE_CTN_SWE_30<-E_CTN_SWE_30*Coef                 
+  #ScenE_CTN_FIN_31<-E_CTN_FIN_31*Coef       
+  #ScenE_CTN_SWE_31<-E_CTN_SWE_31*Coef     
   
   # 2020 assessment
   ScenE_OLL_DEN<-c(E_OLL_DEN[1],E_OLL_DEN[2]*Coef) # hundred thousand hookdays      
@@ -35,6 +53,8 @@ while(apu==0){
   ScenE_CTN_SWE_30<-c(E_CTN_SWE_30[1],E_CTN_SWE_30[2]*Coef)                 
   ScenE_CTN_FIN_31<-c(E_CTN_FIN_31[1],E_CTN_FIN_31[2]*Coef)       
   ScenE_CTN_SWE_31<-c(E_CTN_SWE_31[1],E_CTN_SWE_31[2]*Coef)
+ 
+  
   
   # =============================================================
 
@@ -652,11 +672,39 @@ while(apu==0){
   
   # calendar year 2020 is year 29 for trapnetting and 
   # year 28 for offshore fisheries
+  #if(EffScen<6 || EffScen>6){
+  #  print("Coef2")
+  #  print(Coef2)
+  #}
+  #if(EffScen==6){
+  #  print("CoefTrollingF")
+  #  print(CoefTrollingF)
+  #}
+  #print("Total sea catch")
+  #print(stats(CalC_tot, yCTN)[1]) 
+  #print(target) #Total target
+  #print("***")
+  #if(EffScen<6 || EffScen>6){
+  #  print("Trolling catch")
+  #  print(stats(C_OLL, yOLL)[1]*propTrolling)
+  #  print(targetTr) # Trolling target
+  #}
+  #print("--------")
+  #if(EffScen<6 || EffScen>6){
+  #  ifelse(abs(round((stats(CalC_tot, yCTN)[1])-target,1))<0.2,
+  #         apu<-1,Coef2<-Coef2+0.003)
+  #}
+  #if(EffScen==6){
+  #  ifelse(abs(round((stats(CalC_tot, yCTN)[1])-target,1))<0.2,
+  #         apu<-1,CoefTrollingF<-CoefTrollingF+0.003)
+  #}
+  
+  ########################################################################
   if(EffScen<6 || EffScen>6){
     print("Coef2")
     print(Coef2)
   }
-  if(EffScen==6){
+  if(EffScen==2 || EffScen==6){
     print("CoefTrollingF")
     print(CoefTrollingF)
   }
@@ -666,18 +714,50 @@ while(apu==0){
   print("***")
   if(EffScen<6 || EffScen>6){
     print("Trolling catch")
-    print(stats(C_OLL, yOLL)[1]*propTrolling)
+   # print(stats(C_OLL, yOLL)[1]*propTrolling)
     print(targetTr) # Trolling target
   }
   print("--------")
   if(EffScen<6 || EffScen>6){
     ifelse(abs(round((stats(CalC_tot, yCTN)[1])-target,1))<0.2,
-           apu<-1,Coef2<-Coef2+0.003)
+           apu<-1,apu<-0)
+    if(iter==1 && Optim==T)
+    { 
+      E1=Coef2
+      C1=(stats(CalC_tot, yCTN)[1])
+      Coef2=Coef2+0.1
+      print(paste0("Optimizer step 1: E1=",E1," C1=",C1))
+    }
+    if(iter==2 && Optim==T)
+    { 
+      E2=Coef2
+      C2=(stats(CalC_tot, yCTN)[1])
+      Coef2=nextpoint(E1,E2,C1,C2,target)
+      print(paste0("Optimizer step ",iter,": E2=",E2," C2=",C2))
+      print(paste0("Suggesting Coef2=",Coef2))
+    }
+    if(iter>2 && Optim==T && apu==0)
+    { 
+      C1=C2
+      C2=(stats(CalC_tot, yCTN)[1])
+      E1=E2
+      E2=Coef2
+      Coef2=nextpoint(E1,E2,C1,C2,target)
+      print(paste0("Optimizer step ",iter,": E2=",E2," C2=",C2))
+      print(paste0("Suggesting Coef2=",Coef2))
+    }
+    if(iter>2 && Optim==T && apu==0 && Coef2>MaxCoef)
+    { 
+      apu<-1
+      print(paste0("Maximum Coef2 reached! : ",Coef2))
+    }
   }
   if(EffScen==6){
     ifelse(abs(round((stats(CalC_tot, yCTN)[1])-target,1))<0.2,
            apu<-1,CoefTrollingF<-CoefTrollingF+0.003)
   }
+  
+  
   
   
 } # end while loop !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
