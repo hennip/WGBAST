@@ -22,8 +22,8 @@ library(coda)
 
 # Paths are specified in a separate file 
 
-# Henni:
-source("C:/Rprojects/WGBAST/04-scenarios/paths_scens.r")
+source("C:/Rprojects/WGBAST/04-scenarios/paths_scens.r") #Henni
+#source("C:/models/WGBAST_optim/paths_scens.r")# Samu
 
 # ===============
 
@@ -53,16 +53,27 @@ Years<-c(1992:LastHistYear)
 yBreak<-length(Years)
 
 # =============================================================
-#! Removal scenarios for the future
-EffScen<-5
+
+MaxCoef<-10000 # Optimisation terminates, if a value higher than this is proposed for Coef2. 
+              # if this happens, in practice it means that the target is higher than
+              # the number of ish vulnerable to fishing
+ 
+
+
+Optim<-T # Turns on secant method optimisation. Initial values are not too critical, could be = 1 for all,
+         # but guessing improves the speed a bit. Does not work for trolling only scenario (6) at the moment!
 
 #for(EffScen in 1:6){
 set.seed(6789)
+
+#! Removal scenarios for the future
+EffScen<-8
 
 # workflow for effort scenarios:
 # 1. Run scenario 5 and ScenarioTable.R for that scenario -> input total PFA to cell R4 in T4321_workflow.xlsx
 # 2. Run scenario 6: Set up targetTr that corresponds to recr removal (V21 in T4321_workflow.xlsx). 
 #    Then find such CoefTrollingF that produces targetTr catch.
+#     Note that optimisation method is not currently used for this scenario.
 # 3. Run scenario 1: Set up target as in W21 (Total removal at sea for scen 1) in T4321_workflow.xlsx.
 #   Then find such Coef2 that produces target catch, update that on line 74 below as "Coef1"
 # 4. Run scens 2/3/4 similarly as scen 1 but adjust only Coef2 in corresponding line 
@@ -72,20 +83,20 @@ set.seed(6789)
 # has been found with the while-loop!
 
 
-Coef1<-0.699 #0.729 
-CoefTrollingF<-0.518 # 0.66 # this coef produces the targetTr of recr catch when commercial fisheries are removed 
+Coef1<-0.699  # Next time, put this to 1!
+CoefTrollingF<-0.763 # # this coef produces the targetTr of recr catch when commercial fisheries are removed 
 CoefTrollingF/Coef1 # should be close to 1
 
-targetTr<-26.9 # Target trolling catch
+targetTr<-26.7 # Target trolling catch
 # Target is the total removal, including commercial and recreational,
 # discards, unrep and misrep
-if(EffScen==1){Coef2<-1; target<-143} # previous advice approach
-if(EffScen==2){Coef2<-1.217; target<-166} #+20%
-if(EffScen==3){Coef2<-0.789; target<-120} #-20%
-if(EffScen==8){Coef2<-2.186; target<-259} #+100%
+if(EffScen==1){Coef2<-2.249; target<-142.7} # previous advice approach
+if(EffScen==2){Coef2<-2.78; target<-165.9} #+20%
+if(EffScen==3){Coef2<-1.761; target<-119.5} #-20%
+if(EffScen==8){Coef2<-5.237; target<-258.7} #+100% 
 
 #F0.1a) approach, 0.1*pfa corresponds to commercial removal
-if(EffScen==4){Coef2<-1.285; target<-173} # Updated target 
+if(EffScen==4){Coef2<-2.753; target<-164.7} # Updated target 
 
 # No fishing scenario
 if(EffScen==5){Coef2<-0; target<-0}
@@ -95,7 +106,7 @@ if(EffScen==6){Coef2<-0; target<-targetTr}
 
 # No recreational fishing; CoefTrollingF = 0; no trolling
 if(EffScen==7){
-  Coef2<-0.971
+  Coef2<-2.21
   target<-116 # same as previous advice
   
 }
@@ -112,21 +123,16 @@ yOLL<-29
 # =============================================================
 # Update level of effort based on most recent efforts in Effort_ICES.txt files (data-folder in dropbox)
 # First value is for interim year (assessment year) and next for future years
-# E_OLL_DEN<-c(rep(0.42,2)) # hundred thousand hookdays
-# E_OLL_PL<-c(rep(13.5,2))
-# E_OLL_TROLLING<-c(rep(6.56,2))
-# 
- E_CTN_FIN_30<-c(rep(3.1,2)) # thousand trapdays
- E_CTN_SWE_30<-c(rep(3.7,2))                 
- E_CTN_FIN_31<-c(rep(4.9,2))       
- E_CTN_SWE_31<-c(rep(5.0,2)) 
-
-# In 2020 assessment the first value for LL/trolling effort is for winter 2018/2019,
-# the second value is winter 2019/2020 and onwards
-# and the third value is for future years
 E_OLL_DEN<-c(0.77,0.77) # hundred thousand hookdays
 E_OLL_PL<-c(2.83,2.83)
 E_OLL_TROLLING<-c(5.34,5.34)
+
+E_CTN_FIN_30<-c(rep(3.9,2)) # thousand trapdays
+E_CTN_SWE_30<-c(rep(4.8,2))                 
+E_CTN_FIN_31<-c(rep(5.6,2))       
+E_CTN_SWE_31<-c(rep(7.7,2)) 
+
+
 
 
 # Initialise arrays
@@ -165,6 +171,7 @@ Perform_Stats <- c(
 )
 
 # Save to RData-file
+#File<-paste0(PathScen,"ScenProj_",Model,"_Mps","_EScen",EffScen,".RData")
 File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")
 save(list = Perform_Stats, file = File)
 
