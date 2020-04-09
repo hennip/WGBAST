@@ -1,46 +1,27 @@
 
 rm(list=ls(all=TRUE))
-library(coda)
-library("xlsx")
 
-
-################################################################################
-#! #############################################################################
-# Version of the estimation model
-Model<-"New_SR"
+source("C:/Rprojects/WGBAST/04-scenarios/paths_scens.r")
+source("C:/Rprojects/WGBAST/04-scenarios/scens_stuff.r")
 
 # Time
-LastHistYear<-2017
-LastPredYear<-2032
-yBreak<-length(c(1992:LastHistYear))
-year<-c(1992:LastPredYear)
-Nyears<-length(year)
 cbind(c(1992:2032),c(1:41))
-compyear<-26 # 2017
-refyear<-33 # 2024
-Nstocks<-16
+compyear<-28 # 2019
+refyear<-35 # 2026
 
-# ?????????????????????????????????????????????????????????????????
+
 # Scenarios
-#! Mps
-choice<-"MED"   # corresponds to Mps during 2011-2014 period
-                  
 #! Effort 
-EffScen<-5 
-
-PathScen<-"H:/FLR/WGBAST18/Scenarios/" # scenario results 
-PathOut<-"H:/Biom/Scenarios/2018/prg/" # output
-
-for(EffScen in 1:6){
+for(EffScen in 1:8){
+#EffScen<-1
 
 #Load the file containing stats
-File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen",EffScen,".RData")
-  
+File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")
+
 File
 load(File)
 
-#! #############################################################################
-################################################################################
+
 #Calculate the chance of some statistic (vector) being above some reference point
 risk<-function(x,ref) {sum(ifelse(x>ref,1,0))/length(x)}
 
@@ -58,7 +39,7 @@ for(r in 1:13){
 for(r in 14:15){
   frac[r,]<-SmoltW[r,refyear-1,]/SmoltW[r,compyear,]# 2019/2013, AU 4
 }
-for(r in 16:16){
+for(r in 16:17){
   frac[r,]<-SmoltW[r,refyear,]/SmoltW[r,compyear,]# 2020/2013, AU 1-3
 }
 
@@ -93,12 +74,12 @@ for(i in 1:length(year)){
 }
 
 #For the year 2019
-Rivers50<-c(Prob50[1:13,refyear],Prob50[14:15,refyear-1],Prob50[16,refyear])
-Rivers75<-c(Prob75[1:13,refyear],Prob75[14:15,refyear-1],Prob75[16,refyear])
+Rivers50<-c(Prob50[1:13,refyear],Prob50[14:15,refyear-1],Prob50[16,refyear],Prob50[17,refyear])
+Rivers75<-c(Prob75[1:13,refyear],Prob75[14:15,refyear-1],Prob75[16,refyear],Prob75[17,refyear])
   
+df<-as.data.frame(cbind(Rivers50,Rivers75,ProbIncrease))
 
-write.xlsx(cbind(Rivers50,Rivers75,ProbIncrease),  
-            file=paste0(PathOut,"RiskByRivers_EScen",EffScen,"_",Model,".xlsx"))
+write_xlsx(df,paste0(PathScen,"RiskByRivers_EScen",EffScen,"_",Model,".xlsx"))
 
 }
 

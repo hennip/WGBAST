@@ -1,37 +1,12 @@
-library(coda)
-library(xlsx)
+rm(list=ls(all=TRUE))
 
+source("C:/Rprojects/WGBAST/04-scenarios/paths_scens.r")
+source("C:/Rprojects/WGBAST/04-scenarios/scens_stuff.r")
 
-################################################################################
-#! #############################################################################
-# Version of the estimation model
-#Model<-"Orig"
-#Model<-"New_SR"
-Model<-"_FullPLmisrep"
-
-
-# Time
-LastHistYear<-2017
-LastPredYear<-2032
-year<-c(1992:LastPredYear)
-length(year)
-Nyears<-length(year)
-Nstocks<-16
-
-# ===============================================================================
-# Scenarios
-#! Mps
-choice<-"MED"   # corresponds to Mps during 2008-2011 period
-
-# Maturation is the same in all scenarios
-#! Effort 
 EffScen<-5
 
-PathScen<-"H:/FLR/WGBAST18/Scenarios/" # scenario results 
-PathOut<-"H:/Biom/Scenarios/2018/prg/" # output
-
 #Load the file containing stats
-File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen",EffScen,".RData")
+File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")
 
 File
 load(File)
@@ -75,7 +50,13 @@ for(a in 1:6){
 
 quants<-c(0.05,0.1,0.5,0.8,0.95)
 
-windows()
+#windows()
+if(EffScen==1){
+tiff(paste0(PathScen,"F4324a.tiff"),  width=1600, height=1600, res=200)
+}
+if(EffScen==5){
+  tiff(paste0(PathScen,"F4324b.tiff"),  width=1600, height=1600, res=200)
+}
 par(mfrow=c(2,2))    
 par(mar=c(3,5,3,1)+0.1)
 
@@ -147,7 +128,7 @@ segments(year+1,low, year+1,high)
 tx<-cbind(year+1,med, low, high)
 write.xlsx(tx, paste0(PathOut,Model,"_PFA_MSWall_scen",EffScen,".xlsx"))
 
-
+dev.off()
 
  # To check the stats:
 

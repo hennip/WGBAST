@@ -1,39 +1,21 @@
-library(coda)
-library(xlsx)
-#! #############################################################################
+rm(list=ls(all=TRUE))
 
-# Version of the estimation model
-Model<-"New_SR"
+source("C:/Rprojects/WGBAST/04-scenarios/paths_scens.r")
+source("C:/Rprojects/WGBAST/04-scenarios/scens_stuff.r")
 
-# Time
-LastHistYear<-2017
-LastPredYear<-2032
-
-# ?????????????????????????????????????????????????????????????????
-# Scenarios
-#! Mps
-choice<-"MED"   # corresponds to Mps during 2008-2011 period
-
-PathScen<-"H:/FLR/WGBAST18/Scenarios/" # scenario results 
-PathOut<-"H:/Biom/Scenarios/2018/prg/" # output
-
-
-# ?????????????????????????????????????????????????????????????????
-year<-c(1992:LastPredYear)
-length(year)
-endyear<-length(year)
-cbind(1:26,1992:LastHistYear)
+endyear<-Nyears
 
 
 # Longlining, wild salmon
 ##########################
-windows()
+#windows()
+tiff(paste0(PathScen,"F4321a_LL.tiff"),  width=1600, height=1600, res=200)
 par(mfrow=c(2,2))
 par(mar=c(3,4,4,2))
 
 for(S in 1:4){ # Number of scenarios
 #S<-1
-  File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen",S,".RData")
+  File<-paste0(PathScen,"ScenProj_",Model,"_EScen",S,".RData")
   load(File)
   dat<-WOLL_HR[2,,] # index 2 == MSW salmon    
 
@@ -51,17 +33,19 @@ for(S in 1:4){ # Number of scenarios
   ylim=c(0,0.4), ylab = "LL HR for MSW wild")
   segments(year+1, low, year+1, high)
 }
+dev.off()
 
 
 # Trapnetting, wild salmon
 ###########################
-windows()
+#windows()
+tiff(paste0(PathScen,"F4321b_TN.tiff"),  width=1600, height=1600, res=200)
 par(mfrow=c(2,2))
 par(mar=c(3,4,4,2))
 
 for(S in 1:4){ # Number of scenarios
 #S<-1
-  File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen",S,".RData")
+  File<-paste0(PathScen,"ScenProj_",Model,"_EScen",S,".RData")
   load(File)
   dat<-WCTN_HR[2,,1,]  # MSW salmon, assessment unit 1  
   
@@ -79,17 +63,24 @@ for(S in 1:4){ # Number of scenarios
 
 summary(as.mcmc(WCTN_HR[2,1,1,]))
 
+dev.off()
+
+
+# Only the ones above needed in the report
+
+
 
 # Longlining, reared salmon
 ##########################
 
 windows()
+
 par(mfrow=c(2,2))
 par(mar=c(3,4,4,2))
 
 for(S in 1:4){ # Number of scenarios
   File<-paste(sep="", 
-  "C:/FLR/WGBAST15/Sim/BS_Proj",Model,"_Mps",choice,"_EScen",S,".RData")
+  "C:/FLR/WGBAST15/Sim/BS_Proj",Model,"_EScen",S,".RData")
 
   load(File)
   dat<-ROLL_HR[2,,] # index 2 == MSW salmon   
@@ -118,7 +109,7 @@ par(mar=c(3,4,4,2))
 
 for(S in 1:4){ # Number of scenarios
   File<-paste(sep="", 
-  "C:/FLR/WGBAST15/Sim/BS_Proj",Model,"_Mps",choice,"_EScen",S,".RData")
+  "C:/FLR/WGBAST15/Sim/BS_Proj",Model,"_EScen",S,".RData")
   load(File)
   dat<-RCTN_HR[2,,1,]  # MSW salmon, assessment unit 1  
   

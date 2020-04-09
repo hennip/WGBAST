@@ -4,40 +4,25 @@
   
 rm(list=ls(all=TRUE))
 
-library(coda)
-################################################################################
-#! #############################################################################
-# Version of the estimation model
-#Model<-"Orig"
-Model<-"New_SR"
 
-# Time
-LastHistYear<-2017
-LastPredYear<-2032
-year<-c(1992:LastPredYear)
-length(year)
-Nyears<-length(year)
-Nstocks<-16
-
-# ===============================================================================
-# Scenarios
-#! Mps
-choice<-"MED"   # corresponds to Mps during 2008-2011 period
+source("C:/Rprojects/WGBAST/04-scenarios/paths_scens.r")
+source("C:/Rprojects/WGBAST/04-scenarios/scens_stuff.r")
 
 # Maturation is the same in all scenarios
 #! Effort 
 EffScen<-5
 
 #Load the file containing stats
-PathScen<-"H:/FLR/WGBAST18/Scenarios/" # scenario results 
-File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen",EffScen,".RData")
+File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")
 
 File
 load(File)
 
 
 # ===============================================================================
-windows()
+#windows()
+tiff(paste0(PathScen,"F4323_maturation.tiff"),  width=1600, height=1600, res=200)
+
 par(mfrow=c(2,2))
 par(mar=c(4,5,3,1)+0.1)
 
@@ -120,3 +105,4 @@ segments(year,lowW, year,highW)
 
 #cbind(year,medW, lowW, highW)
 
+dev.off()

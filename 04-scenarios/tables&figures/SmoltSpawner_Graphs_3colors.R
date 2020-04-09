@@ -8,40 +8,13 @@
 # ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~               
 rm(list=ls(all=TRUE))
 
-PathScen<-"H:/FLR/WGBAST18/Scenarios/" # scenario results 
-PathOut<-"H:/Biom/Scenarios/2018/prg/" # output
+source("C:/Rprojects/WGBAST/04-scenarios/paths_scens.r")
+source("C:/Rprojects/WGBAST/04-scenarios/scens_stuff.r")
 
-################################################################################
-#! #############################################################################
-# Version of the estimation model
-#Model<-"Orig"
-Model<-"New_SR"
-
-# Time
-LastHistYear<-2017
-LastPredYear<-2032
-year<-c(1992:LastPredYear)
-length(year)
-Nyears<-length(year)
-Nstocks<-16
-
-# ===============================================================================
-# Scenarios
-#! Mps
-choice<-"MED"   # corresponds to Mps during 2008-2011 period
-
-#Load the file containing stats
-File1<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen1.RData")
-File2<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen4.RData")
-File3<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen5.RData")
 
 # ===============================================================================
 
-
-library(coda)
-
-year<-c(1992:2032)
-cbind(c(1992:2032),c(1:length(year)))
+cbind(year,c(1:length(year)))
 
 stats<-function(dat){
 Mean1<-NULL; Median1<-NULL; Low1<-NULL; High1<-NULL;
@@ -62,7 +35,7 @@ return(result)
 ################################################################################
 
 river<-c("Torne","Simo","Kalix","Råne","Pite","Åby","Byske","Rickleån",
-           "Sävarån","Ume/Vindel","Öre","Lögde","Ljungan","Mörrumsån","Emån","Kåge")
+           "Sävarån","Ume/Vindel","Öre","Lögde","Ljungan","Mörrumsån","Emån","Kåge", "Testeboån")
 
 #maxSmolt<-c(
 #4000,90,1500,160,80,
@@ -75,134 +48,95 @@ river<-c("Torne","Simo","Kalix","Råne","Pite","Åby","Byske","Rickleån",
 
 #if(EffScen==5){
 maxSmolt<-c(
-4000,100,1500,200,
-100,50,300,27,
-45,600,150,130,
-8,200,40,100)
+  3000,120,1300,200,
+  60,50,300,27,
+  60,400,150,130,
+  7,200,30,100, 30)
 maxSpawner<-c(
-800,25,300,30,
-20,8,70,4,
-8,40,25,20,
-1.2,80,8,20)
+  700,25,300,30,
+  10,8,70,4,
+  9,20,25,20,
+  1,40,8,20,3)
 #}
+#yStart<-c(rep(1,15),22,22)
+yStart<-c(rep(1,17))
 
-tiff(paste0(PathOut,"F4328_fig3_of_4.tiff"),  width=1600, height=2000, res=200) 
-par(mfrow=c(4,2))
-par(mar=c(2.5,4,4,1))
+File<-c()
+File[3]<-paste0(PathScen,"ScenProj_",Model,"_EScen1.RData")
+File[2]<-paste0(PathScen,"ScenProj_",Model,"_EScen4.RData")
+File[1]<-paste0(PathScen,"ScenProj_",Model,"_EScen5.RData")
 
-#for(r in 1:4){     
-#for(r in 5:8){     
-for(r in 9:12){     
-#for(r in 13:16){     
+colX<-c("blue","red", "black")
+
+#tiff(paste0(PathScen,"F4328_fig2_of_4.tiff"),  width=1600, height=2000, res=200) 
+#windows(record=T)
+
+# uncomment 1 tiff and 1 r-loop at a time!
+# tiff(paste0(PathScen,"F4328_fig1_of_4.tiff"),  width=1600, height=2000, res=200) 
+# par(mfrow=c(4,2))
+# par(mar=c(2.5,4,4,1))
+# for(r in 1:4){     
+
+# tiff(paste0(PathScen,"F4328_fig2_of_4.tiff"),  width=1600, height=2000, res=200)
+# par(mfrow=c(4,2))
+# par(mar=c(2.5,4,4,1))
+# for(r in 5:8){
+
+# tiff(paste0(PathScen,"F4328_fig3_of_4.tiff"),  width=1600, height=2000, res=200)
+# par(mfrow=c(4,2))
+# par(mar=c(2.5,4,4,1))
+# for(r in 9:12){
+
+ tiff(paste0(PathScen,"F4328_fig4_of_4.tiff"),  width=1600, height=2500, res=200)
+ par(mfrow=c(5,2))
+ par(mar=c(2.5,4,4,1))
+ for(r in 13:17){
+   
+
+    for(f in 1:3){
+      load(File[f])
+      med<-stats(SmoltW[r,,])[,1]
+      low<-stats(SmoltW[r,,])[,2]
+      high<-stats(SmoltW[r,,])[,3]
+      
+      if(f==1){
+        plot(year[yStart[r]:Nyears],med[yStart[r]:Nyears], pch=19, ylab="1000's of salmon", 
+             ylim=c(0,maxSmolt[r]), xlab="",
+             main=paste(sep="",river[r]," smolts"),col=colX[f])
+        segments(year[yStart[r]:Nyears], low[yStart[r]:Nyears], 
+                 year[yStart[r]:Nyears], high[yStart[r]:Nyears],col=colX[f])
+        
+      }else{
+        points(year[yStart[r]:Nyears],med[yStart[r]:Nyears], pch=19, ylim=c(0,maxSmolt[r]),
+               col=colX[f])
+        segments(year[yStart[r]:Nyears], low[yStart[r]:Nyears], 
+                 year[yStart[r]:Nyears], high[yStart[r]:Nyears],col=colX[f])
+      }
+    }
+    
+    for(f in 1:3){
+      load(File[f])
+      med<-stats(SpawnerW[r,,])[,1]
+      low<-stats(SpawnerW[r,,])[,2]
+      high<-stats(SpawnerW[r,,])[,3]
+      
+      if(f==1){
+        plot(year[yStart[r]:Nyears],med[yStart[r]:Nyears], pch=19, ylab="1000's of salmon", 
+             ylim=c(0,maxSpawner[r]), xlab="",
+             main=paste(sep="",river[r]," spawners"),col=colX[f])
+        segments(year[yStart[r]:Nyears], low[yStart[r]:Nyears], 
+                 year[yStart[r]:Nyears], high[yStart[r]:Nyears],col=colX[f])
+        
+      }else{
+        points(year[yStart[r]:Nyears],med[yStart[r]:Nyears], pch=19,
+               ylim=c(0,maxSpawner[r]),col=colX[f])
+        segments(year[yStart[r]:Nyears], low[yStart[r]:Nyears], 
+                 year[yStart[r]:Nyears], high[yStart[r]:Nyears],col=colX[f])
+      }
+    }
+    
+  }
   
-  if(r<16){
-    load(File3)
-    med<-stats(SmoltW[r,,])[,1]
-    low<-stats(SmoltW[r,,])[,2]
-    high<-stats(SmoltW[r,,])[,3]
-    plot(year,med, pch=19, ylab="1000's of salmon", ylim=c(0,maxSmolt[r]),col="blue",
-         main=paste(sep="",river[r]," smolts"))
-    segments(year, low, year, high,col="blue")
-    
-    load(File2)
-    med<-stats(SmoltW[r,,])[,1]
-    low<-stats(SmoltW[r,,])[,2]
-    high<-stats(SmoltW[r,,])[,3]
-    points(year,med, pch=19, ylab="1000's of salmon", ylim=c(0,maxSmolt[r]),col="red",
-           main=paste(sep="",river[r]," smolts"))
-    segments(year, low, year, high,col="red")
-    
-    load(File1)
-    med<-stats(SmoltW[r,,])[,1]
-    low<-stats(SmoltW[r,,])[,2]
-    high<-stats(SmoltW[r,,])[,3]
-    points(year,med, pch=19, ylab="1000's of salmon", ylim=c(0,maxSmolt[r]),
-           main=paste(sep="",river[r]," smolts"))
-    segments(year, low, year, high)
-    
-    
-    load(File2)
-    med<-stats(SpawnerW[r,,])[,1]
-    low<-stats(SpawnerW[r,,])[,2]
-    high<-stats(SpawnerW[r,,])[,3]
-    plot(year,med, pch=19, ylab="1000's of salmon", ylim=c(0,maxSpawner[r]),col="red",
-         main=paste(sep="",river[r]," spawners"))
-    segments(year, low, year, high,col="red")
-    
-    load(File3)
-    med<-stats(SpawnerW[r,,])[,1]
-    low<-stats(SpawnerW[r,,])[,2]
-    high<-stats(SpawnerW[r,,])[,3]
-    points(year,med, pch=19, ylab="1000's of salmon", ylim=c(0,maxSpawner[r]),col="blue",
-           main=paste(sep="",river[r]," spawners"))
-    segments(year, low, year, high,col="blue")
-    
-    load(File1)
-    med<-stats(SpawnerW[r,,])[,1]
-    low<-stats(SpawnerW[r,,])[,2]
-    high<-stats(SpawnerW[r,,])[,3]
-    points(year,med, pch=19, ylab="1000's of salmon", ylim=c(0,maxSpawner[r]),
-           main=paste(sep="",river[r]," spawners"))
-    segments(year, low, year, high)
-  }
-  if(r==16){
-    #r<-16
-    load(File3)
-    tmp1<-SmoltW[r,22:Nyears,]
-    med<-stats(tmp1)[,1]
-    low<-stats(tmp1)[,2]
-    high<-stats(tmp1)[,3]
-    plot(year[22:Nyears],med, pch=19, ylab="1000's of salmon", ylim=c(0,maxSmolt[r]),col="blue",
-         main=paste(sep="",river[r]," smolts"), xlim=c(1992,LastPredYear))
-    segments(year[22:Nyears], low, year[22:Nyears], high,col="blue")
-    
-    load(File2)
-    tmp1<-SmoltW[r,22:Nyears,]
-    med<-stats(tmp1)[,1]
-    low<-stats(tmp1)[,2]
-    high<-stats(tmp1)[,3]
-    points(year[22:Nyears],med, pch=19, ylab="1000's of salmon", ylim=c(0,maxSmolt[r]),col="red",
-           main=paste(sep="",river[r]," smolts"), xlim=c(1992,LastPredYear))
-    segments(year[22:Nyears], low, year[22:Nyears], high,col="red")
-    
-    load(File1)
-    tmp1<-SmoltW[r,22:Nyears,]
-    med<-stats(tmp1)[,1]
-    low<-stats(tmp1)[,2]
-    high<-stats(tmp1)[,3]
-    points(year[22:Nyears],med, pch=19, ylab="1000's of salmon", ylim=c(0,maxSmolt[r]),
-           main=paste(sep="",river[r]," smolts"), xlim=c(1992,LastPredYear))
-    segments(year[22:Nyears], low, year[22:Nyears], high)
-    
-    load(File3)
-    tmp2<-SpawnerW[r,22:Nyears,]  
-    med<-stats(tmp2)[,1]
-    low<-stats(tmp2)[,2]
-    high<-stats(tmp2)[,3]
-    plot(year[22:Nyears],med, pch=19, ylab="1000's of salmon", ylim=c(0,maxSpawner[r]),col="blue",
-         main=paste(sep="",river[r]," spawners"), xlim=c(1992,LastPredYear))
-    segments(year[22:Nyears], low, year[22:Nyears], high,col="blue")
-    
-    load(File2)
-    tmp2<-SpawnerW[r,22:Nyears,]  
-    med<-stats(tmp2)[,1]
-    low<-stats(tmp2)[,2]
-    high<-stats(tmp2)[,3]
-    points(year[22:Nyears],med, pch=19, ylab="1000's of salmon", ylim=c(0,maxSpawner[r]),col="red",
-           main=paste(sep="",river[r]," spawners"), xlim=c(1992,LastPredYear))
-    segments(year[22:Nyears], low, year[22:Nyears], high,col="red")
-    
-    
-    load(File1)
-    tmp2<-SpawnerW[r,22:Nyears,]  
-    med<-stats(tmp2)[,1]
-    low<-stats(tmp2)[,2]
-    high<-stats(tmp2)[,3]
-    points(year[22:Nyears],med, pch=19, ylab="1000's of salmon", ylim=c(0,maxSpawner[r]),
-           main=paste(sep="",river[r]," spawners"), xlim=c(1992,LastPredYear))
-    segments(year[22:Nyears], low, year[22:Nyears], high)
-  }
-}
 
 dev.off()
 
@@ -221,3 +155,4 @@ if(tmp==1){
     segments(year, low, year, high)
   }
 }
+

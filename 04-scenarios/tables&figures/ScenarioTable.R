@@ -7,9 +7,9 @@ rm(list=ls(all=TRUE))
 
 # Scenarios
 #! Effort 
-EffScen<-5 
+for(EffScen in 1:8){
+#EffScen<-7
 
-#for(EffScen in 1:6){
 source("C:/Rprojects/WGBAST/04-scenarios/paths_scens.r")
 source("C:/Rprojects/WGBAST/04-scenarios/scens_stuff.r")
 
@@ -96,7 +96,6 @@ df<-as.data.frame(df)
 #stats(CalC_tot, yCTN)[1]/stats(PFA,yCTN)
 
 write_xlsx(df, paste0(PathScen,"ScenTable2018_EScen",EffScen,"_",Model,".xlsx"))
-#}
-
+}
 
 
