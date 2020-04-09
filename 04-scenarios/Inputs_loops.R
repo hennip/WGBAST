@@ -362,20 +362,23 @@ for(loop in 1:10){
   M74<-as.matrix(sims[1]:sims[2])
   
   #Use (yBreak -1) if want to discard the last years's estimate (year yBreak has no M74 data)
-  for(y in 1:(yBreak-1)){ 
-  #y<-yBreak-4
+  #for(y in 1:(yBreak-1)){ 
+    for(y in 1:(yBreak)){ # For 2020 assessment only!!! 
+      #y<-yBreak-4
       x<-paste0(PathData,"M74/M74[" ,y+years[1]-1987,"].txt")
     i<-read.table(x)
     M74<-cbind(M74,i[sims[1]:sims[2],2])
   }
   
-  M74<-M74[,2:(yBreak)] # correct accordingly to previous for-loop! +1 if going until yBreak
+  #M74<-M74[,2:(yBreak)] # correct accordingly to previous for-loop! +1 if going until yBreak
+  M74<-M74[,2:(yBreak+1)] # 2020 assessment only!!!
+  
   
   #=============
   # M74
   #=============
-  #  for(y in (yBreak+1):years[3]){
-  for(y in yBreak:years[3]){
+  for(y in (yBreak+1):years[3]){ #2020 assessment only!!!
+  #for(y in yBreak:years[3]){
     #y<-yBreak+2
     #y<-years[3]
     #dim(M74)
