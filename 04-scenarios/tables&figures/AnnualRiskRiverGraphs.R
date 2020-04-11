@@ -8,32 +8,8 @@
 # ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~               
 rm(list=ls(all=TRUE))
 
-#setwd("H:/Biom/Scenarios/2017/rpt/Figures")
-
-library("xlsx")
-
-
-################################################################################
-#! #############################################################################
-# Version of the estimation model
-#Model<-"New_SR_long" # 50years forward 
-#LastPredYear<-2067
-Model<-"New_SR" # 15 years forward
-LastPredYear<-2032
-
-#! Mps
-choice<-"MED"
-
-nrScen<-5
-
-#! Set the last year for historic part and the last year for predictions:
-LastHistYear<-2017    
-yBreak<-length(c(1992:LastHistYear))
-
-Nstocks<-16
-
-PathScen<-"H:/FLR/WGBAST18/Scenarios/" # scenario results 
-PathOut<-"H:/Biom/Scenarios/2018/prg/" # output
+source("C:/Rprojects/WGBAST/04-scenarios/paths_scens.r")
+source("C:/Rprojects/WGBAST/04-scenarios/scens_stuff.r")
 
 #! #############################################################################
 ################################################################################
@@ -47,12 +23,7 @@ years<-c(1992,LastPredYear)
 years<-c(years[],years[2]-years[1]+1) 
 Years<-c(years[1]:years[2])
 
-#Introduce the different names for the different salmon stocks
-RiverNames<-c("Tornionjoki","Simojoki","Kalixälven","Råneälven"
-,"Piteälven","Åbyälven","Byskeälven","Rickleån","Sävåran"
-,"Vindelälven","Öreälven","Lögdeälven","Ljungan","Mörrumsån"
-,"Emån", "Kågeälven")
-
+nrScen<-8
 
 #Store risk values
 RecRisk<-array(NA, dim=c(Nstocks,nrScen,years[3]))
@@ -63,13 +34,13 @@ for(scen in 1:nrScen){ # number of scenarios
   EffScen<-scen
   
   #Load the file containing stats
-  if(scen==1){File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen1.RData")}
-  if(scen==2){File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen2.RData")}
-  if(scen==3){File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen3.RData")}
-  if(scen==4){File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen4.RData")}
-  if(scen==5){File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen5.RData")} # other way round
-  #if(scen==5){File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen6.RData")} # Note! These two are
-  #if(scen==6){File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen5.RData")} # other way round
+  if(scen==1){File<-paste0(PathScen,"ScenProj_",Model,"_EScen1.RData")}
+  if(scen==2){File<-paste0(PathScen,"ScenProj_",Model,"_EScen2.RData")}
+  if(scen==3){File<-paste0(PathScen,"ScenProj_",Model,"_EScen3.RData")}
+  if(scen==4){File<-paste0(PathScen,"ScenProj_",Model,"_EScen4.RData")}
+  if(scen==5){File<-paste0(PathScen,"ScenProj_",Model,"_EScen5.RData")} # other way round
+  #if(scen==5){File<-paste0(PathScen,"ScenProj_",Model,"_EScen6.RData")} # Note! These two are
+  #if(scen==6){File<-paste0(PathScen,"ScenProj_",Model,"_EScen5.RData")} # other way round
   
   File
   load(File)

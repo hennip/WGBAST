@@ -4,59 +4,45 @@
 
 rm(list=ls(all=TRUE))
 
-################################################################################
-#! #############################################################################
-# Version of the estimation model
-PathScen<-"H:/FLR/WGBAST18/Scenarios/" # scenario results 
 
-Model<-"New_SR"
+source("C:/Rprojects/WGBAST/04-scenarios/paths_scens.r")
+source("C:/Rprojects/WGBAST/04-scenarios/scens_stuff.r")
 
-# Time
-LastHistYear<-2017
-LastPredYear<-2032
-year<-c(1992:LastPredYear)
-length(year)
-Nyears<-length(year)
-cbind(c(1992:2032),c(1:41))
-compyear<-26 # 2017
-refyear<-33 # 2024
-CompYear<-2017
+compyear<-28 # 2019
+refyear<-35 # 2026
+CompYear<-2019
 
-# ?????????????????????????????????????????????????????????????????
-# Scenarios
-#! Mps
-choice<-"MED"   
-# ?????????????????????????????????????????????????????????????????
+
 SmoltList<-list()
 
 #EffScen<-1
 
-for(EffScen in 1:4){
-  File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen",EffScen,".RData")
+for(EffScen in 1:8){
+  File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")
   load(File)
   SmoltList[[EffScen]]<-SmoltW
 }
-File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen6.RData")
-load(File)
-SmoltList[[5]]<-SmoltW
+# File<-paste0(PathScen,"ScenProj_",Model,"_EScen6.RData")
+# load(File)
+# SmoltList[[5]]<-SmoltW
+# 
+# File<-paste0(PathScen,"ScenProj_",Model,"_EScen5.RData")
+# load(File)
+# SmoltList[[6]]<-SmoltW
 
-File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen5.RData")
-load(File)
-SmoltList[[6]]<-SmoltW
-
-river<-c("Tornio", "Simo", "Kalix", "Råne", "Pite", "Åby", "Byske", "Rickleån",
-"Sävarån", "Ume/Vindel", "Öre", "Lögde", "Ljungan", "Mörrumsån", "Emån", "Kåge")
+river<-RiverNames#c("Tornio", "Simo", "Kalix", "Råne", "Pite", "Åby", "Byske", "Rickleån",
+#"Sävarån", "Ume/Vindel", "Öre", "Lögde", "Ljungan", "Mörrumsån", "Emån", "Kåge")
 
 MinSmolts<-c(
 800,10,100,0,
 10,0,30,0,
 0,80,0,0,
-0,0,0,0)
+0,0,0,0,0)
 MaxSmolts<-c(
 3200,100,1500,150,
 80,40,350,15,
 20,600,80,40,
-5,120,20,100)
+5,120,20,100,50)
 
 COL<-c(1,1,2,3,4,1,6)
 LTY<-c(1,1,1,1,1,2,1)
@@ -64,7 +50,7 @@ LWD<-c(2,1,1,1,1,1,1)
 
 windows(record=T)
 par(mfrow=c(4,2),mar=c(4,2.5,4,1))
-for(r in 1:16){
+for(r in 1:Nstocks){
  # r<-1
   if(r==14 | r==15){ryear<-refyear-1}else{ryear<-refyear}
   
