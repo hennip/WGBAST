@@ -132,13 +132,14 @@ summary(as.mcmc(RCTN_HR[2,1,1,]))
 # Combined harvest rates
 
 #########################
-lastY<-26  # ADD ONE EACH YEAR!!!
+lastY<-28  # ADD ONE EACH YEAR!!!
 #########################
 			
         
 #for(S in 2:7){ # Number of scenarios
 S<-1
-File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen",S,".RData")
+File<-paste0(PathScen,"ScenProj_",Model,"_EScen",S,".RData")
+#File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen",S,".RData")
 load(File)
 
 
@@ -194,7 +195,7 @@ par(mar=c(3,4,4,2))
 # wild salmon
 dat<-CoastW_HR[2,1:lastY,1,]# MSW salmon, AU 1
 med<-vector();low<-vector();high<-vector()
-for(i in 1:lastY){
+for(i in 1:(lastY)){
   sumdat<-summary(as.mcmc(dat[i,]),quantiles = c(0.05, 0.25, 0.5, 0.75, 0.95))
   low[i]<-sumdat$quantiles[1]
   high[i]<-sumdat$quantiles[5]
@@ -204,7 +205,7 @@ plot(year[1:length(med)],med, pch=19, main="Combined coastal HR, MSW wild, AU1",
 ylim=c(0,1), ylab ="Harvest rate" )
 segments(year[1:length(med)], low, year[1:length(med)], high)
 
-tab<-cbind(year[1:lastY],med, low, high)
+tab<-cbind(year[1:(lastY)],med, low, high)
 write.xlsx(tab, paste0(PathOut,"CombinedCoastHR_wildMSW_AU1.xlsx"))
 
 

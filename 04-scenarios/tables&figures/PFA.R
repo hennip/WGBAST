@@ -3,7 +3,7 @@ rm(list=ls(all=TRUE))
 source("C:/Rprojects/WGBAST/04-scenarios/paths_scens.r")
 source("C:/Rprojects/WGBAST/04-scenarios/scens_stuff.r")
 
-EffScen<-5
+EffScen<-1
 
 #Load the file containing stats
 File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")
