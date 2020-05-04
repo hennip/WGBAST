@@ -4,45 +4,9 @@
 
 ## ---- load-mat
 
-# Model 1: BUGS
+# Model 1: 
 # =================
 
-if(compare=="BJ"){
-  LW<-array(NA, dim=c(4,length(YearsB)+1,1000))
-  LR<-array(NA, dim=c(4,length(YearsB)+1,1000))
-  for(y in 1: length(YearsB)){
-  #    ifelse(prevAss==1,length(Years),length(Years)+1)){
-    for(a in 1:4){
-      LR[a,y,]<-read.table(paste(sep="", folder1,"/LR[",y,",",a,"]1.txt"))[,2]
-      LW[a,y,]<-read.table(paste(sep="", folder1,"/LW[",y,",",a,"]1.txt"))[,2]
-    }
-  }
-  
-  for(a in 1:4){
-    dfR<-boxplot.bugs.df2(LR, a ,1:length(YearsB))%>%
-      mutate(age=a, Type="Reared")
-    ifelse(a>1, dfR2<-bind_rows(dfR2,dfR),dfR2<-dfR)
-  
-    dfW<-boxplot.bugs.df2(LW, a ,1:length(YearsB))%>%
-      mutate(age=a, Type="Wild")
-    ifelse(a>1, dfW2<-bind_rows(dfW2,dfW),dfW2<-dfW)
-  }
-  
-  df<-full_join(dfW2,dfR2, by=NULL)
-  
-  df.1<-as.tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Type")))%>%
-    select(Age, Type, everything())%>%
-    mutate(Year=Year+1986)%>%
-    mutate(Age=fct_recode(factor(Age),
-                          "Grilse"= "1",
-                          "2SW"= "2",
-                          "3SW"= "3",
-                          "4SW"= "4"))
-  df.1
-  #View(df.bugs)
-}
-
-if(compare=="JJ"){
   for(a in 1:4){
     dfW<-boxplot.jags.df2(chains1, "LW[",str_c(a,"]"),1:length(Years))%>%
       mutate(Age=a, Type="Wild")
@@ -67,10 +31,9 @@ if(compare=="JJ"){
   df.1
   
   
-  }
-  
 
-# Model 2: JAGS
+
+# Model 2: 
 # =================
 #summary(chains[ ,regexpr("LR",varnames(chains))>0])
 
@@ -106,7 +69,7 @@ df.2
 df1<-filter(df.1, Type=="Wild")
 df2<-filter(df.2, Type=="Wild")
 
-ggplot(df2, aes(Year))+
+ggplot(df2, aes(Year, group=Year))+
   theme_bw()+
   geom_boxplot(
     data=df1,
@@ -125,7 +88,7 @@ ggplot(df2, aes(Year))+
 df1<-filter(df.1, Type=="Reared")
 df2<-filter(df.2, Type=="Reared")
 
-ggplot(df2, aes(Year))+
+ggplot(df2, aes(Year, group=Year))+
   theme_bw()+
   geom_boxplot(
     data=df1,

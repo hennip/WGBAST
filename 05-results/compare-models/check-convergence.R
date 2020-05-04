@@ -1,6 +1,7 @@
 load(file="H:/FLR/WGBAST18/WGBAST_JAGS_SRorig.RData")
 load(file="H:/FLR/WGBAST18/WGBAST_JAGS_new_SR.RData")
 
+run1<-run
 
 cbind(Years, 1:length(Years))
 
