@@ -1,0 +1,90 @@
+---
+title: "With/without trolling comparison"
+author: ""
+date: ""
+output: html_document
+---
+
+```{r setup, include=F, cache=F}
+knitr::opts_chunk$set(echo = TRUE)
+
+source("05-results/compare-models/models-select.r")
+```
+
+Black boxplots: Model with trolling (sample size 1000)
+Grey boxplots: Model without trolling (sample size 1000)
+
+In both models reared river harvest rate varies from year to year (uncorrected version).
+
+# Mps
+
+```{r cache=F, include=F}
+knitr::read_chunk("05-results/compare-models/compare-Mps.r")
+
+```
+
+```{r load-mps, include=F}
+
+```
+
+```{r graphs-mps, echo=F}
+
+```
+
+# Number of spawners
+```{r cache=F, include=F}
+knitr::read_chunk("05-results/compare-models/compare-Nsp.r")
+
+```
+
+```{r load-nsp, include=F}
+
+```
+
+```{r graphs-nsp, echo=F, warning=F}
+
+```
+
+
+
+# SR parameters
+
+```{r cache=F, include=F}
+knitr::read_chunk("05-results/compare-models/compare-SR.r")
+
+```
+
+```{r load-SR, include=F}
+
+```
+
+```{r graphs-SR, echo=F}
+
+```
+
+
+# Harvest rates
+```{r cache=F, include=F}
+knitr::read_chunk("05-results/compare-models/compare-HR.r")
+
+```
+
+```{r load-HR, include=F}
+
+```
+
+
+```{r graphs-Hc, echo=F, warning=F}
+
+```
+
+```{r graphs-Hdo, echo=F, warning=F}
+
+```
+
+```{r graphs-Hl, echo=F, warning=F}
+
+```
+
+
+
