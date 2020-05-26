@@ -10,9 +10,9 @@ tmp2<-read.table(str_c(pathData, "Scale.txt"), header=T)[,3]
 
 fix<-2 # or 1
 
-tmp1<-as.tibble(tmp1)%>%
+tmp1<-as_tibble(tmp1)%>%
   mutate(Type="2SW", Year=c(1987:(Years[length(Years)]+fix)))
-tmp2<-as.tibble(tmp2)%>%
+tmp2<-as_tibble(tmp2)%>%
   mutate(Type="3SW", Year=c(1987:(Years[length(Years)]+fix)))
 
 obs<-full_join(tmp1, tmp2, by=NULL)
@@ -20,31 +20,9 @@ colnames(obs)<-c("obs_prop", "Type", "Year")
 
 
 
-# Model 1: BUGS
-# =================
-if(compare=="BJ"){
-  
-  Wprop2SW<-array(NA, dim=c(1000,length(YearsB)))
-  Wprop3SW<-array(NA, dim=c(1000,length(YearsB)))
-  
-  for(y in 7:(length(YearsB)-3)){
-    Wprop2SW[,y]<-read.table(str_c(folder1,"/Wprop[",y,",1]1.txt"))[,2] # 2SW
-    Wprop3SW[,y]<-read.table(str_c(folder1,"/Wprop[",y,",2]1.txt"))[,2] # 3SW
-  }
-  
-  df_2sw<-boxplot.bugs.df(Wprop2SW, 1:(length(YearsB)))%>%
-    mutate(Type="2SW")
-  df_3sw<-boxplot.bugs.df(Wprop3SW, 1:(length(YearsB)))%>%
-    mutate(Type="3SW")
-  
-  df<-full_join(df_2sw,df_3sw, by=NULL)
-  
-  df.1<-as.tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Type")))%>%
-    mutate(Year=Year+1986)
-  df.1
-}
+# Model 1: 
+# =========
 
-if(compare=="JJ"){
   df_2sw<-boxplot.jags.df2(chains1, "Wprop[", "1]", 6:(length(Years)-1))%>%
     mutate(Type="2SW")
   df_3sw<-boxplot.jags.df2(chains1, "Wprop[", "2]", 6:(length(Years)-1))%>%
@@ -52,18 +30,16 @@ if(compare=="JJ"){
   
   df<-full_join(df_2sw,df_3sw, by=NULL)
   
-  df.1<-as.tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Type")))%>%
+  df.1<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Type")))%>%
     mutate(Year=Year+1986)
   
   df.1<-full_join(df.1,obs, by=NULL)
   
   df.1
+
+# Model 2: 
+# =========
   
-}
-
-# Model 2: JAGS
-# =================
-
 #summary(chains[ ,regexpr("Wprop",varnames(chains))>0])
 
 df_2sw<-boxplot.jags.df2(chains, "Wprop[", "1]", 6:(length(Years)-1))%>%
@@ -89,7 +65,7 @@ df.2
 df1<-filter(df.1, is.na(Year)==F)
 df2<-filter(df.2, is.na(Year)==F)
 
-ggplot(df2, aes(Year))+
+ggplot(df2, aes(Year, group=Year))+
   theme_bw()+
   geom_boxplot(
     data=df1,

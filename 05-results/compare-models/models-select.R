@@ -23,8 +23,8 @@ Rivername_long<-read.table(str_c(pathData, "rivernames.txt"))[,1]
   # =================
   
   # Long version of the assessment model 2019
-  #load(file="C:/output/wgbast/flhm/FLHM_results_2019_extended2019-04-11.RData");chains1<-chains
-  load(file="C:/output/wgbast/flhm/WGBAST19_trolling.RData");chains1<-as.mcmc.list(run)
+  load(file="C:/output/wgbast/flhm/FLHM_results_2019_extended2019-04-11.RData");chains1<-chains
+  #load(file="C:/output/wgbast/flhm/WGBAST19_trolling.RData");chains1<-as.mcmc.list(run)
 
 
   YearsB<-c(1987:2018)

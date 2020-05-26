@@ -126,7 +126,7 @@
   # OFFSHORE DRIFTNET
   
   # boxplot.bugs.df2 is used since chains-structure is not anymore in hrW
-  for(a in 1:2){
+  for(a in 2:3){
     dfW<-boxplot.bugs.df2(hdoW, a ,1:(length(Years)-2))%>%
       mutate(age=a, Fishery="ODN", Type="Wild")
     ifelse(a>1, dfW2<-bind_rows(dfW2,dfW),dfW2<-dfW)
@@ -316,7 +316,7 @@ df.2.Hdc
 # OFFSHORE DRIFTNET
 
 # boxplot.bugs.df2 is used since chains-structure is not anymore in hrW
-for(a in 1:2){
+for(a in 2:3){
   dfW<-boxplot.bugs.df2(hdoW, a ,1:(length(Years)-2))%>%
     mutate(age=a, Fishery="ODN", Type="Wild")
   ifelse(a>1, dfW2<-bind_rows(dfW2,dfW),dfW2<-dfW)
@@ -478,7 +478,7 @@ ggplot(df2, aes(Year, group=Year))+
 ## ---- graphs-Ht
 
 
-df1<-filter(df.1.Ht, Type=="Wild")
+#df1<-filter(df.1.Ht, Type=="Wild")
 df2<-filter(df.2.Ht, Type=="Wild")
 
 ggplot(df2, aes(Year, group=Year))+
@@ -499,7 +499,7 @@ ggplot(df2, aes(Year, group=Year))+
   coord_cartesian(ylim=c(0,1))+
   facet_wrap(~Age, scales="free") 
 
-df1<-filter(df.1.Ht, Type=="Reared")
+#df1<-filter(df.1.Ht, Type=="Reared")
 df2<-filter(df.2.Ht, Type=="Reared")
 
 ggplot(df2, aes(Year, group=Year))+
