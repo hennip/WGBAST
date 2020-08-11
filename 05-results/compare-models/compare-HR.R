@@ -10,12 +10,7 @@
   nsample<-length(chains1[,1][[1]])
   
   # from cohort+age to calendar years
-  hrW<-array(NA, dim=c(2,length(Years)-2, nsample))
-  hrR<-array(NA, dim=c(2,length(Years)-2, nsample))
-  hcW.au1<-array(NA, dim=c(2,length(Years)-2, nsample))
-  hcR.au1<-array(NA, dim=c(2,length(Years)-2, nsample))
-  hdcW<-array(NA, dim=c(2,length(Years)-2, nsample))
-  hdcR<-array(NA, dim=c(2,length(Years)-2, nsample))
+  hrW<-hrR<-hcW.au1<-hcR.au1<-hdcW<-hdcR<-array(NA, dim=c(2,length(Years)-2, nsample))
   for(y in 3:(length(Years))){ 
     for(a in 2:3){ # Grilse & 2SW (=MSW)
       #hrW[grilse:MSW, ]
@@ -32,21 +27,20 @@
       
     }}
   
-  hdoW<-array(NA, dim=c(2,length(Years)-2, nsample))
-  hdoR<-array(NA, dim=c(2,length(Years)-2, nsample))
-  hlW<-array(NA, dim=c(2,length(Years)-2, nsample))
-  hlR<-array(NA, dim=c(2,length(Years)-2, nsample))
-  for(y in 3:(length(Years))){ 
-    for(a in 1:2){ # Grilse & 2SW (=MSW)
+  hdoW<-hdoR<-hlW<-hlR<-array(NA, dim=c(3,length(Years)-3, nsample))
+  for(y in 4:(length(Years))){ 
+    for(a in 1:3){ # PS, Grilse, 2SW (=MSW)
+      #hdcW[a,y-3,]<-chains1[,str_c("HdcW[",y-a,",",a,"]")][[1]]
+      #hdcR[a,y-3,]<-chains1[,str_c("HdcR[",y-a,",",a,"]")][[1]]
       
-      #hdoW[grilse:MSW, ]
-      hdoW[a,y-2,]<-chains1[,str_c("HdoW[",y-a,",",a,"]")][[1]]
-      hdoR[a,y-2,]<-chains1[,str_c("HdoR[",y-a,",",a,"]")][[1]]
+      hdoW[a,y-3,]<-chains1[,str_c("HdoW[",y-a,",",a,"]")][[1]]
+      hdoR[a,y-3,]<-chains1[,str_c("HdoR[",y-a,",",a,"]")][[1]]
       
-      #hlW[grilse:MSW, ]
-      hlW[a,y-2,]<-chains1[,str_c("HlW[",y-a,",",a,"]")][[1]]
-      hlR[a,y-2,]<-chains1[,str_c("HlR[",y-a,",",a,"]")][[1]]
+      hlW[a,y-3,]<-chains1[,str_c("HlW[",y-a,",",a,"]")][[1]]
+      hlR[a,y-3,]<-chains1[,str_c("HlR[",y-a,",",a,"]")][[1]]
     }}
+  #summary(chains[ ,regexpr("HdoW",varnames(chains))>0])  
+  #summary(chains1[ ,regexpr("HdoW",varnames(chains1))>0])  
   
   
   # wrangle
@@ -54,7 +48,6 @@
   
   # River fishery
   
-  # boxplot.bugs.df2 is used since chains1-structure is not anymore in hrW
   for(a in 1:2){ # grilse vs msw
     dfW<-boxplot.bugs.df2(hrW, a ,1:(length(Years)-2))%>%
       mutate(age=a, Fishery="River", Type="Wild")
@@ -67,7 +60,7 @@
   
   df<-full_join(dfW2,dfR2, by=NULL)
   
-  df.1.Hr<-as.tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
+  df.1.Hr<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
     select(Age, Fishery, Type, everything())%>%
     mutate(Year=Year+1993)%>%
     mutate(Age=fct_recode(factor(Age),
@@ -77,7 +70,6 @@
   
   # COASTAL FISHERIES (TRAPNET&GILLNET)
   
-  # boxplot.bugs.df2 is used since chains-structure is not anymore in hrW
   for(a in 1:2){
     dfW<-boxplot.bugs.df2(hcW.au1, a, 1:(length(Years)-2))%>%
       mutate(age=a, Fishery="Coast", Type="Wild")
@@ -90,7 +82,7 @@
   
   df<-full_join(dfW2,dfR2, by=NULL)
   
-  df.1.Hc<-as.tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
+  df.1.Hc<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
     select(Age, Fishery, Type,
            everything())%>%
     mutate(Year=Year+1988)%>%
@@ -102,7 +94,6 @@
   
   # COASTAL DRIFTNET
   
-  # boxplot.bugs.df2 is used since chains-structure is not anymore in hrW
   for(a in 1:2){
     dfW<-boxplot.bugs.df2(hdcW, a ,1:(length(Years)-2))%>%
       mutate(age=a, Fishery="CDN", Type="Wild")
@@ -115,58 +106,59 @@
   
   df<-full_join(dfW2,dfR2, by=NULL)
   
-  df.1.Hdc<-as.tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
+  df.1.Hdc<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
     select(Age, Fishery, Type, everything())%>%
     mutate(Year=Year+1988)%>%
     mutate(Age=fct_recode(factor(Age),
-                          "Grilse"="1", "MSW"="2"))
+                          "Grilse"= "1",
+                          "MSW"= "2"))
   df.1.Hdc
   
   
   # OFFSHORE DRIFTNET
   
-  # boxplot.bugs.df2 is used since chains-structure is not anymore in hrW
-  for(a in 2:3){
-    dfW<-boxplot.bugs.df2(hdoW, a ,1:(length(Years)-2))%>%
+  for(a in 1:3){ 
+      dfW<-boxplot.bugs.df2(hdoW, a ,1:(length(Years)-3))%>%
       mutate(age=a, Fishery="ODN", Type="Wild")
     ifelse(a>1, dfW2<-bind_rows(dfW2,dfW),dfW2<-dfW)
     
-    dfR<-boxplot.bugs.df2(hdoR, a ,1:(length(Years)-2))%>%
+    dfR<-boxplot.bugs.df2(hdoR, a ,1:(length(Years)-3))%>%
       mutate(age=a, Fishery="ODN", Type="Reared")
     ifelse(a>1, dfR2<-bind_rows(dfR2,dfR),dfR2<-dfR)
   }
   
   df<-full_join(dfW2,dfR2, by=NULL)
   
-  df.1.Hdo<-as.tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
+  df.1.Hdo<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
     select(Age, Fishery, Type, everything())%>%
-    mutate(Year=Year+1988)%>%
+    mutate(Year=Year+1989)%>%
     mutate(Age=fct_recode(factor(Age),
-                          "1SW"="1",
-                          "MSW"= "2"))
+                          "PS"="1",
+                          "1SW"= "2",
+                          "MSW"= "3"))
   df.1.Hdo
   
   # OFFSHORE LONGLINE
   
-  # boxplot.bugs.df2 is used since chains-structure is not anymore in hrW
-  for(a in 1:2){
-    dfW<-boxplot.bugs.df2(hlW, a ,1:(length(Years)-2))%>%
+  for(a in 1:3){
+    dfW<-boxplot.bugs.df2(hlW, a ,1:(length(Years)-3))%>%
       mutate(age=a, Fishery="OLL", Type="Wild")
     ifelse(a>1, dfW2<-bind_rows(dfW2,dfW),dfW2<-dfW)
     
-    dfR<-boxplot.bugs.df2(hlR, a ,1:(length(Years)-2))%>%
+    dfR<-boxplot.bugs.df2(hlR, a ,1:(length(Years)-3))%>%
       mutate(age=a, Fishery="OLL", Type="Reared")
     ifelse(a>1, dfR2<-bind_rows(dfR2,dfR),dfR2<-dfR)
   }
   
   df<-full_join(dfW2,dfR2, by=NULL)
   
-  df.1.Hl<-as.tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
+  df.1.Hl<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
     select(Age, Fishery, Type, everything())%>%
-    mutate(Year=Year+1988)%>%
+    mutate(Year=Year+1989)%>%
     mutate(Age=fct_recode(factor(Age),
-                          "1SW"="1",
-                          "MSW"= "2"))
+                          "PS"="1",
+                          "1SW"= "2",
+                          "MSW"= "3"))
   df.1.Hl
 
 
@@ -216,26 +208,22 @@ for(y in 3:(length(Years))){
   }
   }
 
-hdoW<-array(NA, dim=c(2,length(Years)-2, nsample))
-hdoR<-array(NA, dim=c(2,length(Years)-2, nsample))
-hlW<-array(NA, dim=c(2,length(Years)-2, nsample))
-hlR<-array(NA, dim=c(2,length(Years)-2, nsample))
-htW<-array(NA, dim=c(2,length(Years)-2, nsample))
-htR<-array(NA, dim=c(2,length(Years)-2, nsample))
+htW<-htR<-array(NA, dim=c(3,length(Years)-3, nsample))
+hdoW<-hdoR<-hlW<-hlR<-array(NA, dim=c(3,length(Years)-3, nsample))
+for(y in 4:(length(Years))){ 
+  for(a in 1:3){ # PS, Grilse, 2SW (=MSW)
+    # hdcW[a,y-3,]<-chains[,str_c("HdcW[",y-a,",",a,"]")][[1]]
+    # hdcR[a,y-3,]<-chains[,str_c("HdcR[",y-a,",",a,"]")][[1]]
 
-for(y in 3:(length(Years))){ 
-  for(a in 1:2){ # Grilse & 2SW (=MSW)
-    
-    #hdoW[grilse:MSW, ]
-    hdoW[a,y-2,]<-chains[,str_c("HdoW[",y-a,",",a,"]")][[1]]
-    hdoR[a,y-2,]<-chains[,str_c("HdoR[",y-a,",",a,"]")][[1]]
+    hdoW[a,y-3,]<-chains[,str_c("HdoW[",y-a,",",a,"]")][[1]]
+    hdoR[a,y-3,]<-chains[,str_c("HdoR[",y-a,",",a,"]")][[1]]
     
     #hlW[grilse:MSW, ]
-    hlW[a,y-2,]<-chains[,str_c("HlW[",y-a,",",a,"]")][[1]]
-    hlR[a,y-2,]<-chains[,str_c("HlR[",y-a,",",a,"]")][[1]]
+    hlW[a,y-3,]<-chains[,str_c("HlW[",y-a,",",a,"]")][[1]]
+    hlR[a,y-3,]<-chains[,str_c("HlR[",y-a,",",a,"]")][[1]]
   
-    htW[a,y-2,]<-chains[,str_c("HtW[",y-a,",",a,"]")][[1]]
-    htR[a,y-2,]<-chains[,str_c("HtR[",y-a,",",a,"]")][[1]]
+    htW[a,y-3,]<-chains[,str_c("HtW[",y-a,",",a,"]")][[1]]
+    htR[a,y-3,]<-chains[,str_c("HtR[",y-a,",",a,"]")][[1]]
   }}
 
 
@@ -244,7 +232,6 @@ for(y in 3:(length(Years))){
 
 # River fishery
 
-# boxplot.bugs.df2 is used since chains-structure is not anymore in hrW
 for(a in 1:2){ # grilse vs msw
   dfW<-boxplot.bugs.df2(hrW, a ,1:(length(Years)-2))%>%
     mutate(age=a, Fishery="River", Type="Wild")
@@ -257,7 +244,7 @@ for(a in 1:2){ # grilse vs msw
 
 df<-full_join(dfW2,dfR2, by=NULL)
 
-df.2.Hr<-as.tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
+df.2.Hr<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
   select(Age, Fishery, Type, everything())%>%
   mutate(Year=Year+1993)%>%
   mutate(Age=fct_recode(factor(Age),
@@ -267,7 +254,6 @@ df.2.Hr
 
 # COASTAL FISHERIES (TRAPNET&GILLNET)
 
-# boxplot.bugs.df2 is used since chains-structure is not anymore in hrW
 for(a in 1:2){
   dfW<-boxplot.bugs.df2(hcW.au1, a, 1:(length(Years)-2))%>%
     mutate(age=a, Fishery="Coast", Type="Wild")
@@ -280,7 +266,7 @@ for(a in 1:2){
 
 df<-full_join(dfW2,dfR2, by=NULL)
 
-df.2.Hc<-as.tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
+df.2.Hc<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
   select(Age, Fishery, Type,
          everything())%>%
   mutate(Year=Year+1988)%>%
@@ -292,7 +278,6 @@ df.2.Hc
 
 # COASTAL DRIFTNET
 
-# boxplot.bugs.df2 is used since chains-structure is not anymore in hrW
 for(a in 1:2){
   dfW<-boxplot.bugs.df2(hdcW, a ,1:(length(Years)-2))%>%
     mutate(age=a, Fishery="CDN", Type="Wild")
@@ -305,79 +290,81 @@ for(a in 1:2){
 
 df<-full_join(dfW2,dfR2, by=NULL)
 
-df.2.Hdc<-as.tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
+df.2.Hdc<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
   select(Age, Fishery, Type, everything())%>%
   mutate(Year=Year+1988)%>%
   mutate(Age=fct_recode(factor(Age),
-                        "Grilse"="1", "MSW"="2"))
+                        "Grilse"= "1",
+                        "MSW"= "2"))
 df.2.Hdc
 
 
 # OFFSHORE DRIFTNET
 
-# boxplot.bugs.df2 is used since chains-structure is not anymore in hrW
-for(a in 2:3){
-  dfW<-boxplot.bugs.df2(hdoW, a ,1:(length(Years)-2))%>%
+for(a in 1:3){
+    dfW<-boxplot.bugs.df2(hdoW, a ,1:(length(Years)-3))%>%
     mutate(age=a, Fishery="ODN", Type="Wild")
   ifelse(a>1, dfW2<-bind_rows(dfW2,dfW),dfW2<-dfW)
   
-  dfR<-boxplot.bugs.df2(hdoR, a ,1:(length(Years)-2))%>%
+  dfR<-boxplot.bugs.df2(hdoR, a ,1:(length(Years)-3))%>%
     mutate(age=a, Fishery="ODN", Type="Reared")
   ifelse(a>1, dfR2<-bind_rows(dfR2,dfR),dfR2<-dfR)
 }
 
 df<-full_join(dfW2,dfR2, by=NULL)
 
-df.2.Hdo<-as.tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
+df.2.Hdo<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
   select(Age, Fishery, Type, everything())%>%
-  mutate(Year=Year+1988)%>%
+  mutate(Year=Year+1989)%>%
   mutate(Age=fct_recode(factor(Age),
-                        "1SW"="1",
-                        "MSW"= "2"))
+                        "PS"="1",
+                        "1SW"= "2",
+                        "MSW"= "3"))
 df.2.Hdo
 
 # OFFSHORE LONGLINE
 
-# boxplot.bugs.df2 is used since chains-structure is not anymore in hrW
-for(a in 1:2){
-  dfW<-boxplot.bugs.df2(hlW, a ,1:(length(Years)-2))%>%
+for(a in 1:3){
+  dfW<-boxplot.bugs.df2(hlW, a ,1:(length(Years)-3))%>%
     mutate(age=a, Fishery="OLL", Type="Wild")
   ifelse(a>1, dfW2<-bind_rows(dfW2,dfW),dfW2<-dfW)
   
-  dfR<-boxplot.bugs.df2(hlR, a ,1:(length(Years)-2))%>%
+  dfR<-boxplot.bugs.df2(hlR, a ,1:(length(Years)-3))%>%
     mutate(age=a, Fishery="OLL", Type="Reared")
   ifelse(a>1, dfR2<-bind_rows(dfR2,dfR),dfR2<-dfR)
 }
 
 df<-full_join(dfW2,dfR2, by=NULL)
 
-df.2.Hl<-as.tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
+df.2.Hl<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
   select(Age, Fishery, Type, everything())%>%
-  mutate(Year=Year+1988)%>%
+  mutate(Year=Year+1989)%>%
   mutate(Age=fct_recode(factor(Age),
-                        "1SW"="1",
-                        "MSW"= "2"))
+                        "PS"="1",
+                        "1SW"= "2",
+                        "MSW"= "3"))
 df.2.Hl
 
 # OFFSHORE (RECREATIONAL) TROLLING
-for(a in 1:2){
-  dfW<-boxplot.bugs.df2(htW, a ,1:(length(Years)-2))%>%
+for(a in 1:3){
+  dfW<-boxplot.bugs.df2(htW, a ,1:(length(Years)-3))%>%
     mutate(age=a, Fishery="Trolling", Type="Wild")
   ifelse(a>1, dfW2<-bind_rows(dfW2,dfW),dfW2<-dfW)
   
-  dfR<-boxplot.bugs.df2(htR, a ,1:(length(Years)-2))%>%
+  dfR<-boxplot.bugs.df2(htR, a ,1:(length(Years)-3))%>%
     mutate(age=a, Fishery="Trolling", Type="Reared")
   ifelse(a>1, dfR2<-bind_rows(dfR2,dfR),dfR2<-dfR)
 }
 
 df<-full_join(dfW2,dfR2, by=NULL)
 
-df.2.Ht<-as.tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
+df.2.Ht<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
   select(Age, Fishery, Type, everything())%>%
-  mutate(Year=Year+1988)%>%
+  mutate(Year=Year+1989)%>%
   mutate(Age=fct_recode(factor(Age),
-                        "1SW"="1",
-                        "MSW"= "2"))
+                        "PS"="1",
+                        "1SW"= "2",
+                        "MSW"="3"))
 df.2.Ht
 
 
@@ -403,7 +390,7 @@ ggplot(df2, aes(Year, group=Year))+
   labs(x="Year", y="Harvest rate", title=str_c("Offshore driftnet HR wild"))+
   scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
   scale_y_continuous(breaks = scales::pretty_breaks(n = 5))+
-  coord_cartesian(ylim=c(0,1))+
+  #coord_cartesian(ylim=c(0,0.5))+
   facet_wrap(~Age, scales="free") 
 
 
@@ -425,7 +412,7 @@ ggplot(df2, aes(Year, group=Year))+
   labs(x="Year", y="Harvest rate", title=str_c("Offshore driftnet HR reared"))+
   scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
   scale_y_continuous(breaks = scales::pretty_breaks(n = 5))+
-  coord_cartesian(ylim=c(0,1))+
+  #coord_cartesian(ylim=c(0,0.5))+
   facet_wrap(~Age, scales="free") 
 
 
@@ -450,7 +437,7 @@ ggplot(df2, aes(Year, group=Year))+
   labs(x="Year", y="Harvest rate", title=str_c("Offshore longline HR wild"))+
   scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
   scale_y_continuous(breaks = scales::pretty_breaks(n = 5))+
-  coord_cartesian(ylim=c(0,1))+
+  #coord_cartesian(ylim=c(0,0.5))+
   facet_wrap(~Age, scales="free") 
 
 
@@ -472,7 +459,7 @@ ggplot(df2, aes(Year, group=Year))+
   labs(x="Year", y="Harvest rate", title=str_c("Offshore longline HR reared"))+
   scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
   scale_y_continuous(breaks = scales::pretty_breaks(n = 5))+
-  coord_cartesian(ylim=c(0,1))+
+  #coord_cartesian(ylim=c(0,0.5))+
   facet_wrap(~Age, scales="free") 
 
 ## ---- graphs-Ht
@@ -496,7 +483,7 @@ ggplot(df2, aes(Year, group=Year))+
   labs(x="Year", y="Harvest rate", title=str_c("Offshore trolling HR wild"))+
   scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
   scale_y_continuous(breaks = scales::pretty_breaks(n = 5))+
-  coord_cartesian(ylim=c(0,1))+
+  #coord_cartesian(ylim=c(0,0.5))+
   facet_wrap(~Age, scales="free") 
 
 #df1<-filter(df.1.Ht, Type=="Reared")
@@ -517,7 +504,7 @@ ggplot(df2, aes(Year, group=Year))+
   labs(x="Year", y="Harvest rate", title=str_c("Offshore trolling HR reared"))+
   scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
   scale_y_continuous(breaks = scales::pretty_breaks(n = 5))+
-  coord_cartesian(ylim=c(0,1))+
+  #coord_cartesian(ylim=c(0,0.5))+
   facet_wrap(~Age, scales="free") 
 
 
@@ -588,8 +575,8 @@ ggplot(df1, aes(Year, group=Year))+
   labs(x="Year", y="Harvest rate", title="Coastal DN, wild")+
   geom_line(aes(Year,q50),col="grey")+
   scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
-  coord_cartesian(ylim=c(0,1))+
-  facet_wrap(~Age)
+  #coord_cartesian(ylim=c(0,1))+
+  facet_wrap(~Age, scales = "free")
 
 df1<-filter(df.1.Hdc, Type=="Reared")
 df2<-filter(df.2.Hdc, Type=="Reared")
@@ -608,8 +595,8 @@ ggplot(df1, aes(Year, group=Year))+
   labs(x="Year", y="Harvest rate", title="Coastal DN, reared")+
   geom_line(aes(Year,q50),col="grey")+
   scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
-  coord_cartesian(ylim=c(0,1))+
-  facet_wrap(~Age)
+  #coord_cartesian(ylim=c(0,1))+
+  facet_wrap(~Age, scales = "free")
 
 ## ---- graphs-Hr
 
