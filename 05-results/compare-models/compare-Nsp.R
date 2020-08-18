@@ -11,12 +11,12 @@
   
 for(r in 1:nstocks){
     #r<-1
-    df<-boxplot.jags.df2(chains1, "NspWtot[",str_c(r,"]"),1:(length(Years)+1))
+    df<-boxplot.jags.df2(chains1, "NspWtot[",str_c(r,"]"),1:length(YearsB)+1)
     #df<-boxplot.jags.df2(dsub, "NspWtot[",str_c(r,"]"),1:length(Years))
     df<-mutate(df, River=r)
     ifelse(r>1, df2<-bind_rows(df2,df),df2<-df)
   }
-  df.1<-as.tibble(setNames(df2,c("Year","q5","q25","q50","q75","q95","River")))%>%
+  df.1<-as_tibble(setNames(df2,c("Year","q5","q25","q50","q75","q95","River")))%>%
     select(River, everything())%>%
     mutate(Year=Year+1986)
   df.1
@@ -34,7 +34,7 @@ for(r in 1:nstocks){
   df<-mutate(df, River=r)
   ifelse(r>1, df2<-bind_rows(df2,df),df2<-df)
 }
-df.2<-as.tibble(setNames(df2,c("Year","q5","q25","q50","q75","q95","River")))%>%
+df.2<-as_tibble(setNames(df2,c("Year","q5","q25","q50","q75","q95","River")))%>%
   select(River, everything())%>%
   mutate(Year=Year+1986)
 df.2
@@ -44,9 +44,13 @@ df.2
 # Spawner count datasets
 # =================
 
-counts<-read_tsv(str_c(pathData,"spawner_counts.txt"),skip=7,col_names=T, na="NA")
-colnames(counts)<-Rivername
-counts<-counts%>%
+#2019 data:
+#counts1<-read_tsv(str_c(pathData,"spawner_counts.txt"),skip=7,col_names=T, na="NA")
+# 2020 data:
+counts1<-read_tsv(str_c(pathData,"spawner_counts.txt"),skip=8,col_names=T, na="NA")
+
+colnames(counts1)<-Rivername
+counts1<-counts1%>%
   mutate(Year=c(1:(length(Years)+1)))%>%
   mutate(Year=Year+1986)%>%
   select(Torne, Simo, Kalix, Ume, Year)%>%
@@ -56,8 +60,10 @@ counts<-counts%>%
                           "2"="Simo",
                           "3"="Kalix",
                           "10"="Ume"))%>%
-  mutate(River=as.numeric(River))%>%
+  mutate(River=as.character(River))%>%
   mutate(Count=Count/1000)
+counts1
+#View(counts)
 
 counts2<-read_tsv(str_c(pathData,"spawner_counts_notInJAGS.txt"),col_names=T, na="NA")
 counts2<-counts2%>%
@@ -65,12 +71,13 @@ counts2<-counts2%>%
   mutate(River=fct_recode(River,
                         "4"="Rane","5"="Pite",
                         "6"="Aby","7"="Byske", "8"="Rickle", "11"="Ore"))%>%
-  mutate(River=as.numeric(River))%>%
+  mutate(River=as.character(River))%>%
   mutate(Count2=Count2/1000)
-  
 
-counts<-full_join(counts, counts2, by=NULL)
-#View(counts2)
+
+counts<-full_join(counts1, counts2, by=NULL)%>%
+  mutate(River=as.numeric(River))
+#View(counts)
 
 
 df.2<-left_join(df.2,counts, by=NULL)
@@ -84,7 +91,7 @@ df.2<-left_join(df.2,counts, by=NULL)
 
 
 for(r in 1:17){
-#r<-5
+#r<-1
 df1<-filter(df.1, River==r, Year>1991)
 df2<-filter(df.2, River==r, Year>1991)
 #df1<-filter(df.1, Year>1991)

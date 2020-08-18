@@ -7,25 +7,23 @@
 tmp1<-read.table(str_c(pathData, "Scale.txt"), header=T)[,1]
 tmp2<-read.table(str_c(pathData, "Scale.txt"), header=T)[,3]
 
-
 fix<-2 # or 1
+Year<-c(1987:(Years[length(Years)]+fix))
 
-tmp1<-as_tibble(tmp1)%>%
-  mutate(Type="2SW", Year=c(1987:(Years[length(Years)]+fix)))
-tmp2<-as_tibble(tmp2)%>%
-  mutate(Type="3SW", Year=c(1987:(Years[length(Years)]+fix)))
+tmp1<-as_tibble(cbind(tmp1,Year))%>%mutate(Type="2SW")
+tmp2<-as_tibble(cbind(tmp2,Year))%>%mutate(Type="3SW")
+colnames(tmp1)<-c("obs_prop", "Year","Type")
+colnames(tmp2)<-c("obs_prop", "Year","Type")
 
 obs<-full_join(tmp1, tmp2, by=NULL)
-colnames(obs)<-c("obs_prop", "Type", "Year")
-
 
 
 # Model 1: 
 # =========
 
-  df_2sw<-boxplot.jags.df2(chains1, "Wprop[", "1]", 6:(length(Years)-1))%>%
+  df_2sw<-boxplot.jags.df2(chains1, "Wprop[", "1]", 6:length(YearsB))%>%
     mutate(Type="2SW")
-  df_3sw<-boxplot.jags.df2(chains1, "Wprop[", "2]", 6:(length(Years)-1))%>%
+  df_3sw<-boxplot.jags.df2(chains1, "Wprop[", "2]", 6:length(YearsB))%>%
     mutate(Type="3SW")
   
   df<-full_join(df_2sw,df_3sw, by=NULL)
@@ -42,14 +40,14 @@ colnames(obs)<-c("obs_prop", "Type", "Year")
   
 #summary(chains[ ,regexpr("Wprop",varnames(chains))>0])
 
-df_2sw<-boxplot.jags.df2(chains, "Wprop[", "1]", 6:(length(Years)-1))%>%
+df_2sw<-boxplot.jags.df2(chains, "Wprop[", "1]", 6:length(Years))%>%
   mutate(Type="2SW")
-df_3sw<-boxplot.jags.df2(chains, "Wprop[", "2]", 6:(length(Years)-1))%>%
+df_3sw<-boxplot.jags.df2(chains, "Wprop[", "2]", 6:length(Years))%>%
   mutate(Type="3SW")
 
 df<-full_join(df_2sw,df_3sw, by=NULL)
 
-df.2<-as.tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Type")))%>%
+df.2<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Type")))%>%
   mutate(Year=Year+1986)
 
 df.2<-full_join(df.2,obs, by=NULL)

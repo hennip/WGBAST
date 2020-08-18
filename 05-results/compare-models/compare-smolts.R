@@ -11,12 +11,12 @@
 
   for(r in 1:nstocks){
     #r<-1
-    df<-boxplot.jags.df2(chains1, "SmoltW[",str_c(r,"]"),1:(length(Years)+3))
+    df<-boxplot.jags.df2(chains1, "SmoltW[",str_c(r,"]"),1:(length(YearsB)+3))
     #df<-boxplot.jags.df2(chains1, "SmoltWW[",str_c(r,"]"),1:(length(Years)+3))
     df<-mutate(df, River=r)
     ifelse(r>1, df2<-bind_rows(df2,df),df2<-df)
   }
-  df.1<-as.tibble(setNames(df2,c("Year","q5","q25","q50","q75","q95","River")))%>%
+  df.1<-as_tibble(setNames(df2,c("Year","q5","q25","q50","q75","q95","River")))%>%
     select(River, everything())%>%
     mutate(Year=Year+1986)
   df.1
@@ -24,13 +24,14 @@
 # Model 2: 
 # =========
  # summary(chains[ ,regexpr("SmoltW",varnames(chains))>0])
+
 for(r in 1:nstocks){
   #r<-1
   df<-boxplot.jags.df2(chains, "SmoltW[",str_c(r,"]"),1:(length(Years)+3))
   df<-mutate(df, River=r)
   ifelse(r>1, df2<-bind_rows(df2,df),df2<-df)
 }
-df.2<-as.tibble(setNames(df2,c("Year","q5","q25","q50","q75","q95","River")))%>%
+df.2<-as_tibble(setNames(df2,c("Year","q5","q25","q50","q75","q95","River")))%>%
   select(River, everything())%>%
   mutate(Year=Year+1986)
 df.2

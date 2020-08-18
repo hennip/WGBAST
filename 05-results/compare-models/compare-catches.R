@@ -6,19 +6,22 @@
 
 # unrep coefs (needed to adjust BUGS but not JAGS)
 # =================
-# coef_r<-c(rep(NA,5),rep(1.24,9), rep(1.22,7), rep(1.23,(length(YearsB)-5)-16))
-# coef_c<-c(rep(NA,5),rep(1.33,9), rep(1.21,7),rep(1.2,5), rep(1.11,(length(YearsB)-5)-21))
-# coef_o<-c(rep(NA,5),rep(1.18,9), rep(1.15,7),rep(1.16,5), rep(1.12,(length(YearsB)-5)-21))
-# cbind(YearsB,coef_r,coef_c,coef_o)
-
-ureport_r=c(rep(NA,times=5),rep(1.24,times=9),rep(1.22,times=7),rep(1.23,times=11))
-ureport_c=c(rep(NA,times=5),rep(1.33,times=9),rep(1.21,times=7),rep(1.20,times=5),rep(1.11,times=6))
-ureport_o=c(rep(NA,times=5),rep(1.18,times=9),rep(1.15,times=7),rep(1.16,times=4),rep(1.12,times=7))
-cbind(YearsB,ureport_r,ureport_c,ureport_o)
+# # coef_r<-c(rep(NA,5),rep(1.24,9), rep(1.22,7), rep(1.23,(length(YearsB)-5)-16))
+# # coef_c<-c(rep(NA,5),rep(1.33,9), rep(1.21,7),rep(1.2,5), rep(1.11,(length(YearsB)-5)-21))
+# # coef_o<-c(rep(NA,5),rep(1.18,9), rep(1.15,7),rep(1.16,5), rep(1.12,(length(YearsB)-5)-21))
+# # cbind(YearsB,coef_r,coef_c,coef_o)
+# 
+# ureport_r=c(rep(NA,times=5),rep(1.24,times=9),rep(1.22,times=7),rep(1.23,times=11))
+# ureport_c=c(rep(NA,times=5),rep(1.33,times=9),rep(1.21,times=7),rep(1.20,times=5),rep(1.11,times=6))
+# ureport_o=c(rep(NA,times=5),rep(1.18,times=9),rep(1.15,times=7),rep(1.16,times=4),rep(1.12,times=7))
+# cbind(YearsB,ureport_r,ureport_c,ureport_o)
 
 
 # Catch data (reported catches)
 # =================
+# Note! If trolling is included as a separate fishery, estimates of nct_ObsTotX needs to be added 
+# as a separate graph. Be sure to use corresponding Catch.txt file
+
 #tmp<-read_tsv(str_c(pathData, "Catch_TrollingSeparated.txt"))
 tmp<-read_tsv(str_c(pathData, "Catch.txt"))
 colnames(tmp)<-c("river", "coast", "offs")
@@ -74,18 +77,18 @@ obs<-full_join(obs, obs_t, by=NULL)
 
   catch_tot<-array(NA, dim=c(length(chains1[,"ncr_ObsTotX[1]"][[1]]),length(Years)-0))
   dim(catch_tot)
-  for(y in 1:(length(Years)-0)){
+  for(y in 1:length(YearsB)){
     catch_tot[,y]<-chains1[,str_c("ncr_ObsTotX[",y,"]")][[1]]+
       chains1[,str_c("ncc_ObsTotX[",y,"]")][[1]]+
       chains1[,str_c("nco_ObsTotX[",y,"]")][[1]]
   }
   
   
-  dfr<-boxplot.jags.df(chains1, "ncr_ObsTotX[", 1:(length(Years)-0))%>%
+  dfr<-boxplot.jags.df(chains1, "ncr_ObsTotX[", 1:(length(YearsB)))%>%
     mutate(Type="River")
-  dfc<-boxplot.jags.df(chains1, "ncc_ObsTotX[", 1:(length(Years)-0))%>%
+  dfc<-boxplot.jags.df(chains1, "ncc_ObsTotX[", 1:(length(YearsB)))%>%
     mutate(Type="Coast")
-  dfo<-boxplot.jags.df(chains1, "nco_ObsTotX[", 1:(length(Years)-0))%>%
+  dfo<-boxplot.jags.df(chains1, "nco_ObsTotX[", 1:(length(YearsB)))%>%
     mutate(Type="Offshore")
   dft<-boxplot.bugs.df(catch_tot, 1:(length(Years)-0))%>%
     mutate(Type="Total", x=y)%>%select(-y)
@@ -107,20 +110,20 @@ obs<-full_join(obs, obs_t, by=NULL)
 #summary(chains[ ,regexpr("ncr_ObsTotX",varnames(chains))>0])
 
 
-catch_tot<-array(NA, dim=c(length(chains[,"ncr_ObsTotX[1]"][[1]]),length(Years)-0))
+catch_tot<-array(NA, dim=c(length(chains[,"ncr_ObsTotX[1]"][[1]]),length(Years)))
 dim(catch_tot)
-for(y in 1:(length(Years)-0)){
+for(y in 1:(length(Years))){
   catch_tot[,y]<-chains[,str_c("ncr_ObsTotX[",y,"]")][[1]]+
     chains[,str_c("ncc_ObsTotX[",y,"]")][[1]]+
     chains[,str_c("nco_ObsTotX[",y,"]")][[1]]
 }
 
 
-dfr<-boxplot.jags.df(chains, "ncr_ObsTotX[", 1:(length(Years)-0))%>%
+dfr<-boxplot.jags.df(chains, "ncr_ObsTotX[", 1:(length(Years)))%>%
   mutate(Type="River")
-dfc<-boxplot.jags.df(chains, "ncc_ObsTotX[", 1:(length(Years)-0))%>%
+dfc<-boxplot.jags.df(chains, "ncc_ObsTotX[", 1:(length(Years)))%>%
   mutate(Type="Coast")
-dfo<-boxplot.jags.df(chains, "nco_ObsTotX[", 1:(length(Years)-0))%>%
+dfo<-boxplot.jags.df(chains, "nco_ObsTotX[", 1:(length(Years)))%>%
   mutate(Type="Offshore")
 dft<-boxplot.bugs.df(catch_tot, 1:(length(Years)-0))%>%
   mutate(Type="Total", x=y)%>%select(-y)
@@ -150,7 +153,7 @@ df.1<-filter(df.1, Year>1991)
 df.2<-filter(df.2, Year>1991)
 
 for(i in 1:4){
-  #i<-4
+  #i<-2
   if(i==1){ df1<-filter(df.1, Type=="River");df2<-filter(df.2, Type=="River")}
   if(i==2){ df1<-filter(df.1, Type=="Coast");df2<-filter(df.2, Type=="Coast")}
   if(i==3){ df1<-filter(df.1, Type=="Offshore");df2<-filter(df.2, Type=="Offshore")}

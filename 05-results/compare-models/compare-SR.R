@@ -178,8 +178,27 @@ ggplot(df2, aes(stock, group=stock))+
 
 ## ---- graphs-SR-traces
 
+par(mfrow=c(2,3))
+for(i in 1:nstocks){
+  #i<-1
+   gd<-gelman.diag(chains[,str_c("K[",i,"]")])
+  if(gd$psrf[2]>1.5){
+    #print(c(i, gd$psrf))
+    traceplot(chains[,str_c("K[",i,"]")], main=str_c("K ",Rivername[i]))
+  }
+}
 
+for(i in 1:nstocks){
+  gd<-gelman.diag(chains[,str_c("alphaSR[",i,"]")])
+  if(gd$psrf[2]>1.5){
+    traceplot(chains[,str_c("alphaSR[",i,"]")], main=str_c("alphaSR ",Rivername[i]))
+  }
+}
 
-#traceplot(chains[,"MW"], main="MW")
-#traceplot(chains[,"MR"], main="MR")
+for(i in 1:nstocks){
+  gd<-gelman.diag(chains[,str_c("betaSR[",i,"]")])
+  if(gd$psrf[2]>1.5){
+    traceplot(chains[,str_c("betaSR[",i,"]")], main=str_c("betaSR ",Rivername[i]))
+  }
+}
 

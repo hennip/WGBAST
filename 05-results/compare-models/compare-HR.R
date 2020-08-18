@@ -207,8 +207,9 @@ for(y in 3:(length(Years))){
     
   }
   }
-
+if(trolling2==T){
 htW<-htR<-array(NA, dim=c(3,length(Years)-3, nsample))
+}
 hdoW<-hdoR<-hlW<-hlR<-array(NA, dim=c(3,length(Years)-3, nsample))
 for(y in 4:(length(Years))){ 
   for(a in 1:3){ # PS, Grilse, 2SW (=MSW)
@@ -221,10 +222,11 @@ for(y in 4:(length(Years))){
     #hlW[grilse:MSW, ]
     hlW[a,y-3,]<-chains[,str_c("HlW[",y-a,",",a,"]")][[1]]
     hlR[a,y-3,]<-chains[,str_c("HlR[",y-a,",",a,"]")][[1]]
-  
+ if(trolling2==T){ 
     htW[a,y-3,]<-chains[,str_c("HtW[",y-a,",",a,"]")][[1]]
     htR[a,y-3,]<-chains[,str_c("HtR[",y-a,",",a,"]")][[1]]
-  }}
+ }
+}}
 
 
 # wrangle
@@ -346,6 +348,7 @@ df.2.Hl<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fish
 df.2.Hl
 
 # OFFSHORE (RECREATIONAL) TROLLING
+if(trolling2==T){
 for(a in 1:3){
   dfW<-boxplot.bugs.df2(htW, a ,1:(length(Years)-3))%>%
     mutate(age=a, Fishery="Trolling", Type="Wild")
@@ -367,7 +370,7 @@ df.2.Ht<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fish
                         "MSW"="3"))
 df.2.Ht
 
-
+}
 # Draw boxplots to compare
 # ==========================
 
@@ -464,7 +467,7 @@ ggplot(df2, aes(Year, group=Year))+
 
 ## ---- graphs-Ht
 
-
+if(trolling2==T){
 #df1<-filter(df.1.Ht, Type=="Wild")
 df2<-filter(df.2.Ht, Type=="Wild")
 
@@ -507,7 +510,7 @@ ggplot(df2, aes(Year, group=Year))+
   #coord_cartesian(ylim=c(0,0.5))+
   facet_wrap(~Age, scales="free") 
 
-
+}
 
 ## ---- graphs-Hc
 
