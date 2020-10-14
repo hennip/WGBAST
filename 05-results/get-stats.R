@@ -1,19 +1,21 @@
 
 library(coda)
+library(xlsx)
 
 
-load(file="H:/FLR/WGBAST18/newSR_final2018-04-22.RData"); modelname<-"final"
-#load(file="H:/FLR/WGBAST18/new_SR_HRR2018-03-22.RData");modelname<-"2018" 
-#load(file="H:/FLR/WGBAST18/WGBAST_JAGS_SRorig.RData");modelname<-"SRorig"
-#chains<-as.mcmc.list(run1)
+load(file="C:/output/wgbast/flhm/FLHM_results_2019_extended2019-04-11.RData"); modelname<-"FLHM_2019_extended"
+#load(file="C:/output/wgbast/flhm/FLHM_2019_trolling_LL_DN.RData"); modelname<-"FLHM_2019_trolling_LL_DN"
+#load(file="C:/output/wgbast/flhm/FLHM_2020.RData"); modelname<-"FLHM_2020"
+
+chains<-as.mcmc.list(run)
 
 #print stats to file
 d<-as.matrix(chains)
 dim(d)
 #[1]   200 16500 # dimensions: iterations x number of variables
 
-headtext<-c("Varname","mean","sd","cv","5%","50%","95%","90%PI","grdPE", "grdUCI")
-statsfile<-paste0("C:/R/WGBAST/05-results/stats_",modelname,".csv")
+headtext<-c("mean","sd","cv","5%","50%","95%","90%PI","grdPE", "grdUCI", "Varname")
+statsfile<-paste0("C:/output/wgbast/flhm/stats_",modelname,".csv")
 
 write.table(t(as.matrix(headtext)),file=statsfile,sep=',',row.names=F, col.names=F)
 
@@ -28,7 +30,7 @@ for(i in 1:dim(d)[2]){ # loop over all monitored variables
   grdPE<-gelman.diag(chains[,i])$psrf[1]
   grdUCI<-gelman.diag(chains[,i])$psrf[2]
   
-  printtxt<-c(colnames(d)[i],m,s,cv,q5,q50,q95,PI90,grdPE, grdUCI)
+  printtxt<-c(m,s,cv,q5,q50,q95,PI90,grdPE, grdUCI, colnames(d)[i])
   write.table(t(as.matrix(printtxt)),statsfile,sep=",",row.names=F, col.names=F,append=T)
 }
 

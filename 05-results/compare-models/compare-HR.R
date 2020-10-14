@@ -27,22 +27,29 @@
       
     }}
   
-  hdoW<-hdoR<-hlW<-hlR<-array(NA, dim=c(3,length(Years)-3, nsample))
+  hdoW<-hdoR<-array(NA, dim=c(4,length(Years)-4, nsample))
+  for(y in 5:(length(Years))){ 
+    for(a in 1:4){ # PS, Grilse, 2SW, 3SW=MSW
+      hdoW[a,y-4,]<-chains1[,str_c("HdoW[",y-a,",",a,"]")][[1]]
+      hdoR[a,y-4,]<-chains1[,str_c("HdoR[",y-a,",",a,"]")][[1]]
+    }}  
+
+  if(trolling1==T){
+    htW<-htR<-array(NA, dim=c(3,length(Years)-3, nsample))
+  }
+  hlW<-hlR<-array(NA, dim=c(3,length(Years)-3, nsample))
   for(y in 4:(length(Years))){ 
-    for(a in 1:3){ # PS, Grilse, 2SW (=MSW)
-      #hdcW[a,y-3,]<-chains1[,str_c("HdcW[",y-a,",",a,"]")][[1]]
-      #hdcR[a,y-3,]<-chains1[,str_c("HdcR[",y-a,",",a,"]")][[1]]
-      
-      hdoW[a,y-3,]<-chains1[,str_c("HdoW[",y-a,",",a,"]")][[1]]
-      hdoR[a,y-3,]<-chains1[,str_c("HdoR[",y-a,",",a,"]")][[1]]
-      
+    for(a in 1:3){ # PS, Grilse, 2SW=MSW
       hlW[a,y-3,]<-chains1[,str_c("HlW[",y-a,",",a,"]")][[1]]
       hlR[a,y-3,]<-chains1[,str_c("HlR[",y-a,",",a,"]")][[1]]
+      if(trolling1==T){ 
+        htW[a,y-3,]<-chains1[,str_c("HtW[",y-a,",",a,"]")][[1]]
+        htR[a,y-3,]<-chains1[,str_c("HtR[",y-a,",",a,"]")][[1]]
+      }
     }}
   #summary(chains[ ,regexpr("HdoW",varnames(chains))>0])  
   #summary(chains1[ ,regexpr("HdoW",varnames(chains1))>0])  
-  
-  
+
   # wrangle
   ##########################
   
@@ -117,12 +124,12 @@
   
   # OFFSHORE DRIFTNET
   
-  for(a in 1:3){ 
-      dfW<-boxplot.bugs.df2(hdoW, a ,1:(length(Years)-3))%>%
+  for(a in 1:4){ 
+      dfW<-boxplot.bugs.df2(hdoW, a ,1:(length(Years)-4))%>%
       mutate(age=a, Fishery="ODN", Type="Wild")
     ifelse(a>1, dfW2<-bind_rows(dfW2,dfW),dfW2<-dfW)
     
-    dfR<-boxplot.bugs.df2(hdoR, a ,1:(length(Years)-3))%>%
+    dfR<-boxplot.bugs.df2(hdoR, a ,1:(length(Years)-4))%>%
       mutate(age=a, Fishery="ODN", Type="Reared")
     ifelse(a>1, dfR2<-bind_rows(dfR2,dfR),dfR2<-dfR)
   }
@@ -135,7 +142,8 @@
     mutate(Age=fct_recode(factor(Age),
                           "PS"="1",
                           "1SW"= "2",
-                          "MSW"= "3"))
+                          "2SW"= "3",
+                          "MSW"= "4"))
   df.1.Hdo
   
   # OFFSHORE LONGLINE
@@ -162,6 +170,31 @@
   df.1.Hl
 
 
+  # OFFSHORE (RECREATIONAL) TROLLING
+  if(trolling1==T){
+    for(a in 1:3){
+      dfW<-boxplot.bugs.df2(htW, a ,1:(length(Years)-3))%>%
+        mutate(age=a, Fishery="Trolling", Type="Wild")
+      ifelse(a>1, dfW2<-bind_rows(dfW2,dfW),dfW2<-dfW)
+      
+      dfR<-boxplot.bugs.df2(htR, a ,1:(length(Years)-3))%>%
+        mutate(age=a, Fishery="Trolling", Type="Reared")
+      ifelse(a>1, dfR2<-bind_rows(dfR2,dfR),dfR2<-dfR)
+    }
+    
+    df<-full_join(dfW2,dfR2, by=NULL)
+    
+    df.1.Ht<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
+      select(Age, Fishery, Type, everything())%>%
+      mutate(Year=Year+1989)%>%
+      mutate(Age=fct_recode(factor(Age),
+                            "PS"="1",
+                            "1SW"= "2",
+                            "MSW"="3"))
+    df.1.Ht
+    
+  }
+  
 # OFFSHORE COMBINED
 # missing for now
 
@@ -207,26 +240,27 @@ for(y in 3:(length(Years))){
     
   }
   }
-if(trolling2==T){
-htW<-htR<-array(NA, dim=c(3,length(Years)-3, nsample))
-}
-hdoW<-hdoR<-hlW<-hlR<-array(NA, dim=c(3,length(Years)-3, nsample))
-for(y in 4:(length(Years))){ 
-  for(a in 1:3){ # PS, Grilse, 2SW (=MSW)
-    # hdcW[a,y-3,]<-chains[,str_c("HdcW[",y-a,",",a,"]")][[1]]
-    # hdcR[a,y-3,]<-chains[,str_c("HdcR[",y-a,",",a,"]")][[1]]
 
-    hdoW[a,y-3,]<-chains[,str_c("HdoW[",y-a,",",a,"]")][[1]]
-    hdoR[a,y-3,]<-chains[,str_c("HdoR[",y-a,",",a,"]")][[1]]
-    
-    #hlW[grilse:MSW, ]
+hdoW<-hdoR<-array(NA, dim=c(4,length(Years)-4, nsample))
+for(y in 5:(length(Years))){ 
+  for(a in 1:4){ # PS, Grilse, 2SW, 3SW=MSW
+    hdoW[a,y-4,]<-chains[,str_c("HdoW[",y-a,",",a,"]")][[1]]
+    hdoR[a,y-4,]<-chains[,str_c("HdoR[",y-a,",",a,"]")][[1]]
+  }}  
+
+if(trolling1==T){
+  htW<-htR<-array(NA, dim=c(3,length(Years)-3, nsample))
+}
+hlW<-hlR<-array(NA, dim=c(3,length(Years)-3, nsample))
+for(y in 4:(length(Years))){ 
+  for(a in 1:3){ # PS, Grilse, 2SW=MSW
     hlW[a,y-3,]<-chains[,str_c("HlW[",y-a,",",a,"]")][[1]]
     hlR[a,y-3,]<-chains[,str_c("HlR[",y-a,",",a,"]")][[1]]
- if(trolling2==T){ 
-    htW[a,y-3,]<-chains[,str_c("HtW[",y-a,",",a,"]")][[1]]
-    htR[a,y-3,]<-chains[,str_c("HtR[",y-a,",",a,"]")][[1]]
- }
-}}
+    if(trolling1==T){ 
+      htW[a,y-3,]<-chains[,str_c("HtW[",y-a,",",a,"]")][[1]]
+      htR[a,y-3,]<-chains[,str_c("HtR[",y-a,",",a,"]")][[1]]
+    }
+  }}
 
 
 # wrangle
@@ -303,12 +337,12 @@ df.2.Hdc
 
 # OFFSHORE DRIFTNET
 
-for(a in 1:3){
-    dfW<-boxplot.bugs.df2(hdoW, a ,1:(length(Years)-3))%>%
+for(a in 1:4){ 
+  dfW<-boxplot.bugs.df2(hdoW, a ,1:(length(Years)-4))%>%
     mutate(age=a, Fishery="ODN", Type="Wild")
   ifelse(a>1, dfW2<-bind_rows(dfW2,dfW),dfW2<-dfW)
   
-  dfR<-boxplot.bugs.df2(hdoR, a ,1:(length(Years)-3))%>%
+  dfR<-boxplot.bugs.df2(hdoR, a ,1:(length(Years)-4))%>%
     mutate(age=a, Fishery="ODN", Type="Reared")
   ifelse(a>1, dfR2<-bind_rows(dfR2,dfR),dfR2<-dfR)
 }
@@ -321,7 +355,8 @@ df.2.Hdo<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fis
   mutate(Age=fct_recode(factor(Age),
                         "PS"="1",
                         "1SW"= "2",
-                        "MSW"= "3"))
+                        "2SW"= "3",
+                        "MSW"= "4"))
 df.2.Hdo
 
 # OFFSHORE LONGLINE
@@ -375,8 +410,8 @@ df.2.Ht
 # ==========================
 
 ## ---- graphs-Hdo
-df1<-filter(df.1.Hdo, Type=="Wild")
-df2<-filter(df.2.Hdo, Type=="Wild")
+df1<-filter(df.1.Hdo, Type=="Wild" & Age!="PS")
+df2<-filter(df.2.Hdo, Type=="Wild" & Age!="PS")
 
 ggplot(df2, aes(Year, group=Year))+
   theme_bw()+
@@ -394,7 +429,7 @@ ggplot(df2, aes(Year, group=Year))+
   scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
   scale_y_continuous(breaks = scales::pretty_breaks(n = 5))+
   #coord_cartesian(ylim=c(0,0.5))+
-  facet_wrap(~Age, scales="free") 
+  facet_wrap(~Age)#, scales="free") 
 
 
 df1<-filter(df.1.Hdo, Type=="Reared")
@@ -467,50 +502,83 @@ ggplot(df2, aes(Year, group=Year))+
 
 ## ---- graphs-Ht
 
-if(trolling2==T){
-#df1<-filter(df.1.Ht, Type=="Wild")
+if(trolling1==F &trolling2==T){
 df2<-filter(df.2.Ht, Type=="Wild")
 
 ggplot(df2, aes(Year, group=Year))+
   theme_bw()+
-  # geom_boxplot(
-  #   data=df1,
-  #   mapping= aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
-  #   stat = "identity",
-  #   colour="grey", fill="grey95")+
   geom_boxplot(
     aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
     stat = "identity",fill=rgb(1,1,1,0.1))+
-  #geom_line(data=df1,aes(Year,q50),colour="grey")+
   geom_line(aes(Year,q50))+
   labs(x="Year", y="Harvest rate", title=str_c("Offshore trolling HR wild"))+
   scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
   scale_y_continuous(breaks = scales::pretty_breaks(n = 5))+
-  #coord_cartesian(ylim=c(0,0.5))+
   facet_wrap(~Age, scales="free") 
+}
 
-#df1<-filter(df.1.Ht, Type=="Reared")
+if(trolling1==F &trolling2==T){
 df2<-filter(df.2.Ht, Type=="Reared")
 
 ggplot(df2, aes(Year, group=Year))+
   theme_bw()+
-  # geom_boxplot(
-  #   data=df1,
-  #   mapping= aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
-  #   stat = "identity",
-  #   colour="grey", fill="grey95")+
   geom_boxplot(
     aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
     stat = "identity",fill=rgb(1,1,1,0.1))+
-  #geom_line(data=df1,aes(Year,q50),colour="grey")+
   geom_line(aes(Year,q50))+
   labs(x="Year", y="Harvest rate", title=str_c("Offshore trolling HR reared"))+
   scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
   scale_y_continuous(breaks = scales::pretty_breaks(n = 5))+
-  #coord_cartesian(ylim=c(0,0.5))+
   facet_wrap(~Age, scales="free") 
 
 }
+
+if(trolling1==T & trolling2==T){
+  df1<-filter(df.1.Ht, Type=="Wild")
+  df2<-filter(df.2.Ht, Type=="Wild")
+  
+  ggplot(df2, aes(Year, group=Year))+
+    theme_bw()+
+     geom_boxplot(
+       data=df1,
+       mapping= aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+       stat = "identity",
+       colour="grey", fill="grey95")+
+    geom_boxplot(
+      aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+      stat = "identity",fill=rgb(1,1,1,0.1))+
+    geom_line(data=df1,aes(Year,q50),colour="grey")+
+    geom_line(aes(Year,q50))+
+    labs(x="Year", y="Harvest rate", title=str_c("Offshore trolling HR wild"))+
+    scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 5))+
+    #coord_cartesian(ylim=c(0,0.5))+
+    facet_wrap(~Age, scales="free") 
+}
+if(trolling1==T & trolling2==T){
+  df1<-filter(df.1.Ht, Type=="Reared")
+  df2<-filter(df.2.Ht, Type=="Reared")
+  
+  ggplot(df2, aes(Year, group=Year))+
+    theme_bw()+
+     geom_boxplot(
+       data=df1,
+       mapping= aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+       stat = "identity",
+       colour="grey", fill="grey95")+
+    geom_boxplot(
+      aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+      stat = "identity",fill=rgb(1,1,1,0.1))+
+    geom_line(data=df1,aes(Year,q50),colour="grey")+
+    geom_line(aes(Year,q50))+
+    labs(x="Year", y="Harvest rate", title=str_c("Offshore trolling HR reared"))+
+    scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 5))+
+    #coord_cartesian(ylim=c(0,0.5))+
+    facet_wrap(~Age, scales="free") 
+  
+}
+
 
 ## ---- graphs-Hc
 

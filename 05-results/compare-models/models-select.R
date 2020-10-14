@@ -17,9 +17,6 @@ nstocks<-17
 #pathData<-"H:/Projects/WGBAST/FLHM/dat/data_2019/"
 pathData<-"H:/Projects/WGBAST/FLHM/dat/data_2020/"
 
-#! OBS!
-# In compare-Nsp row 47 must choose different version depending on 19/20 data!!!
-
 Rivername<-c("Torne", "Simo","Kalix","Rane","Pite","Aby","Byske","Rickle","Savaran",
              "Ume","Ore","Logde","Ljungan","Morrum","Eman","Kage", "Testeboan")
 Rivername_long<-read.table(str_c(pathData, "rivernames.txt"))[,1]
@@ -28,21 +25,31 @@ Rivername_long<-read.table(str_c(pathData, "rivernames.txt"))[,1]
   # =================
   
   # Long version of the assessment model 2019
-  load(file="C:/output/wgbast/flhm/FLHM_results_2019_extended2019-04-11.RData");chains1<-chains; trolling1<-F; Mname1<-"2019 assessment model, extended run" # is trolling included as a separate fishery?
- 
+ load(file="C:/output/wgbast/flhm/FLHM_results_2019_extended2019-04-11.RData");chains1<-chains; trolling1<-F; Mname1<-"2019 assessment model, extended run" # is trolling included as a separate fishery?
+#load(file="C:/output/wgbast/flhm/FLHM_2019_trolling_LL_DN.RData"); trolling1<-T ;Mname1<-"2019 assessment data, AR model for trolling, LL, DN, reared q == wild q" # is trolling included as a separate fishery?
+#chains1<-as.mcmc.list(run)
+
+# 2019 assessment data
   YearsB<-c(1987:2018)
   Years2B<-c(1992:2018)
-
+# 2020 data
+  #YearsB<-c(1987:2019)
+  #Years2B<-c(1992:2019)
+  
 # Model 2:
 # =================
-load(file="C:/output/wgbast/flhm/FLHM_2019_trolling_LL_DN.RData"); trolling2<-T ;Mname2<-"2019 assessment data, AR model for trolling, LL, DN, reared q == wild q" # is trolling included as a separate fishery?
+#load(file="C:/output/wgbast/flhm/FLHM_2019_trolling_LL_DN.RData"); trolling2<-T ;Mname2<-"2019 assessment data, AR model for trolling, LL, DN, reared q == wild q" # is trolling included as a separate fishery?
 #load(file="C:/output/wgbast/flhm/FLHM_2020.RData"); trolling2<-F;Mname2<-"2020 data, 2018/2019 assessment model structure" # Same model structure as in 2019 wg version
-
-  chains<-as.mcmc.list(run)
+#load(file="C:/output/wgbast/flhm/FLHM_2020Xdata_2020.RData"); trolling2<-T;Mname2<-"2020 data, AR models for offshore fisheries, qeff's, HrW corrected"
+#load(file="C:/output/wgbast/flhm/FLHM_2020X_2_data2020.RData"); trolling2<-T;Mname2<-"2020 data, AR models for offshore and coastal fisheries, qeff's, HrW corrected"
+load(file="C:/output/wgbast/flhm/FLHM_2020XY_data2020.RData"); trolling2<-T;Mname2<-"2020 data, AR models for offshore fisheries, fixed sdq & sdtr"
+  #load(file="C:/output/wgbast/flhm/FLHM_trolling_LL_DN_wr2020.RData"); trolling2<-T ;Mname2<-"2020 assessment data, AR model for trolling, LL, DN, reared q != wild q (but not final version)" # is trolling included as a separate fishery?
+  
+chains<-as.mcmc.list(run)
 
 # Is comparison for run from the same year? T if yes, F if no
 # Note that older version should be set as Model 1
-sameYear<-T
+sameYear<-F
 if(sameYear==T){
   Years<-YearsB
   Years2<-Years2B

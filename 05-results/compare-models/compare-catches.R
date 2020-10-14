@@ -22,27 +22,35 @@
 # Note! If trolling is included as a separate fishery, estimates of nct_ObsTotX needs to be added 
 # as a separate graph. Be sure to use corresponding Catch.txt file
 
-#tmp<-read_tsv(str_c(pathData, "Catch_TrollingSeparated.txt"))
+if(trolling2==T){
+tmp<-read_tsv(str_c(pathData, "Catch_TrollingSeparated.txt"))
+colnames(tmp)<-c("river", "coast", "offs", "trolling")
+}else{
 tmp<-read_tsv(str_c(pathData, "Catch.txt"))
 colnames(tmp)<-c("river", "coast", "offs")
-
-fix<-0 # or 1
+}
 
 obs_r<-tmp[,1]%>%
-  mutate(Type="River", Year=Years[1:(length(Years)-fix)], obs_catch=river)%>%select(-river)
+  mutate(Type="River", Year=Years[1:length(Years)], obs_catch=river)%>%select(-river)
 obs_c<-tmp[,2]%>%
-  mutate(Type="Coast", Year=Years[1:(length(Years)-fix)], obs_catch=coast)%>%select(-coast)
+  mutate(Type="Coast", Year=Years[1:length(Years)], obs_catch=coast)%>%select(-coast)
 obs_o<-tmp[,3]%>%
-  mutate(Type="Offshore", Year=Years[1:(length(Years)-fix)], obs_catch=offs)%>%select(-offs)
+  mutate(Type="Offshore", Year=Years[1:length(Years)], obs_catch=offs)%>%select(-offs)
 
 obs<-full_join(obs_r,obs_c, by=NULL)
 obs<-full_join(obs,obs_o, by=NULL)
+if(trolling2==T){
+  obs_tr<-tmp[,4]%>%
+  mutate(Type="Trolling", Year=Years[1:length(Years)], obs_catch=trolling)%>%select(-trolling)
+  obs<-full_join(obs,obs_tr, by=NULL)
+}
 
-obs_t<-obs%>%group_by(Year)%>%
+# Total catch, including trolling if separated
+obs_tot<-obs%>%group_by(Year)%>%
   summarise(obs_catch=sum(obs_catch))%>%
   mutate(Type="Total")
 
-obs<-full_join(obs, obs_t, by=NULL)
+obs<-full_join(obs, obs_tot, by=NULL)
 
 # FullPLmisrep<-1
 # if(FullPLmisrep==1){
@@ -74,27 +82,35 @@ obs<-full_join(obs, obs_t, by=NULL)
 
 # Model 1:
 # =================
-
+  
   catch_tot<-array(NA, dim=c(length(chains1[,"ncr_ObsTotX[1]"][[1]]),length(Years)-0))
   dim(catch_tot)
   for(y in 1:length(YearsB)){
     catch_tot[,y]<-chains1[,str_c("ncr_ObsTotX[",y,"]")][[1]]+
       chains1[,str_c("ncc_ObsTotX[",y,"]")][[1]]+
-      chains1[,str_c("nco_ObsTotX[",y,"]")][[1]]
+      chains1[,str_c("nco_ObsTotX[",y,"]")][[1]]+
+      ifelse(trolling1==T,
+             chains[,str_c("nct_ObsTotX[",y,"]")][[1]],0)
+    
   }
   
   
-  dfr<-boxplot.jags.df(chains1, "ncr_ObsTotX[", 1:(length(YearsB)))%>%
+  dfr<-boxplot.jags.df(chains1, "ncr_ObsTotX[", 1:length(YearsB))%>%
     mutate(Type="River")
-  dfc<-boxplot.jags.df(chains1, "ncc_ObsTotX[", 1:(length(YearsB)))%>%
+  dfc<-boxplot.jags.df(chains1, "ncc_ObsTotX[", 1:length(YearsB))%>%
     mutate(Type="Coast")
-  dfo<-boxplot.jags.df(chains1, "nco_ObsTotX[", 1:(length(YearsB)))%>%
+  dfo<-boxplot.jags.df(chains1, "nco_ObsTotX[", 1:length(YearsB))%>%
     mutate(Type="Offshore")
-  dft<-boxplot.bugs.df(catch_tot, 1:(length(Years)-0))%>%
+  if(trolling1==T){
+    dftr<-boxplot.jags.df(chains, "nct_ObsTotX[", 1:length(YearsB))%>%
+      mutate(Type="Trolling")
+  }
+  dft<-boxplot.bugs.df(catch_tot, 1:length(YearsB))%>%
     mutate(Type="Total", x=y)%>%select(-y)
   
   df<-full_join(dfr,dfc,by=NULL)
   df<-full_join(df,dfo,by=NULL)
+  if(trolling1==T){df<-full_join(df,dftr,by=NULL)}
   df<-full_join(df,dft,by=NULL)
   
   df.1<-as.tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Type")))%>%
@@ -108,14 +124,17 @@ obs<-full_join(obs, obs_t, by=NULL)
 # =================
 
 #summary(chains[ ,regexpr("ncr_ObsTotX",varnames(chains))>0])
-
+#summary(chains[ ,regexpr("nct_ObsTotX",varnames(chains))>0])
+  
 
 catch_tot<-array(NA, dim=c(length(chains[,"ncr_ObsTotX[1]"][[1]]),length(Years)))
 dim(catch_tot)
 for(y in 1:(length(Years))){
-  catch_tot[,y]<-chains[,str_c("ncr_ObsTotX[",y,"]")][[1]]+
-    chains[,str_c("ncc_ObsTotX[",y,"]")][[1]]+
-    chains[,str_c("nco_ObsTotX[",y,"]")][[1]]
+    catch_tot[,y]<-chains[,str_c("ncr_ObsTotX[",y,"]")][[1]]+
+      chains[,str_c("ncc_ObsTotX[",y,"]")][[1]]+
+      chains[,str_c("nco_ObsTotX[",y,"]")][[1]]+
+      ifelse(trolling2==T,
+        chains[,str_c("nct_ObsTotX[",y,"]")][[1]],0)
 }
 
 
@@ -125,11 +144,16 @@ dfc<-boxplot.jags.df(chains, "ncc_ObsTotX[", 1:(length(Years)))%>%
   mutate(Type="Coast")
 dfo<-boxplot.jags.df(chains, "nco_ObsTotX[", 1:(length(Years)))%>%
   mutate(Type="Offshore")
-dft<-boxplot.bugs.df(catch_tot, 1:(length(Years)-0))%>%
+if(trolling2==T){
+  dftr<-boxplot.jags.df(chains, "nct_ObsTotX[", 1:(length(Years)))%>%
+  mutate(Type="Trolling")
+}
+dft<-boxplot.bugs.df(catch_tot, 1:length(Years))%>%
   mutate(Type="Total", x=y)%>%select(-y)
 
 df<-full_join(dfr,dfc,by=NULL)
 df<-full_join(df,dfo,by=NULL)
+if(trolling2==T){df<-full_join(df,dftr,by=NULL)}
 df<-full_join(df,dft,by=NULL)
 
 df.2<-as.tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Type")))%>%
@@ -153,13 +177,14 @@ df.1<-filter(df.1, Year>1991)
 df.2<-filter(df.2, Year>1991)
 
 for(i in 1:4){
-  #i<-2
+  #i<-3
   if(i==1){ df1<-filter(df.1, Type=="River");df2<-filter(df.2, Type=="River")}
   if(i==2){ df1<-filter(df.1, Type=="Coast");df2<-filter(df.2, Type=="Coast")}
   if(i==3){ df1<-filter(df.1, Type=="Offshore");df2<-filter(df.2, Type=="Offshore")}
   if(i==4){ df1<-filter(df.1, Type=="Total");df2<-filter(df.2, Type=="Total")}
   
-plot<-ggplot(df2, aes(Year, group=Year))+
+plot<-
+  ggplot(df2, aes(Year, group=Year))+
   theme_bw()+
   geom_boxplot(
     data=df1,
@@ -176,7 +201,7 @@ plot<-ggplot(df2, aes(Year, group=Year))+
   geom_point(data=df2,aes(Year,obs_catch), col="blue")+
   scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
   facet_grid(Type~.)
-
+  
 #print(plot)
 if(i==1){plot1<-plot}
 if(i==2){plot2<-plot}
@@ -189,3 +214,22 @@ if(i==4){plot4<-plot}
 #par(mfrow=c(3,1))
 grid.arrange(plot1, plot2, plot3, plot4, nrow=2, ncol=2)
 
+if(trolling2==T){
+df2<-filter(df.2, Type=="Trolling")
+ggplot(df2, aes(Year, group=Year))+
+  theme_bw()+
+  # geom_boxplot(
+  #   data=df1,
+  #   mapping= aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+  #   stat = "identity",
+  #   colour="grey", fill="grey95")+
+  geom_boxplot(
+    aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+    stat = "identity",fill=rgb(1,1,1,0.1))+
+  labs(x="Year", y="Catch (in thousands)", title="Offshore trolling")+
+  geom_line(aes(Year,q50))+
+  # geom_line(data=df1,aes(Year,q50),col="grey")+
+  # geom_point(data=df1,aes(Year,obs_catch), col="red")+
+  geom_point(data=df2,aes(Year,obs_catch), col="blue")+
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 5))
+}

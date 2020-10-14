@@ -44,10 +44,11 @@ df.2
 # Spawner count datasets
 # =================
 
-#2019 data:
-#counts1<-read_tsv(str_c(pathData,"spawner_counts.txt"),skip=7,col_names=T, na="NA")
-# 2020 data:
+if(pathData=="H:/Projects/WGBAST/FLHM/dat/data_2019/"){#2019 data:
+  counts1<-read_tsv(str_c(pathData,"spawner_counts.txt"),skip=7,col_names=T, na="NA")
+}else{
 counts1<-read_tsv(str_c(pathData,"spawner_counts.txt"),skip=8,col_names=T, na="NA")
+}
 
 colnames(counts1)<-Rivername
 counts1<-counts1%>%

@@ -21,12 +21,12 @@
 df1<-boxplot.jags.df(chains1, "K[", 1:nstocks)%>%
   mutate(par="K")
     
-df2<-boxplot.jags.df(chains1, paste0("z[",length(Years),","), 1:nstocks)%>%
+df2<-boxplot.jags.df(chains1, paste0("z[",length(YearsB),","), 1:nstocks)%>%
   mutate(par="z")
 
 df<-full_join(df1,df2)
     
-df5<-boxplot.jags.df(chains1, paste0("R0[",length(Years),","), 1:nstocks)%>%
+df5<-boxplot.jags.df(chains1, paste0("R0[",length(YearsB),","), 1:nstocks)%>%
   mutate(par="R0")
     
 

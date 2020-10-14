@@ -41,3 +41,4 @@ plot(run1, var="LW[20,2]")
 plot(run1, var="LW[26,2]")
 plot(run1, var="LW[28,2]")
 
+plot(run, var="tauL")
