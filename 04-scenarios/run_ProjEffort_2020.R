@@ -28,6 +28,7 @@ source("C:/Rprojects/WGBAST/04-scenarios/paths_scens.r") #Henni
 # ===============
 
 Model<-"2020"
+Model<-"2020_updated"
 
 #stocknames<-read.table(paste0(PathData,"rivernames.txt")) # proper names
 stock_indices<-c(1:17)
@@ -40,6 +41,7 @@ e_delay<-c(rep(4,times=13),3,3,4,3)
 
 #! Set the last year for historic part and the last year for predictions:
 LastHistYear<-2018
+LastHistYear<-2019
 LastPredYear<-2032
 
 #FUTURE PROJECTIONS BASED ON EFFORT SCENARIOS
@@ -67,7 +69,7 @@ Optim<-T # Turns on secant method optimisation. Initial values are not too criti
 set.seed(6789)
 
 #! Removal scenarios for the future
-EffScen<-8
+EffScen<-5
 
 # workflow for effort scenarios:
 # 1. Run scenario 5 and ScenarioTable.R for that scenario -> input total PFA to cell R4 in T4321_workflow.xlsx
@@ -165,6 +167,7 @@ Perform_Stats <- c(
   "Migr_Tornio","Migr_Simo","Migr_AU1W","Migr_AU13W",
   "Migr_AU1R","Migr_AU13R","Migr_AU13tot",
   "MorrumSeaCatch","MorrumRiverCatch",
+  "RiverCatchW","RiverCatchR",
   "PFAW", "PFAR",
   "WOLLCtot", "ROLLCtot",
   "WCTNCtot", "RCTNCtot"

@@ -543,6 +543,16 @@ while(apu==0){
         UmeSeaCatch[y,i]<-sum(CatchSeaW[,y,10,1,s], na.rm = T)
         MorrumRiverCatch[y,i]<-sum(WRF_Ctmp[,y,14,2,s], na.rm = T)
         MorrumSeaCatch[y,i]<-sum(CatchSeaW[,y,14,1,s], na.rm = T)
+        for(a in 1:6){
+          for(r in 1:Nstocks){
+            RiverCatchW[a,r,y,i]<-WRF_Ctmp[a,y,r,2,s]
+          }
+        }
+        for(a in 1:6){
+          for(u in 1:4){
+            RiverCatchR[a,u,y,i]<-RRF_Ctmp[a,y,u,2,s]
+          }
+        }
         
         # This calculates the number of smolts which survive from the post
         # smolt mortality phase...

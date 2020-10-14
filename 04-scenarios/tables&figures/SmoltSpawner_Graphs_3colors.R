@@ -68,6 +68,29 @@ File[1]<-paste0(PathScen,"ScenProj_",Model,"_EScen5.RData")
 
 colX<-c("blue","red", "black")
 
+
+Smolts<-Spawners<-array(NA, dim=c(Nyears,3,Nstocks,3))
+for(f in 1:3){
+  load(File[f]); print(File[f])
+  
+  for(r in 1:17){
+    Smolts[,1,r,f]<-stats(SmoltW[r,,])[,1]
+    Smolts[,2,r,f]<-stats(SmoltW[r,,])[,2]
+    Smolts[,3,r,f]<-stats(SmoltW[r,,])[,3]
+  
+    Spawners[,1,r,f]<-stats(SpawnerW[r,,])[,1]
+    Spawners[,2,r,f]<-stats(SpawnerW[r,,])[,2]
+    Spawners[,3,r,f]<-stats(SpawnerW[r,,])[,3]
+    
+  }
+}
+
+save(Smolts, file=paste0(PathScen, "Smolts.RData"))
+save(Spawners, file=paste0(PathScen, "Spawners.RData"))
+
+File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")
+save(list = Perform_Stats, file = File)
+
 #tiff(paste0(PathScen,"F4328_fig2_of_4.tiff"),  width=1600, height=2000, res=200) 
 #windows(record=T)
 

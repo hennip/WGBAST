@@ -33,6 +33,8 @@ MaturationR<-array(NA, dim = c(6,years[3],1000))
 temp2W<-iniAgeQuantW
 temp2R<-iniAgeQuantR
 
+RiverCatchR<-array(NA, dim=c(6,4,yBreak+NumFutYears, 1000))
+RiverCatchW<-array(NA, dim=c(6,Nstocks,yBreak+NumFutYears, 1000))
 UmeRiverCatch<-array(NA, dim=c((yBreak+NumFutYears), 1000))
 UmeCoastCatch<-array(NA, dim=c((yBreak+NumFutYears), 1000))
 UmeSeaCatch<-array(NA, dim=c((yBreak+NumFutYears), 1000))

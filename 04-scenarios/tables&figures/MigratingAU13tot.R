@@ -6,41 +6,57 @@
 
 rm(list=ls(all=TRUE))
 library(coda)
-library(xlsx)
+#library(xlsx)
+library(writexl)
 
-PathScen<-"H:/FLR/WGBAST18/Scenarios/" # scenario results 
-PathOut<-"H:/Biom/Scenarios/2018/prg/" # output
+source("C:/Rprojects/WGBAST/04-scenarios/paths_scens.r") #Henni
+
+#PathScen<-"H:/FLR/WGBAST18/Scenarios/" # scenario results 
+#PathOut<-"H:/Biom/Scenarios/2018/prg/" # output
 
 
 
 ################################################################################
 #! #############################################################################
 # Version of the estimation model
-Model<-"New_SR"
+Model<-"2020_updated"
 
 # Time
-LastHistYear<-2017
+LastHistYear<-2019
 LastPredYear<-2032
 year<-c(1992:LastPredYear)
 length(year)
 Nyears<-length(year)
-Nstocks<-16
+Nstocks<-17
 
 
 # Scenarios
-#! Mps
-choice<-"MED"  
-
 #! Effort 
-EffScen<-1
+EffScen<-5
 
 #Load the file containing stats
-File<-paste0(PathScen,"ScenProj_",Model,"_Mps",choice,"_EScen",EffScen,".RData")
+File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")
 
 File
 load(File)
+
 #! #############################################################################
 ################################################################################
+
+#Number of migrating per wild river
+# 
+# dim(MigrW)
+# 
+# for(i in 1:Nyears){
+#   tmp<-summary(sum(MigrW[2:6,y,r,,]), quantiles=c(0.05,0.5,0.95))
+# }  
+# #Number of migrating per reared AU
+# 
+# dim(MigrR)
+# 
+
+##############
+
 
 dim(Migr_AU13tot)
 
@@ -56,8 +72,8 @@ for(i in 1:Nyears){
   q95[i]<-tmp$quantiles[3]
 }
 
-res<-cbind(year,mu, sd, q5, q50, q95)
-write.xlsx(res,paste0(PathOut,"migratingAU13.xlsx"))
+res<-as.data.frame(cbind(year,mu, sd, q5, q50, q95))
+  write_xlsx(res,path=paste0(PathOut,"migratingAU13.xlsx"))
 
 # Reared grilse proportions, AU 1-3
 
