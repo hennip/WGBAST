@@ -32,7 +32,7 @@ Nstocks<-17
 
 # Scenarios
 #! Effort 
-EffScen<-5
+EffScen<-1
 
 #Load the file containing stats
 File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")
@@ -107,39 +107,80 @@ write_xlsx(dfW,path=paste0(PathScen,"AscRiverWild.xlsx"))
 
 # Valituloksia Atsolle:
 
-dim(SmoltW)
-dim(SmoltW[1,,])
-stats(SmoltW[1,,])[,1:2]
-
-
-dim(May1stW)
-dim(MigrW)
-migrW<-may1stW<-array(NA, dim=c(6, Nstocks,Nyears,1000))
-for(r in 1:Nstocks){
-  for(y in 1:Nyears){
-    for(s in 1:1000){
-      for(a in 1:6){
-    migrW[a,r,y,s]<-MigrW[a,y,r,1,s] # second last index has 2 slots but only the first contains stuff     
-    may1stW[a,r,y,s]<-May1stW[a,y,r,1,s]  # second last index has 2 slots but only the first contains stuff     
-      }}}}        
-
-May1stW[2,,1,1,1:2] 
-
-tmp<-cbind(stats(may1stW[2,1,2:Nyears,])[,2],stats(may1stW[3,1,2:Nyears,])[,2],stats(may1stW[4,1,2:Nyears,])[,2],
-           stats(may1stW[5,1,2:Nyears,])[,2],stats(may1stW[6,1,2:Nyears,])[,2])
-tmp2<-cbind(c((year[1]+1):year[length(year)]),tmp)
-colnames(tmp2)<-c("year",2:6)
-migrTorne<-tmp2
-
-tmp<-cbind(stats(migrW[2,1,2:Nyears,])[,2],stats(migrW[3,1,2:Nyears,])[,2],stats(migrW[4,1,2:Nyears,])[,2],
-       stats(migrW[5,1,2:Nyears,])[,2],stats(migrW[6,1,2:Nyears,])[,2])
-tmp2<-cbind(c((year[1]+1):year[length(year)]),tmp)
-colnames(tmp2)<-c("year",2:6)
-may1stTorne<-tmp2
-
-dim(spW_age)
-
-
-stats(SpawnerW[1,,])[,1:2]
-
+# Number of smolts
+stock<-1
+for(stock in 1:2){
+  dim(SmoltW)
+  dim(SmoltW[stock,,])
+  smolts<-cbind(c(year[1]:year[length(year)]),stats(SmoltW[stock,,])[,1])
+  
+  
+  dim(May1stW)
+  dim(MigrW)
+  migrW<-may1stW<-array(NA, dim=c(6, Nstocks,Nyears,1000))
+  for(r in 1:Nstocks){
+    for(y in 1:Nyears){
+      for(s in 1:1000){
+        for(a in 1:6){
+      migrW[a,r,y,s]<-MigrW[a,y,r,1,s] # second last index has 2 slots but only the first contains stuff     
+      may1stW[a,r,y,s]<-May1stW[a,y,r,1,s]  # second last index has 2 slots but only the first contains stuff     
+        }}}}        
+  
+  May1stW[2,,1,1,1:2] 
+  
+  tmp<-cbind(stats(may1stW[2,stock,2:Nyears,])[,1],stats(may1stW[3,stock,2:Nyears,])[,1],stats(may1stW[4,stock,2:Nyears,])[,1],
+             stats(may1stW[5,stock,2:Nyears,])[,1],stats(may1stW[6,stock,2:Nyears,])[,1])
+  tmp2<-cbind(c((year[1]+1):year[length(year)]),tmp)
+  colnames(tmp2)<-c("year",2:6)
+  may1st<-tmp2
+  
+  tmp<-cbind(stats(migrW[2,stock,2:Nyears,])[,1],stats(migrW[3,stock,2:Nyears,])[,1],stats(migrW[4,stock,2:Nyears,])[,1],
+         stats(migrW[5,stock,2:Nyears,])[,1],stats(migrW[6,stock,2:Nyears,])[,1])
+  tmp2<-cbind(c((year[1]+1):year[length(year)]),tmp)
+  colnames(tmp2)<-c("year",2:6)
+  migr<-tmp2
+  
+  dim(WCTNCtot)
+  dim(WCTNCtot[2,,stock,])
+  tmp<-cbind(stats(WCTNCtot[2,,stock,])[,1],stats(WCTNCtot[3,,stock,])[,1],stats(WCTNCtot[4,,stock,])[,1],
+  stats(WCTNCtot[5,,stock,])[,1],stats(WCTNCtot[6,,stock,])[,1])
+  tmp2<-cbind(c(year[1]:year[length(year)]),tmp)
+  colnames(tmp2)<-c("year",2:6)
+  CC<-tmp2
+  
+  tmp<-cbind(stats(ascW[2,stock,,])[,1],stats(ascW[3,stock,,])[,1],stats(ascW[4,stock,,])[,1],
+        stats(ascW[5,stock,,])[,1],stats(ascW[6,stock,,])[,1])
+  tmp2<-cbind(c(year[1]:year[length(year)]),tmp)
+  colnames(tmp2)<-c("year",2:6)
+  asc<-tmp2
+  
+  dim(spW_age)
+  
+  tmp<-cbind(stats(spW_age[stock,,2,])[,1],stats(spW_age[stock,,3,])[,1],stats(spW_age[stock,,4,])[,1],
+  stats(spW_age[stock,,5,])[,1],stats(spW_age[stock,,6,])[,1])
+  tmp2<-cbind(c(year[1]:year[length(year)]),tmp)
+  colnames(tmp2)<-c("year",2:6)
+  spw<-tmp2
+  
+  stats(SpawnerW[stock,,])[,1:2]
+  
+  smolts
+  may1st
+  migr
+  CC
+  asc
+  spw
+  
+  
+  tbl<-as.data.frame(cbind(
+  smolts,
+  rbind(rep(NA,6),may1st),
+  rbind(rep(NA,6),migr),
+  CC,
+  asc,
+  spw
+  ))
+  if(stock==1){write_xlsx(tbl,path=paste0(PathScen,"Snapshots_medians_Torne.xlsx"))}
+  if(stock==2){write_xlsx(tbl,path=paste0(PathScen,"Snapshots_medians_Simo.xlsx"))}
+}
 

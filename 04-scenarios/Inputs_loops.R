@@ -165,7 +165,7 @@ for(loop in 1:10){
   
   
   #Input wild smolts
-  for(y in 1:(yBreak+3)){  #yBreak+3 =29 =2020
+  for(y in 1:(yBreak+3)){  #yBreak+3 =28+3=31 =2022
     for(s in 1:length(stock_indices)){   
       # Add five years because the MCMC files start from 1992 but 
       # the WGBAST model starts from 1987

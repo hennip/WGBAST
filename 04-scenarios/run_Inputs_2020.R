@@ -21,15 +21,14 @@ library(runjags)
 source("C:/Rprojects/WGBAST/04-scenarios/paths_scens.r")
 
 #Give a model name
-#Model<-"2019_LR_EPR"
-Model<-"2020"
-Model<-"2020_updated"
+#Model<-"2020" # Assessment model version, hist model from 2019 assessment
+Model<-"2020_updated" # Assessment model version, updated with 2019 data
 
 select_case<-2 #new SR parameterisation 
 
 # Fetch JAGS model
-load(file=paste0(PathSim,"FLHM_results_2019_extended2019-04-11.RData"))
-load(file=paste0(PathSim,"FLHM_2020.RData")); chains<-as.mcmc.list(run)
+if(Model=="2020"){load(file=paste0(PathSim,"FLHM_results_2019_extended2019-04-11.RData"))}
+if(Model=="2020_updated"){load(file=paste0(PathSim,"FLHM_2020.RData")); chains<-as.mcmc.list(run)}
 
 d<-as.matrix(chains)
 
@@ -44,7 +43,7 @@ set.seed(12345) #set the random number seed
 ################################################################################
 
 # Set the last year for historic part and the last year for predictions:
-LastHistYear<-2018 # This remains 2018 in 2020 assessment since simulation model is not updated    
+#LastHistYear<-2018 # This remains 2018 in 2020 assessment since simulation model is not updated    
 LastHistYear<-2019
 LastPredYear<-2032
 ymax<-32  #last year for JAGS model inputs
@@ -87,7 +86,7 @@ sigma2_m74<-0.9
 #updated 3/4/2020
 mean_Temp1<-5.078; sd_Temp1<-0.1268 #2019
 mean_Temp2<-6.869; sd_Temp2<-0.2357 #2020
-mean_Temp3<-4.243; sd_Temp3<-1.223 #2020
+mean_Temp3<-4.243; sd_Temp3<-1.223 #2021->
 
 # Adjust units 5 and 6
 # =====================
