@@ -115,7 +115,7 @@ for(i in 1:length(Years)){
 #i<-1
 #a<-4
         gd<-gelman.diag(chains[,str_c("LW[",i,",",a,"]")])
-    if(gd$psrf[2]>2){
+    if(gd$psrf[2]>1.5){
       #print(c(a,i, gd$psrf))
       traceplot(chains[,str_c("LW[",i,",",a,"]")], main=str_c("LW age=",a," ",df.2$Year[i]))
     }
@@ -128,7 +128,7 @@ for(i in 1:length(Years)){
     #i<-1
     #a<-4
     gd<-gelman.diag(chains[,str_c("LR[",i,",",a,"]")])
-    if(gd$psrf[2]>2){
+    if(gd$psrf[2]>1.5){
       #print(c(a,i, gd$psrf))
       traceplot(chains[,str_c("LR[",i,",",a,"]")], main=str_c("LR age=",a," ",df.2$Year[i]))
     }

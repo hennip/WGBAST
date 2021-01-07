@@ -266,8 +266,14 @@ while(apu==0){
       
       # The number of migrating fish by age on 1 July after the coastal trapnet
       # fishery is given by (all ages have 1 month seal M during June)
+      
+      
+      
       for(a in 1:6){
         for(r in 1:Nstocks){
+          
+          coast_MW[a,y,r,((1+(loop-1)*100):(loop*100))]<-exp(-(WsalmNatMort[a,y,r,2,]*F_seal[y,a,AU[r]]*(1/12)))*
+            exp(-(WsalmNatMort[a,y,r,2,]*(1/12)))
           #a<-2;r<-1
           WCTN_Ctmp[a,y,r,2,]<- WsalmStock[a,y,r,2,]*exp(-(WsalmNatMort[a,y,r,2,]*F_seal[y,a,AU[r]]*(1/12)))*
             exp(-(WsalmNatMort[a,y,r,2,]*(1/12)))*WCTN_HRtmp[a,y,r,2,]
@@ -283,8 +289,8 @@ while(apu==0){
         }  
       }
       
-   #   ascW[,,,((1+(loop-1)*100):(loop*100))]<-WsalmStock[,,,2,]
-   #   ascR[,,,((1+(loop-1)*100):(loop*100))]<-RsalmStock[,,,2,]
+      ascW[,,,((1+(loop-1)*100):(loop*100))]<-WsalmStock[,,,2,]
+      ascR[,,,((1+(loop-1)*100):(loop*100))]<-RsalmStock[,,,2,]
       
         # On October 1st the number of migrating fish caught by the river fishery is given by 
         # (WsalmStock below same as NspW in JAGS model) 

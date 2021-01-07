@@ -3,9 +3,10 @@ library(coda)
 library(xlsx)
 
 
-load(file="C:/output/wgbast/flhm/FLHM_results_2019_extended2019-04-11.RData"); modelname<-"FLHM_2019_extended"
+#load(file="C:/output/wgbast/flhm/FLHM_results_2019_extended2019-04-11.RData"); modelname<-"FLHM_2019_extended"
 #load(file="C:/output/wgbast/flhm/FLHM_2019_trolling_LL_DN.RData"); modelname<-"FLHM_2019_trolling_LL_DN"
 #load(file="C:/output/wgbast/flhm/FLHM_2020.RData"); modelname<-"FLHM_2020"
+load(file="C:/output/wgbast/flhm/FLHM_2020XY2_test_data2020.RData"); modelname<-"FLHM_2020_test"#trolling2<-T;Mname2<-"2020 data, AR models for offshore fisheries, estimate marginal variances, test struct LW"
 
 chains<-as.mcmc.list(run)
 

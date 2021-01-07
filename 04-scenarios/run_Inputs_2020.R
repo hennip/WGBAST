@@ -45,7 +45,7 @@ set.seed(12345) #set the random number seed
 # Set the last year for historic part and the last year for predictions:
 #LastHistYear<-2018 # This remains 2018 in 2020 assessment since simulation model is not updated    
 LastHistYear<-2019
-LastPredYear<-2032
+LastPredYear<-2099
 ymax<-32  #last year for JAGS model inputs
 
 #HistYears indicate the historic part of the model.

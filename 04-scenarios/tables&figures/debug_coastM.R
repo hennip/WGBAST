@@ -1,28 +1,5 @@
 # This file correspond to ProjEffort_2019_LR_EPR.r
 
-
-# Function used in the optimisation. Suggests a new value based on two previous values
-
-nextpoint=function(x1,x2,y1,y2,target){
-  b=(y2-y1)/(x2-x1)
-  a=y1-b*x1
-  return((target-a)/b)
-}
-
-
-
-# while loop is for finding the effort that creates target removal
-
-
-
-
-
-
-
-apu<-0
-iter<-0
-while(apu==0){
-  iter<-iter+1
   CoefRiverF<-1
   
   Coef<-Coef1*Coef2
@@ -61,16 +38,16 @@ while(apu==0){
   
   
   # =============================================================
-
+  
   
   ###############################
   ## Load Inputs-files
   ###############################
   
   # save the data for each of the pieces of the MCMC chain
-  for(loop in 1:10){
-# loop<-1    
-    BH_dataFile<-paste0(PathScen, "ScenHist_JAGSmodel", Model,"_",loop,".RData") 
+# for(loop in 1:1){
+    loop<-1    
+    BH_dataFile<-paste0(PathScen, "ScenHist_JAGSmodel", Model,"_",loop,"_long.RData") 
     load(BH_dataFile)
     
     # Target for history
@@ -87,10 +64,12 @@ while(apu==0){
     # ~*~*~*~*~*~*~*~*~~*~*~*~*~*~*~*~*~~*~*~*~*~*~*~*~*~~*~*~*~*~*~*~*~*~~*~*~*~*
     
     #yBreak corresponds to the last historical year 
-    for(y in (yBreak+1):(yBreak+NumFutYears)){
-     #for(y in (yBreak+1):(yBreak+1)){
-        #y<-yBreak+2
-      
+    #for(y in (yBreak+1):(yBreak+NumFutYears)){
+    #  for(y in (yBreak+1):(yBreak+1)){
+      yx<-y<-yBreak+2
+print("-----------------------")
+      print("y")
+      print(y)
       #y<-yBreak+NumFutYears
       #River harvest assume the same as last historic year
       # CoefRiverF will be 0 in no fishing scenario, otherwise 1
@@ -271,26 +250,24 @@ while(apu==0){
           #a<-2;r<-1
           WCTN_Ctmp[a,y,r,2,]<- WsalmStock[a,y,r,2,]*exp(-(WsalmNatMort[a,y,r,2,]*F_seal[y,a,AU[r]]*(1/12)))*
             exp(-(WsalmNatMort[a,y,r,2,]*(1/12)))*WCTN_HRtmp[a,y,r,2,]
+      
+          
           WsalmStock[a,y,r,2,]<-WsalmStock[a,y,r,2,]*exp(-(WsalmNatMort[a,y,r,2,]*F_seal[y,a,AU[r]]*(1/12)))*
             exp(-(WsalmNatMort[a,y,r,2,]*(1/12)))-WCTN_Ctmp[a,y,r,2,]
         }
         # 2/12: May, June
+        
         for(u in 1:4){
           RCTN_Ctmp[a,y,u,2,]<-RsalmStock[a,y,u,2,]*exp(-(RsalmNatMort[a,y,u,2,]*F_seal[y,a,u]*(1/12)))*
             exp(-(RsalmNatMort[a,y,u,2,]*(1/12)))*RCTN_HRtmp[a,y,u,2,]
           RsalmStock[a,y,u,2,]<-RsalmStock[a,y,u,2,]*exp(-(RsalmNatMort[a,y,u,2,]*F_seal[y,a,u]*(1/12)))*
             exp(-(RsalmNatMort[a,y,u,2,]*(1/12)))-RCTN_Ctmp[a,y,u,2,]
         }  
-      }
-      
-   #   ascW[,,,((1+(loop-1)*100):(loop*100))]<-WsalmStock[,,,2,]
-   #   ascR[,,,((1+(loop-1)*100):(loop*100))]<-RsalmStock[,,,2,]
-      
+        
         # On October 1st the number of migrating fish caught by the river fishery is given by 
         # (WsalmStock below same as NspW in JAGS model) 
         #F_seal for post-smolt (a=1) is 1
-        for(a in 1:6){
-          for(r in 1:Nstocks){
+        for(r in 1:Nstocks){
           WRF_Ctmp[a,y,r,2,]<-WsalmStock[a,y,r,2,]*exp(-(WsalmNatMort[a,y,r,2,]*F_seal[y,a,AU[r]]*(1/12)))*p.ladder[a,y,r,]*WRF_HRtmp[a,y,r,2,]
           
           WsalmStock[a,y,r,2,]<-((WsalmStock[a,y,r,2,]*exp(-(WsalmNatMort[a,y,r,2,]*F_seal[y,a,AU[r]]*(1/12))))*p.ladder[a,y,r,]-WRF_Ctmp[a,y,r,2,])*exp(-(WsalmNatMort[a,y,r,2,]*(2/12)))*surv_migr[a,y,r,]
@@ -304,6 +281,15 @@ while(apu==0){
                                    RRF_Ctmp[a,y,u,2,])*exp(-(RsalmNatMort[a,y,u,2,]*(2/12)))
         }
       }
+      # print("WCTN_Ctmp[,y,1,2,]")
+      # print(WCTN_Ctmp[,y,1,2,])
+      # print("WRF_Ctmp[,y,1,2,]")
+      # print( WRF_Ctmp[,y,1,2,])
+      # 
+      print("xxxxxxxxxx")
+      WCTN_CtmpX  <-  sum(WCTN_Ctmp[1:6,y,1,2,1],na.rm=T )
+      WRF_CtmpX<-sum( WRF_Ctmp[1:6,y,1,2,1], na.rm = T)
+      wsalmX<-sum(WsalmStock[1:6,y,r,2,1], na.rm=T)
       
       # 1/12: July
       # 2/12: August, September
@@ -358,7 +344,9 @@ while(apu==0){
         May1stW[a,y,,1,]<-tempW[a,y,,1,]
         May1stR[a,y,,1,]<-tempR[a,y,,1,]
         MigrW[a,y,,1,]<-temp2W[a,y,,2,]
-        MigrR[a,y,,1,]<-temp2R[a,y,,2,] 
+        MigrR[a,y,,1,]<-temp2R[a,y,,2,]
+        
+        
         
         #this used to be in an a in 2:6 loop but seems to be an error as a indexing was missing
         #WOLL_HR is 0 for smolts
@@ -372,6 +360,8 @@ while(apu==0){
         WsalmStock[a,y,,1,]<-WsalmStock[a,y,,1,]*exp(-(WsalmNatMort[a,y,,1,]*(9/12)))-WOLL_Ctmp[a,y,,1,]
         RsalmStock[a,y,,1,]<-RsalmStock[a,y,,1,]*exp(-(RsalmNatMort[a,y,,1,]*(9/12)))-ROLL_Ctmp[a,y,,1,]
       }
+      #print(MigrW[,y,1,1,])
+      MigrWX<-sum(MigrW[2:6,y,1,1,1], na.rm=T)
       
       # The number of fish at sea by age on May 1st in the next year. It is
       # assumed that the post-smolt mortality affects post-smolts for 1
@@ -484,7 +474,8 @@ while(apu==0){
     CatchSeaR<-ROLL_Ctmp+RODN_Ctmp
     
     
-    for(s in 1:sims[3]){
+   # for(s in 1:sims[3]){
+      for(s in 1:1){
       #s<-1 
       i<-sims[1]-1+s
       
@@ -558,6 +549,11 @@ while(apu==0){
             RiverCatchW[a,r,y,i]<-WRF_Ctmp[a,y,r,2,s]
           }
         }
+#        print("rrrrrrrrrrrrrrrrrr")
+        RiverCatchWX<-sum(RiverCatchW[1:6,1,yx,1], na.rm = T)
+        
+        
+        
         for(a in 1:6){
           for(u in 1:4){
             RiverCatchR[a,u,y,i]<-RRF_Ctmp[a,y,u,2,s]
@@ -586,11 +582,15 @@ while(apu==0){
           
           for(a in 1:6){
             spW_age[r,y,a,i]<-WsalmStock[a,y,r,2,s]
+            
             W_age[r,y,a,i]<-WsalmStock[a,y,r,1,s]
           }
           
           Etot[y,r,i]<-Etot_tmp[y,r,s]
         }
+        
+    #    print("ssssssssssssssssssssss")
+        spW_ageX<-sum(spW_age[1,yx,1:6,1], na.rm=T)
         
         # Reared salmon by assessment units
         for(u in 1:4){
@@ -655,138 +655,4 @@ while(apu==0){
       }
     }
     
-    if(loop==1){
-      BH_beta_all=BH_beta
-      BH_alpha_all=BH_alpha
-    }
-    if(loop>1){
-      BH_beta_all=rbind(BH_beta_all,BH_beta)
-      BH_alpha_all=rbind(BH_alpha_all,BH_alpha)
-    }
     
-  } # end loop of 10 pieces !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  
-  
-  # =============================================================
-  # Check if total removal is what we wanted:
-  
-  year<-c(1992:LastPredYear)
-  length(year)
-  Nyears<-length(year)
-  
-  stats<-function(dat,v){
-    sumDat<-summary(as.mcmc(dat[v,]))
-    
-    med<-sumDat$quantiles[3]
-    high<-sumDat$quantiles[5]
-    low<-sumDat$quantiles[1]
-    
-    return(rbind(med, low, high))
-  }
-  
-  
-  C_OLL<-array(NA, c(Nyears,1000))
-  C_CTN<-array(NA, c(Nyears,1000))
-  CalC_tot<-array(NA, c(Nyears,1000))
-  for(i in 1:1000){
-    for(y in 1:Nyears){
-      C_OLL[y,i]<-sum(WOLLCtot[2:6,y,1:Nstocks,i])+sum(ROLLCtot[2:6,y,1:4,i])
-      C_CTN[y,i]<-sum(WCTNCtot[2:6,y,1:Nstocks,i])+sum(RCTNCtot[2:6,y,1:4,i])
-      if(y>1){
-        #COASTAL FISHING IS IN CALENDAR /ADVICE YEAR BUT LONGLINE IS IN THE PREVIOUS ONE
-        CalC_tot[y,i]<-C_OLL[y-1,i]+C_CTN[y,i]
-      }
-    }
-  }
-  
-  # calendar year 2020 is year 29 for trapnetting and 
-  # year 28 for offshore fisheries
-  #if(EffScen<6 || EffScen>6){
-  #  print("Coef2")
-  #  print(Coef2)
-  #}
-  #if(EffScen==6){
-  #  print("CoefTrollingF")
-  #  print(CoefTrollingF)
-  #}
-  #print("Total sea catch")
-  #print(stats(CalC_tot, yCTN)[1]) 
-  #print(target) #Total target
-  #print("***")
-  #if(EffScen<6 || EffScen>6){
-  #  print("Trolling catch")
-  #  print(stats(C_OLL, yOLL)[1]*propTrolling)
-  #  print(targetTr) # Trolling target
-  #}
-  #print("--------")
-  #if(EffScen<6 || EffScen>6){
-  #  ifelse(abs(round((stats(CalC_tot, yCTN)[1])-target,1))<0.2,
-  #         apu<-1,Coef2<-Coef2+0.003)
-  #}
-  #if(EffScen==6){
-  #  ifelse(abs(round((stats(CalC_tot, yCTN)[1])-target,1))<0.2,
-  #         apu<-1,CoefTrollingF<-CoefTrollingF+0.003)
-  #}
-  
-  ########################################################################
-  if(EffScen<6 || EffScen>6){
-    print("Coef2")
-    print(Coef2)
-  }
-  if(EffScen==2 || EffScen==6){
-    print("CoefTrollingF")
-    print(CoefTrollingF)
-  }
-  print("Total sea catch")
-  print(stats(CalC_tot, yCTN)[1]) 
-  print(target) #Total target
-  print("***")
-  if(EffScen<6 || EffScen>6){
-    print("Trolling catch")
-   # print(stats(C_OLL, yOLL)[1]*propTrolling)
-    print(targetTr) # Trolling target
-  }
-  print("--------")
-  if(EffScen<6 || EffScen>6){
-    ifelse(abs(round((stats(CalC_tot, yCTN)[1])-target,1))<0.2,
-           apu<-1,apu<-0)
-    if(iter==1 && Optim==T)
-    { 
-      E1=Coef2
-      C1=(stats(CalC_tot, yCTN)[1])
-      Coef2=Coef2+0.1
-      print(paste0("Optimizer step 1: E1=",E1," C1=",C1))
-    }
-    if(iter==2 && Optim==T)
-    { 
-      E2=Coef2
-      C2=(stats(CalC_tot, yCTN)[1])
-      Coef2=nextpoint(E1,E2,C1,C2,target)
-      print(paste0("Optimizer step ",iter,": E2=",E2," C2=",C2))
-      print(paste0("Suggesting Coef2=",Coef2))
-    }
-    if(iter>2 && Optim==T && apu==0)
-    { 
-      C1=C2
-      C2=(stats(CalC_tot, yCTN)[1])
-      E1=E2
-      E2=Coef2
-      Coef2=nextpoint(E1,E2,C1,C2,target)
-      print(paste0("Optimizer step ",iter,": E2=",E2," C2=",C2))
-      print(paste0("Suggesting Coef2=",Coef2))
-    }
-    if(iter>2 && Optim==T && apu==0 && Coef2>MaxCoef)
-    { 
-      apu<-1
-      print(paste0("Maximum Coef2 reached! : ",Coef2))
-    }
-  }
-  if(EffScen==6){
-    ifelse(abs(round((stats(CalC_tot, yCTN)[1])-target,1))<0.2,
-           apu<-1,CoefTrollingF<-CoefTrollingF+0.003)
-  }
-  
-  
-  
-  
-} # end while loop !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

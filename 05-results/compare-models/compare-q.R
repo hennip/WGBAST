@@ -35,10 +35,9 @@ df.ql.2<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Type
   select(Age, Type, everything())%>%
   mutate(Year=Year+1986)%>%
   mutate(Age=fct_recode(factor(Age),
-                        "PS"= "1",
-                        "1SW"= "2",
-                        "2SW"= "3",
-                        "3SW"= "4"))
+                        "1SW"= "1",
+                        "2SW"= "2",
+                        "3SW"= "3"))
 df.ql.2
 
 
@@ -60,12 +59,12 @@ df.qd.2<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Type
   select(Age, Type, everything())%>%
   mutate(Year=Year+1986)%>%
   mutate(Age=fct_recode(factor(Age),
-                        "PS"= "1",
-                        "1SW"= "2",
-                        "2SW"= "3",
-                        "3SW"= "4",
-                        "4SW"= "5",
-                        "5SW"= "6"))
+                        "1SW"= "1",
+                        "2SW"= "2",
+                        "3SW"= "3",
+                        "4SW"= "4",
+                        "5SW"= "5",
+                        "6SW"="6"))
 df.qd.2
 
 
@@ -75,7 +74,7 @@ df.qd.2
 ## ---- graphs-q
 
 # Wild ql
-df2<-filter(df.ql.2, Type=="Wild")
+df2<-filter(df.ql.2, Type=="Wild", Age!=4)
 
 ggplot(df2, aes(Year, group=Year))+
   theme_bw()+
@@ -94,7 +93,7 @@ ggplot(df2, aes(Year, group=Year))+
   facet_wrap(~Age)#, scales="free")
 
 # reared ql
-df2<-filter(df.ql.2, Type=="Reared")
+df2<-filter(df.ql.2, Type=="Reared", Age!=4)
 
 ggplot(df2, aes(Year, group=Year))+
   theme_bw()+
@@ -115,7 +114,7 @@ ggplot(df2, aes(Year, group=Year))+
 
 
 # Wild qd
-df2<-filter(df.qd.2, Type=="Wild")
+df2<-filter(df.qd.2, Type=="Wild", Age=="1SW"| Age=="2SW"| Age=="3SW"| Age=="4SW")
 
 ggplot(df2, aes(Year, group=Year))+
   theme_bw()+
@@ -134,7 +133,7 @@ ggplot(df2, aes(Year, group=Year))+
   facet_wrap(~Age)#, scales = "free")
 
 # Reared qd
-df2<-filter(df.qd.2, Type=="Reared")
+df2<-filter(df.qd.2, Type=="Reared", Age=="1SW"| Age=="2SW"| Age=="3SW"| Age=="4SW")
 
 ggplot(df2, aes(Year, group=Year))+
   theme_bw()+
@@ -152,28 +151,24 @@ ggplot(df2, aes(Year, group=Year))+
   scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
   facet_wrap(~Age)#, scales = "free")
 
-# qd
-df2<-filter(df.qd.2, Age!="PS")
 
-ggplot(df2, aes(Year, group=Year))+
-  theme_bw()+
-  geom_boxplot(
-    aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
-    stat = "identity",fill=rgb(1,1,1,0.6))+
-  labs(x="Year", y="Proportion per age group", title="Catchability, driftnet, reared")+
-  geom_line(aes(Year,q50))+
-  scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
-  facet_grid(Type~Age)
+## ---- graphs-q-traces
 
-# ql
-df2<-filter(df.ql.2, Age!="PS")
+par(mfrow=c(2,2))
+traceplot(chains[,"sd_qd"], main="sd_qd")
+traceplot(chains[,"phi_qd"], main="phi_qd")
+traceplot(chains[,"mean_qdW[2]"], main="mean_qdW[2]")
+traceplot(chains[,"mean_qdW[3]"], main="mean_qdW[3]")
 
-ggplot(df2, aes(Year, group=Year))+
-  theme_bw()+
-  geom_boxplot(
-    aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
-    stat = "identity",fill=rgb(1,1,1,0.6))+
-  labs(x="Year", y="Proportion per age group", title="Catchability, longline, reared")+
-  geom_line(aes(Year,q50))+
-  scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
-  facet_grid(Type~Age)
+par(mfrow=c(2,2))
+traceplot(chains[,"sd_ql"], main="sd_ql")
+traceplot(chains[,"phi_ql"], main="phi_ql")
+traceplot(chains[,"mean_qlW"], main="mean_qlW")
+
+par(mfrow=c(2,2))
+traceplot(chains[,"sd_tr"], main="sd_tr")
+traceplot(chains[,"phi_tr"], main="phi_tr")
+traceplot(chains[,"mean_trW"], main="mean_trW")
+
+
+

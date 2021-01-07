@@ -1,14 +1,15 @@
 #source("05-results/compare-models/models-select.R")
 
+nsample<-length(chains[,1][[1]])
 
 
 # from cohort+age to calendar years
-hrW<-array(NA, dim=c(2,length(Years)-2, 1000))
-hrR<-array(NA, dim=c(2,length(Years)-2, 1000))
-hcW.au1<-array(NA, dim=c(2,length(Years)-2, 1000))
-hcR.au1<-array(NA, dim=c(2,length(Years)-2, 1000))
-hdcW<-array(NA, dim=c(2,length(Years)-2, 1000))
-hdcR<-array(NA, dim=c(2,length(Years)-2, 1000))
+hrW<-array(NA, dim=c(2,length(Years)-2, nsample))
+hrR<-array(NA, dim=c(2,length(Years)-2, nsample))
+hcW.au1<-array(NA, dim=c(2,length(Years)-2, nsample))
+hcR.au1<-array(NA, dim=c(2,length(Years)-2, nsample))
+hdcW<-array(NA, dim=c(2,length(Years)-2, nsample))
+hdcR<-array(NA, dim=c(2,length(Years)-2, nsample))
 for(y in 3:(length(Years))){ 
   for(a in 2:3){ # Grilse & 2SW (=MSW)
     #hrW[grilse:MSW, ]
@@ -25,10 +26,10 @@ for(y in 3:(length(Years))){
     
   }}
 
-hdoW<-array(NA, dim=c(2,length(Years)-2, 1000))
-hdoR<-array(NA, dim=c(2,length(Years)-2, 1000))
-hlW<-array(NA, dim=c(2,length(Years)-2, 1000))
-hlR<-array(NA, dim=c(2,length(Years)-2, 1000))
+hdoW<-array(NA, dim=c(2,length(Years)-2, nsample))
+hdoR<-array(NA, dim=c(2,length(Years)-2, nsample))
+hlW<-array(NA, dim=c(2,length(Years)-2, nsample))
+hlR<-array(NA, dim=c(2,length(Years)-2, nsample))
 for(y in 3:(length(Years))){ 
   for(a in 1:2){ # Grilse & 2SW (=MSW)
     
@@ -161,7 +162,7 @@ df.2.Hl<-as.tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fish
                         "1SW"="1",
                         "MSW"= "2"))
 df.2.Hl
-
+#View(df.2.Hl%>%filter(Age=="MSW"))
 
 
 ## ---- F42311a
@@ -169,7 +170,7 @@ df.2.Hl
 #View(df.2.Hdo)
 df2<-filter(df.2.Hdo, Type=="Wild")
 
-ggplot(df2, aes(Year))+
+ggplot(df2, aes(Year, group=Year))+
   theme_bw()+
   geom_boxplot(
     aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
@@ -184,7 +185,7 @@ ggplot(df2, aes(Year))+
 
 df2<-filter(df.2.Hl, Type=="Wild")
 
-ggplot(df2, aes(Year))+
+ggplot(df2, aes(Year, group=Year))+
   theme_bw()+
   geom_boxplot(
     aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
@@ -195,6 +196,8 @@ ggplot(df2, aes(Year))+
   scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
   scale_y_continuous(breaks = scales::pretty_breaks(n = 5))+
   facet_wrap(~Age, scales="free") 
+
+View(df.2.Hl)
 
 ## ---- F42311b
 
