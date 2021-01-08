@@ -12,20 +12,11 @@ library(tidyverse)
 
 source("C:/Rprojects/WGBAST/04-scenarios/paths_scens.r") #Henni
 
+# Version of the estimation model, time etc
+source("C:/Rprojects/WGBAST/04-scenarios/scens_stuff.r") #Henni
+
+
 ##############################################################################
-# Version of the estimation model
-Model<-"2020_updated"
-
-# Time
-LastHistYear<-2019
-ymax<-15
-LastPredYear<-LastHistYear+ymax
-year<-c(1992:LastPredYear)
-length(year)
-Nyears<-length(year)
-Nstocks<-17
-nsim<-1000
-
 
 # Scenarios
 #! Effort 
@@ -83,24 +74,58 @@ sumAges<-function(x){
   return(sumx)
 }
 
+sumAges2<-function(x,z1,z2){
+#  x<-MatW_1[,2:Nyears,,]
+#  dim(x)
+#z1<-1
+#z2<-4
+  sumx<-array(NA, dim=c(dim(x)[2],dim(x)[4]))
+  for(i in 1:dim(x)[2]){
+    for(j in 1:dim(x)[4]){
+      sumx[i,j]<-sum(x[2:6,i,z1:z2,j])
+    }
+  }  
+  return(sumx)
+}
+
+sumAges2(MatW_1[,2:Nyears,,],1,4)
 #####################################################
 
-# Coastal mortality (in numbers)
+# Coastal mortality (%)
 coast_MW<-array(NA, dim=c(6,Nyears,Nstocks,nsim))
 for(y in 1:Nyears){
   for(r in 1:Nstocks){
     for(a in 1:6){
       for(s in 1:nsim){
-        coast_MW[a,y,r,s]<-1-(exp(-(MW[a,y,r,2,s]*F_seal[y,a,AU[r]]*(1/12)))* exp(-(MW[a,y,r,2,s]*(1/12))))
+        coast_MW[a,y,r,s]<-1-(exp(-(MW[a,y,r,2,s]*(1/12)))* # May
+                                exp(-(MW[a,y,r,2,s]*F_seal[y,a,AU[r]]*(2/12)))) # June, July
       }
     }
   }
 }
+#1-(exp(-(MW[,,1,2,1]*(1/12)))
 
+# River mortality (%)
+river_MW<-array(NA, dim=c(6,Nyears,Nstocks,nsim))
+river_MR<-array(NA, dim=c(6,Nyears,4,nsim))
+for(y in 1:Nyears){
+    for(a in 1:6){
+      for(s in 1:nsim){
+        for(r in 1:Nstocks){
+          river_MW[a,y,r,s]<-1-exp(-(MW[a,y,r,2,s]*(2/12))) # August, September     
+        }
+        for(u in 1:4){
+        river_MR[a,y,u,s]<-1-exp(-(MR[a,y,u,2,s]*(2/12))) # August, September     
+        }
+      }
+  }
+}
 
-# Välituloksia Atsolle, mediaanit:
+# Approximated number ascending to rivers, river catch + number of spawners (those dying for natural mortality in river are missing)
+ascW<-RiverCatchW+MatW_3+river_MW
+ascR<-RiverCatchR+MatR_3+river_MR
 
-dim(SmoltW)
+dim(SmoltW) # number of smolts
 dim(May1stW) # Total abundance May 1st
 dim(MatW_1) # Mature at May 1st
 dim(WCTN_C) # Coastal catch
@@ -108,9 +133,9 @@ dim(coast_MW) # Coastal catch
 dim(MatW_2) # Number ascending to rivers, history currently NA
 dim(RiverCatchW) # river catch
 dim(MatW_3) # Spawners per age
-ascW<-RiverCatchW+MatW_3 # Approx. number ascending
 
 
+# Välituloksia Atsolle, mediaanit:
 # Torne
 Torne<-as_tibble(cbind(
 stats2(SmoltW[1,,],1,T),
@@ -122,7 +147,9 @@ rbind(array(NA, dim=c(28,5)),stats2(MatW_2[,29:Nyears,1,],1,F)),
 stats2(ascW[,,1,],1,F),
 stats2(RiverCatchW[,,1,],1,F),
 stats2(MatW_3[,,1,],1,F)
-))%>%mutate(y=year)
+),.name_repair="unique")%>%
+  mutate(y=year)%>%
+  select(y, everything())
 
 write_xlsx(Torne,path=paste0(PathScen,"Snapshots_medians_Torne2.xlsx"))
 
@@ -133,11 +160,10 @@ df<-cbind(
   stats2(sumAges(May1stW[,,1,]),1,T),
   c(NA,stats2(sumAges(MatW_1[,2:Nyears,1,]),1,T)),
   stats2(sumAges(WCTN_C[,,1,]),1,T),
-  stats2(sumAges(coast_MW[,,1,]),1,T),
   stats2(sumAges(ascW[,,1,]),1,T),
   stats2(sumAges(RiverCatchW[,,1,]),1,T),
   stats2(sumAges(MatW_3[,,1,]),1,T))
-colnames(df)<-c("Smolts","May1st", "Mature_may1st", "CoastalCatch","CoastalMW", "Asc_river", "RiverCatch", "Spawners")
+colnames(df)<-c("Smolts","May1st", "Mature_may1st", "CoastalCatch", "Asc_river", "RiverCatch", "Spawners")
 
 
 TorneSums<-as_tibble(df)%>%
@@ -168,11 +194,10 @@ df<-cbind(
   stats2(sumAges(May1stW[,,2,]),1,T),
   c(NA,stats2(sumAges(MatW_1[,2:Nyears,2,]),1,T)),
   stats2(sumAges(WCTN_C[,,2,]),1,T),
-  stats2(sumAges(coast_MW[,,2,]),1,T),
   stats2(sumAges(ascW[,,2,]),1,T),
   stats2(sumAges(RiverCatchW[,,2,]),1,T),
   stats2(sumAges(MatW_3[,,2,]),1,T))
-colnames(df)<-c("Smolts","May1st", "Mature_may1st", "CoastalCatch","CoastalMW", "Asc_river", "RiverCatch", "Spawners")
+colnames(df)<-c("Smolts","May1st", "Mature_may1st", "CoastalCatch","Asc_river", "RiverCatch", "Spawners")
 
 
 SimoSums<-as_tibble(df)%>%
@@ -182,289 +207,157 @@ SimoSums<-as_tibble(df)%>%
 write_xlsx(SimoSums,path=paste0(PathScen,"Snapshots_medians_SimoSumOverAges.xlsx"))
 
 
+# Välituloksia Petrille, mediaanit + 90% PI
 
 
+# * Pohjanlahdelle nousevat (AU1, AU2, AU1+2, villit ja viljellyt erikseen)
+# * Koko Pohjanlahden saaliit (AU1, AU2, AU1+2, villit ja viljellyt erikseen)
+# * Tornionjokeen ja Kalixjokeen nousevat
+
+# Torne & Kalix ascending to river, sums over ages
+
+df<-cbind(
+  stats2(sumAges(ascW[,,1,]),1:3,T),
+  stats2(sumAges(ascW[,,3,]),1:3,T),
+  stats2(sumAges(ascW[,,1,]+ascW[,,3,]),1:3,T)
+)
+colnames(df)<-c(rep("Torne",3),rep("Kalix",3),rep("Tot",3))
+
+df<-as_tibble(df)%>%
+  mutate(y=year)%>%
+  select(y, everything())
+
+write_xlsx(df,path=paste0(PathScen,"TorneKalix_ascendingRiver2.xlsx"))
+
+                
+# df<-cbind(
+#   stats2(SmoltW[3,,],1:3,T),
+#   stats2(sumAges(May1stW[,,3,]),1:3,T),
+#   rbind(rep(NA,3),stats2(sumAges(MatW_1[,2:Nyears,3,]),1:3,T)),
+#   stats2(sumAges(WCTN_C[,,3,]),1:3,T),
+#   stats2(sumAges(coast_MW[,,3,]),1:3,T),
+#   stats2(sumAges(ascW[,,3,]),1:3,T),
+#   stats2(sumAges(RiverCatchW[,,3,]),1:3,T),
+#   stats2(sumAges(MatW_3[,,3,]),1:3,T))
+# colnames(df)<-c(rep("Smolts",3),rep("May1st",3),rep("Mature_may1st",3),rep("CoastalCatch",3),
+#                 rep("CoastalMW",3),rep("Asc_river",3),rep("RiverCatch",3),rep("Spawners",3))
+# 
+# 
+# KalixSums<-as_tibble(df)%>%
+#   mutate(y=year)%>%
+#   select(y, everything())
+
+# Number migrating towards BB (Mature at May 1st)
+
+# Mature AU1 wild
+df<-cbind(
+stats2(sumAges(MatW_1[,2:Nyears,1,]+MatW_1[,2:Nyears,2,]+
+                 MatW_1[,2:Nyears,3,]+MatW_1[,2:Nyears,4,]),1:3,T),
+#stats2(sumAges2(MatW_1[,2:Nyears,,],1,4),1:3,T)
+
+# Mature AU2 wild
+stats2(sumAges(MatW_1[,2:Nyears,5,]+MatW_1[,2:Nyears,6,]+MatW_1[,2:Nyears,7,]+
+                 MatW_1[,2:Nyears,8,]+MatW_1[,2:Nyears,9,]+MatW_1[,2:Nyears,10,]+MatW_1[,2:Nyears,11,]+
+               MatW_1[,2:Nyears,12,]+MatW_1[,2:Nyears,16,]),1:3,T),
+
+# Mature AU1+AU2 wild
+stats2(sumAges(MatW_1[,2:Nyears,1,]+MatW_1[,2:Nyears,2,]+MatW_1[,2:Nyears,3,]+MatW_1[,2:Nyears,4,]+
+                 MatW_1[,2:Nyears,5,]+MatW_1[,2:Nyears,6,]+MatW_1[,2:Nyears,7,]+
+                 MatW_1[,2:Nyears,8,]+MatW_1[,2:Nyears,9,]+MatW_1[,2:Nyears,10,]+MatW_1[,2:Nyears,11,]+
+                 MatW_1[,2:Nyears,12,]+MatW_1[,2:Nyears,16,]),1:3,T),
 
 
+# Mature AU1 reared
+stats2(sumAges(MatR_1[,2:Nyears,1,]),1:3,T),
+
+# Mature AU2 reared
+stats2(sumAges(MatR_1[,2:Nyears,2,]),1:3,T),
+
+# Mature AU1+AU2 reared
+stats2(sumAges(MatR_1[,2:Nyears,1,]+MatR_1[,2:Nyears,2,]),1:3,T)
+)
+colnames(df)<-c(rep("Wild_AU1",3),rep("Wild_AU2",3),rep("Wild_AU1+2",3),
+                rep("Reared_AU1",3),rep("Reared_AU2",3),rep("Reared_AU1+2",3))
+
+df<-as_tibble(df)%>%
+  mutate(y=year[2:Nyears])%>%
+  select(y, everything())
 
 
+write_xlsx(df,path=paste0(PathScen,"AU1-2_migrBB2.xlsx"))
+
+# Bothnian Bay coastal catch
 
 
-
-
-
-
-smolts<-may1st<-migr<-CC<-asc<-spw<-coastM<-list()
-stock<-1
-qs<-1:3 # 1:1 if just medians
-dim(SmoltW)
-dim(SmoltW[stock,,])
-smolts[[stock]]<-cbind(c(year[1]:year[length(year)]),stats(SmoltW[stock,,])[,1])
-
-tmp<-cbind(stats(May1stW[2,,stock,])[,qs],stats(May1stW[3,,stock,])[,qs],
-           stats(May1stW[4,,stock,])[,qs],stats(May1stW[5,,stock,])[,qs],
-           stats(May1stW[6,,stock,])[,qs])
-tmp2<-cbind(c(year[1]:year[length(year)]),tmp)
-colnames(tmp2)<-if(){}c("year",2:6)
-
-
-
-           [,1],stats(may1stW[4,stock,2:Nyears,]),
-           stats(may1stW[5,stock,2:Nyears,])[,1],stats(may1stW[6,stock,2:Nyears,])[,1])
-colnames(tmp2)<-c("year",2:6)
-may1st[[stock]]<-tmp2
-
-
-
-# Number ascending to river = river catch + number of spawners
-dim(RiverCatchW)
-dim(spW_age)
-
-ascWtot<-ascW2tot<-CatchRiverTotW<-array(NA, dim=c(Nstocks,Nyears, 1000))
-ascW2<-array(NA, dim=c(6,Nstocks,Nyears, 1000)) # approximated number ascending
-for(r in 1:Nstocks){
-  for(y in 1:Nyears){
-    for(s in 1:1000){
-      CatchRiverTotW[r,y,s]<-sum(RiverCatchW[2:6, r,y,s])
-    for(a in 1:6){
-      ascW2[a,r,y,s]<-RiverCatchW[a,r,y,s]+spW_age[r,y,a,s]
-    }
-    ascWtot[r,y,s]<-sum(ascW[2:6,y,r,s]) # approximated number ascending
-    ascW2tot[r,y,s]<-sum(ascW2[2:6,r,y,s])# approximated number ascending
-    
-}}}
-
-
-
-stats(ascRtot[1,,])
-
-# Välituloksia Atsolle, mediaanit:
-
-# Number of smolts
-for(stock in 1:4){
-  stock<-1
-  dim(SmoltW)
-  dim(SmoltW[stock,,])
-  smolts[[stock]]<-cbind(c(year[1]:year[length(year)]),stats(SmoltW[stock,,])[,1])
+# Mature AU1 wild
+df<-cbind(
+  stats2(sumAges(WCTN_C[,,1,]+WCTN_C[,,2,]+
+                   WCTN_C[,,3,]+WCTN_C[,,4,]),1:3,T),
+  
+  # Mature AU2 wild
+  stats2(sumAges(WCTN_C[,,5,]+WCTN_C[,,6,]+WCTN_C[,,7,]+
+                   WCTN_C[,,8,]+WCTN_C[,,9,]+WCTN_C[,,10,]+WCTN_C[,,11,]+
+                   WCTN_C[,,12,]+WCTN_C[,,16,]),1:3,T),
+  
+  # Mature AU1+AU2 wild
+  stats2(sumAges(WCTN_C[,,1,]+WCTN_C[,,2,]+WCTN_C[,,3,]+WCTN_C[,,4,]+
+                   WCTN_C[,,5,]+WCTN_C[,,6,]+WCTN_C[,,7,]+
+                   WCTN_C[,,8,]+WCTN_C[,,9,]+WCTN_C[,,10,]+WCTN_C[,,11,]+
+                   WCTN_C[,,12,]+WCTN_C[,,16,]),1:3,T),
   
   
-  dim(May1stW)
-  dim(MigrW)
-  coastalMW<-migrW<-may1stW<-array(NA, dim=c(6, Nstocks,Nyears,1000))
-  #array(NA, dim=c(Nstocks,Nyears,1000))
-    for(r in 1:Nstocks){
-    for(y in 1:Nyears){
-      for(s in 1:1000){
-        for(a in 1:6){
-      migrW[a,r,y,s]<-MigrW[a,y,r,1,s] # second last index has 2 slots but only the first contains stuff     
-      may1stW[a,r,y,s]<-May1stW[a,y,r,1,s]  # second last index has 2 slots but only the first contains stuff     
-      coastalMW[a,r,y,s]<-migrW[a,r,y,s]-ascW[a,y,r,s]-WCTNCtot[a,y,r,s]
-        }
-      #coastalMW[r,y,s]<-sum(migrW[,r,y,s],na.rm=T)-sum(ascW[,r,y,s],na.rm = T)-sum(WCTNCtot[,y,r,s], na.rm = T)
-      
-      }}}        
+  # Mature AU1 reared
+  stats2(sumAges(RCTN_C[,,1,]),1:3,T),
   
-  dim(coast_MW)
+  # Mature AU2 reared
+  stats2(sumAges(RCTN_C[,,2,]),1:3,T),
   
-    tmp<-cbind(stats(may1stW[2,stock,2:Nyears,])[,1],stats(may1stW[3,stock,2:Nyears,])[,1],stats(may1stW[4,stock,2:Nyears,])[,1],
-             stats(may1stW[5,stock,2:Nyears,])[,1],stats(may1stW[6,stock,2:Nyears,])[,1])
-  tmp2<-cbind(c((year[1]+1):year[length(year)]),tmp)
-  colnames(tmp2)<-c("year",2:6)
-  may1st[[stock]]<-tmp2
+  # Mature AU1+AU2 reared
+  stats2(sumAges(RCTN_C[,,1,]+RCTN_C[,,2,]),1:3,T)
+)
+colnames(df)<-c(rep("Wild_AU1",3),rep("Wild_AU2",3),rep("Wild_AU1+2",3),
+                rep("Reared_AU1",3),rep("Reared_AU2",3),rep("Reared_AU1+2",3))
+
+df<-as_tibble(df)%>%
+  mutate(y=year)%>%
+  select(y, everything())
+
+write_xlsx(df,path=paste0(PathScen,"AU1-2_BBcatch.xlsx"))
+
+# Bothnian Bay ascending to river
+
+
+# Mature AU1 wild
+dim(ascW)
+df<-cbind(
+  stats2(sumAges(ascW[,,1,]+ascW[,,2,]+
+                   ascW[,,3,]+ascW[,,4,]),1:3,T),
   
-  tmp<-cbind(stats(migrW[2,stock,2:Nyears,])[,1],stats(migrW[3,stock,2:Nyears,])[,1],stats(migrW[4,stock,2:Nyears,])[,1],
-         stats(migrW[5,stock,2:Nyears,])[,1],stats(migrW[6,stock,2:Nyears,])[,1])
-  tmp2<-cbind(c((year[1]+1):year[length(year)]),tmp)
-  colnames(tmp2)<-c("year",2:6)
-  migr[[stock]]<-tmp2
+  # Mature AU2 wild
+  stats2(sumAges(ascW[,,5,]+ascW[,,6,]+ascW[,,7,]+
+                   ascW[,,8,]+ascW[,,9,]+ascW[,,10,]+ascW[,,11,]+
+                   ascW[,,12,]+ascW[,,16,]),1:3,T),
   
-  dim(WCTNCtot)
-  dim(WCTNCtot[2,,stock,])
-  tmp<-cbind(stats(WCTNCtot[2,,stock,])[,1],stats(WCTNCtot[3,,stock,])[,1],stats(WCTNCtot[4,,stock,])[,1],
-  stats(WCTNCtot[5,,stock,])[,1],stats(WCTNCtot[6,,stock,])[,1])
-  tmp2<-cbind(c(year[1]:year[length(year)]),tmp)
-  colnames(tmp2)<-c("year",2:6)
-  CC[[stock]]<-tmp2
+  # Mature AU1+AU2 wild
+  stats2(sumAges(ascW[,,1,]+ascW[,,2,]+ascW[,,3,]+ascW[,,4,]+
+                   ascW[,,5,]+ascW[,,6,]+ascW[,,7,]+
+                   ascW[,,8,]+ascW[,,9,]+ascW[,,10,]+ascW[,,11,]+
+                   ascW[,,12,]+ascW[,,16,]),1:3,T),
+
+  # Mature AU1 reared
+  stats2(sumAges(ascR[,,1,]),1:3,T),
   
-  dim(coastalMW)
-  stats(coastalMW[2,1,2:Nyears,])
-  dim(coastalMW[2,,stock,])
-  tmp<-cbind(stats(WCTNCtot[2,,stock,])[,1],stats(WCTNCtot[3,,stock,])[,1],stats(WCTNCtot[4,,stock,])[,1],
-             stats(WCTNCtot[5,,stock,])[,1],stats(WCTNCtot[6,,stock,])[,1])
-  tmp2<-cbind(c(year[1]:year[length(year)]),tmp)
-  colnames(tmp2)<-c("year",2:6)
-  CM[[stock]]<-tmp2
+  # Mature AU2 reared
+  stats2(sumAges(ascR[,,2,]),1:3,T),
   
-  tmp<-cbind(stats(ascW[2,,stock,])[,1],stats(ascW[3,,stock,])[,1],stats(ascW[4,,stock,])[,1],
-        stats(ascW[5,,stock,])[,1],stats(ascW[6,,stock,])[,1])
-  tmp2<-cbind(c(year[1]:year[length(year)]),tmp)
-  colnames(tmp2)<-c("year",2:6)
-  asc[[stock]]<-tmp2
-  
-  dim(spW_age)
-  
-  tmp<-cbind(stats(spW_age[stock,,2,])[,1],stats(spW_age[stock,,3,])[,1],stats(spW_age[stock,,4,])[,1],
-  stats(spW_age[stock,,5,])[,1],stats(spW_age[stock,,6,])[,1])
-  tmp2<-cbind(c(year[1]:year[length(year)]),tmp)
-  colnames(tmp2)<-c("year",2:6)
-  spw[[stock]]<-tmp2
-  
-  stats(SpawnerW[stock,,])[,1:2]
-  
-  # smolts
-  # may1st
-  # migr
-  # CC
-  # asc
-  # spw
-  
-  
-  tbl<-as.data.frame(cbind(
-  smolts[[stock]],
-  rbind(rep(NA,6),may1st[[stock]]),
-  rbind(rep(NA,6),migr[[stock]]),
-  CC[[stock]],
-  asc[[stock]],
-  spw[[stock]]
-  ))
-  if(stock==1){write_xlsx(tbl,path=paste0(PathScen,"Snapshots_medians_Torne.xlsx"))}
-#  if(stock==2){write_xlsx(tbl,path=paste0(PathScen,"Snapshots_medians_Simo.xlsx"))}
-}
+  # Mature AU1+AU2 reared
+  stats2(sumAges(ascR[,,1,]+ascR[,,2,]),1:3,T)
+)
+colnames(df)<-c(rep("Wild_AU1",3),rep("Wild_AU2",3),rep("Wild_AU1+2",3),
+                rep("Reared_AU1",3),rep("Reared_AU2",3),rep("Reared_AU1+2",3))
 
-par(mfrow=c(2,1))
-for(stock in 1:2){
-  tmp<-stats(coastalMW[stock,2:Nyears,])
-  plot(1993:2032,tmp[,1],  type="l", main=ifelse(stock==1,"Torne","Simo")) #ylim=c(-100,100)
-}
+df<-as_tibble(df)%>%
+  mutate(y=year)%>%
+  select(y, everything())
 
-#cbind(1993:2032,tmp)
-
-
-# AU1
-
-# Smolts
-dim(SmoltW)
-dim(SmoltR)
-
-AU1smolts<-array(NA, dim=c(Nyears, 1000))
-  for(y in 1:Nyears){
-    for(s in 1:1000){
-      AU1smolts[y,s]<-sum(SmoltW[1:4,y,s])
-    }}
-
-AU1smoltsW<-cbind(c(year[1]:year[length(year)]),stats(AU1smolts)[,1])
-AU1smoltsR<-cbind(c(year[1]:year[length(year)]),stats(SmoltR[1,,])[,1])
-
-# Adults wild
-
-AU1spW<-AU1ascW<-AU1ctnCW<-AU1migrW<-AU1may1stW<-array(NA, dim=c(6,Nyears,1000))
-for(y in 1:Nyears){
-  for(s in 1:1000){
-    for(a in 1:6){
-      AU1migrW[a,y,s]<-sum(MigrW[a,y,1:4,1,s]) # second last index has 2 slots but only the first contains stuff     
-      AU1may1stW[a,y,s]<-sum(May1stW[a,y,1:4,1,s])  # second last index has 2 slots but only the first contains stuff     
-      AU1ctnCW[a,y,s]<-sum(WCTNCtot[a,y,1:4,s])
-      AU1ascW[a,y,s]<-sum(ascW[a,1:4,y,s])
-      AU1spW[a,y,s]<-sum(spW_age[1:4,y,a,s])
-    }}} 
-
-dim(AU1migrW)
-dim(AU1may1stW)
-dim(AU1ctnCW)
-dim(AU1ascW)
-dim(AU1spW)
-AU1migrW[,1:10,1]
-AU1ctnCW[,1:10,1]
-AU1ascW[,1:10,1]
-
-tmp1<-list(AU1may1stW, AU1migrW, AU1ctnCW, AU1ascW, AU1spW)
-for(i in 1:5){
- #i<-1
-  tmp<-tmp1[[i]]
-  
-  if(i<3){# 1992 missing in migr & may1st:
-    tmp2<-cbind(stats(tmp[2,2:Nyears,])[,1],stats(tmp[3,2:Nyears,])[,1],
-             stats(tmp[4,2:Nyears,])[,1],stats(tmp[5,2:Nyears,])[,1],
-             stats(tmp[6,2:Nyears,])[,1])
-    tmp3<-rbind(rep(NA,6),cbind(c((year[1]+1):year[length(year)]),tmp2))
-  }else{
-    tmp2<-cbind(stats(tmp[2,,])[,1],stats(tmp[3,,])[,1],
-                stats(tmp[4,,])[,1],stats(tmp[5,,])[,1],
-                stats(tmp[6,,])[,1])
-    tmp3<-cbind(c(year[1]:year[length(year)]),tmp2)
-  }
-  colnames(tmp3)<-c("year",2:6)
-  if(i==1){AU1May1stW<-tmp3}
-  if(i==2){AU1MigrW<-tmp3}
-  if(i==3){AU1CtnCW<-tmp3}
-  if(i==4){AU1AscW<-tmp3}
-  if(i==5){AU1SpW<-tmp3}
-  
-}
-
-tbl<-as.data.frame(cbind(
-  AU1smoltsW,AU1May1stW,AU1MigrW,
-  AU1CtnCW, AU1AscW,AU1SpW))
-
-write_xlsx(tbl,path=paste0(PathScen,"Snapshots_medians_AU1_wild.xlsx"))
-
-
-# Adults reared
-
-
-AU1spR<-array(NA, dim=c(6,Nyears,1000))
-for(y in 1:Nyears){
-  for(s in 1:1000){
-    for(a in 1:6){
-       AU1spR[a,y,s]<-spR_age[1,y,a,s]
-    }}} 
-
-tmp1<-list(MigrR[,,1,1,], May1stR[,,1,1,], RCTNCtot[,,1,], ascR[,1,,], AU1spR)
-for(i in 1:5){
-  tmp<-tmp1[[i]]
-  if(i<3){# 1992 missing in migr & may1st:
-    tmp2<-cbind(stats(tmp[2,2:Nyears,])[,1],stats(tmp[3,2:Nyears,])[,1],
-                stats(tmp[4,2:Nyears,])[,1],stats(tmp[5,2:Nyears,])[,1],
-                stats(tmp[6,2:Nyears,])[,1])
-    tmp3<-rbind(rep(NA,6),cbind(c((year[1]+1):year[length(year)]),tmp2))
-  }else{
-    tmp2<-cbind(stats(tmp[2,,])[,1],stats(tmp[3,,])[,1],
-                stats(tmp[4,,])[,1],stats(tmp[5,,])[,1],
-                stats(tmp[6,,])[,1])
-    tmp3<-cbind(c(year[1]:year[length(year)]),tmp2)
-  }
-  colnames(tmp3)<-c("year",2:6)
-  if(i==1){AU1May1stR<-tmp3}
-  if(i==2){AU1MigrR<-tmp3}
-  if(i==3){AU1CtnCR<-tmp3}
-  if(i==4){AU1AscR<-tmp3}
-  if(i==5){AU1SpR<-tmp3}
-  
-}
-
-tbl<-as.data.frame(cbind(
-  AU1smoltsR,AU1May1stR,AU1MigrR,
-  AU1CtnCR, AU1AscR,AU1SpR))
-
-write_xlsx(tbl,path=paste0(PathScen,"Snapshots_medians_AU1_reared.xlsx"))
-
-
-
-dim(MigrR)
-dim(May1stR)
-dim(RCTNCtot)
-dim(ascR)
-dim(spR_age)
-
-
-
- smolts[[stock]],
-  rbind(rep(NA,6),may1st[[stock]]),
-  rbind(rep(NA,6),migr[[stock]]),
-  CC[[stock]],
-  asc[[stock]],
-  spw[[stock]]
-))
-#  if(stock==1){write_xlsx(tbl,path=paste0(PathScen,"Snapshots_medians_Torne.xlsx"))}
-#  if(stock==2){write_xlsx(tbl,path=paste0(PathScen,"Snapshots_medians_Simo.xlsx"))}
-}
+write_xlsx(df,path=paste0(PathScen,"AU1-2_ascendingRiver.xlsx"))

@@ -80,16 +80,16 @@ EffScen<-1
 #    Then find such CoefTrollingF that produces targetTr catch.
 #     Note that optimisation method is not currently used for this scenario.
 # 3. Run scenario 1: Set up target as in W21 (Total removal at sea for scen 1) in T4321_workflow.xlsx.
-#   Then find such Coef2 that produces target catch, update that on line 74 below as "Coef1"
-# 4. Run scens 2/3/4 similarly as scen 1 but adjust only Coef2 in corresponding line 
-#   (Coef1 remains the same).
+#   Then find such Coef2 that produces target catch, update that on line 97 below as "Coef2"
+# 4. Run scens 2/3/4 similarly as scen 1 and adjust Coef2 in corresponding line 
 
-# For all scenarios, remember to update CoefF OR Coef1 OR Coef2 after the desired level of effort
+
+# For all scenarios, remember to update CoefF OR Coef2 after the desired level of effort
 # has been found with the while-loop!
 
 
-Coef1<-1 # This can be 1!
-CoefTrollingF<-1.3 # # this coef produces the targetTr of recr catch when commercial fisheries are removed 
+Coef1<-1 # This can be 1 (no need to update)
+CoefTrollingF<-1.3 # This coef produces the targetTr of recr catch when commercial fisheries are removed 
 
 targetTr<-26.7 # Target trolling catch
 # Target is the total removal, including commercial and recreational,

@@ -8,7 +8,8 @@ source("C:/Rprojects/WGBAST/04-scenarios/scens_stuff.r")
 EffScen<-1
 
 #Load the file containing stats
-File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")
+#File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")
+File<-paste0(PathScen,"ScenProj_2020_EScen1_new_check.RData")
 
 File
 load(File)
@@ -27,16 +28,17 @@ PFAall<-array(NA, dim=c(Nyears,1000))
 PFAWall<-array(NA, dim=c(Nyears,1000))
 for(y in 1:Nyears){
 for(s in 1:1000){
-  PFAWall[y,s]<-sum(PFAW[1:6,y,1:Nstocks,1,s], na.rm=T)
-  PFAall[y,s]<-sum(PFAW[1:6,y,1:Nstocks,1,s], na.rm=T)+sum(PFAR[1:6,y,1:4,1,s])
-  PFA_MSW[y,s]<-sum(PFAW[2:6,y,1:Nstocks,1,s], na.rm=T)+sum(PFAR[2:6,y,1:4,1,s])
-  PFAR2_MSW[y,s]<-sum(PFAR[2:6,y,1:4,1,s])
-  PFAW2_MSW[y,s]<-sum(PFAW[2:6,y,1:Nstocks,1,s], na.rm=T)
+
+  PFAWall[y,s]<-sum(PFAW[1:6,y,1:Nstocks,s], na.rm=T)
+  PFAall[y,s]<-sum(PFAW[1:6,y,1:Nstocks,s], na.rm=T)+sum(PFAR[1:6,y,1:4,s])
+  PFA_MSW[y,s]<-sum(PFAW[2:6,y,1:Nstocks,s], na.rm=T)+sum(PFAR[2:6,y,1:4,s])
+  PFAR2_MSW[y,s]<-sum(PFAR[2:6,y,1:4,s])
+  PFAW2_MSW[y,s]<-sum(PFAW[2:6,y,1:Nstocks,s], na.rm=T)
 
 for(a in 1:6){
-  PFAW2[a,y,s]<-sum(PFAW[a,y,1:Nstocks,1,s], na.rm=T)
-  PFAR2[a,y,s]<-sum(PFAR[a,y,1:4,1,s])
-  PFA[a,y,s]<-sum(PFAW[a,y,1:Nstocks,1,s], na.rm=T)+sum(PFAR[a,y,1:4,1,s])
+  PFAW2[a,y,s]<-sum(PFAW[a,y,1:Nstocks,s], na.rm=T)
+  PFAR2[a,y,s]<-sum(PFAR[a,y,1:4,s])
+  PFA[a,y,s]<-sum(PFAW[a,y,1:Nstocks,s], na.rm=T)+sum(PFAR[a,y,1:4,s])
 }
 }}
 
@@ -44,7 +46,8 @@ for(a in 1:6){
 # Old estimates
 #model<-"2019"
 #File2<-paste0(PathScen,"ScenProj_",model,"_MpsMED_EScen",EffScen,".RData")
-File2<-paste0(PathScen,"ScenProj_2019_LR_MpsMED_EScen1.RData")
+#File2<-paste0(PathScen,"ScenProj_2019_LR_MpsMED_EScen1.RData")
+File2<-paste0(PathScen,"ScenProj_2020_EScen1.RData")
 load(File2)
 
 

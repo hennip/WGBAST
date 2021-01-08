@@ -69,16 +69,16 @@ while(apu==0){
   # save the data for each of the pieces of the MCMC chain
   for(loop in 1:10){
 # loop<-1    
-    #BH_dataFile<-paste0(PathScen, "ScenHist_JAGSmodel", Model,"_",loop,"_long.RData") 
-    BH_dataFile<-paste0(PathScen, "ScenHist_JAGSmodel", Model,"_",loop,".RData") 
+    BH_dataFile<-paste0(PathScen, "ScenHist_JAGSmodel", Model,"_",loop,"_long.RData") 
     load(BH_dataFile)
   
     for(y in 1:Nyears){
       May1stR[,y,,sims[1]:sims[2]]<- RsalmStock[,y,,1,]      
       May1stW[,y,,sims[1]:sims[2]]<- WsalmStock[,y,,1,]
       
-      # Spawning stock
+      # Spawning stock / number after terminal fishery for reared
       MatW_3[,y,,sims[1]:sims[2]]<- WsalmStock[,y,,2,] 
+      MatR_3[,y,,sims[1]:sims[2]]<- RsalmStock[,y,,2,] 
       #May1stW[,,1,1]
     }
     
@@ -373,21 +373,29 @@ while(apu==0){
     #!==========================================================================
     
     # The number of migrating fish by age on 1 July after the coastal trapnet
-    # fishery is given by (all ages have 1 month seal M during June)
+    # fishery is given by (all ages have 1 month seal M during June and July)
+    #F_seal for post-smolt (a=1) is 1
     for(a in 1:6){
       for(r in 1:Nstocks){
         #a<-2;r<-1
-        WCTN_C[a,y,r,]<- MatW_1[a,y,r,]*exp(-(MW[a,y,r,2,]*F_seal[y,a,AU[r]]*(1/12)))*
-          exp(-(MW[a,y,r,2,]*(1/12)))*WCTN_HR[a,y,r,]
-        MatW_2[a,y,r,]<-MatW_1[a,y,r,]*exp(-(MW[a,y,r,2,]*F_seal[y,a,AU[r]]*(1/12)))*
-          exp(-(MW[a,y,r,2,]*(1/12)))-WCTN_C[a,y,r,]
+
+        # 2/12: May, June
+        WCTN_C[a,y,r,]<- MatW_1[a,y,r,]*exp(-(MW[a,y,r,2,]*(1/12)))*
+          exp(-(MW[a,y,r,2,]*F_seal[y,a,AU[r]]*(1/12)))*WCTN_HR[a,y,r,]
+        
+        # MatW_2: Number ascending to river
+        # 3/12: May, June, July
+        MatW_2[a,y,r,]<-(MatW_1[a,y,r,]*exp(-(MW[a,y,r,2,]*(1/12)))*
+                           exp(-(MW[a,y,r,2,]*F_seal[y,a,AU[r]]*(1/12)))-WCTN_C[a,y,r,])*
+          exp(-(MW[a,y,r,2,]*F_seal[y,a,AU[r]]*(1/12)))
       }
-      # 2/12: May, June
       for(u in 1:4){
-        RCTN_C[a,y,u,]<-MatR_1[a,y,u,]*exp(-(MR[a,y,u,2,]*F_seal[y,a,u]*(1/12)))*
-          exp(-(MR[a,y,u,2,]*(1/12)))*RCTN_HR[a,y,u,]
-        MatR_2[a,y,u,]<-MatR_1[a,y,u,]*exp(-(MR[a,y,u,2,]*F_seal[y,a,u]*(1/12)))*
-          exp(-(MR[a,y,u,2,]*(1/12)))-RCTN_C[a,y,u,]
+        RCTN_C[a,y,u,]<-MatR_1[a,y,u,]*exp(-(MR[a,y,u,2,]*(1/12)))*
+          exp(-(MR[a,y,u,2,]*F_seal[y,a,u]*(1/12)))*RCTN_HR[a,y,u,]
+        
+        MatR_2[a,y,u,]<-(MatR_1[a,y,u,]*exp(-(MR[a,y,u,2,]*(1/12)))*
+                           exp(-(MR[a,y,u,2,]*F_seal[y,a,u]*(1/12)))-RCTN_C[a,y,u,])*
+          exp(-(MR[a,y,u,2,]*F_seal[y,a,u]*(1/12)))
       }  
     }
     
@@ -395,24 +403,21 @@ while(apu==0){
  #   print(MatW_2[,,1,1])
     
 
-    # On October 1st the number of migrating fish caught by the river fishery is given by 
-    # (WsalmStock below same as NspW in JAGS model) 
-    #F_seal for post-smolt (a=1) is 1
+    # On August 1st the number of migrating fish caught by the river fishery is given by 
+    # MatW_3: Number of spawners (NspW in JAGS model) 
     for(a in 1:6){
       for(r in 1:Nstocks){
-      WRF_C[a,y,r,]<-MatW_2[a,y,r,]*exp(-(MW[a,y,r,2,]*F_seal[y,a,AU[r]]*(1/12)))*
-        p.ladder[a,y,r,]*WRF_HR[a,y,r,]
+      WRF_C[a,y,r,]<-MatW_2[a,y,r,]*p.ladder[a,y,r,]*WRF_HR[a,y,r,]
       
-      MatW_3[a,y,r,]<-((MatW_2[a,y,r,]*exp(-(MW[a,y,r,2,]*F_seal[y,a,AU[r]]*(1/12))))*
-                        p.ladder[a,y,r,]-WRF_C[a,y,r,])*
+      # 2/12: August, September
+      MatW_3[a,y,r,]<-(MatW_2[a,y,r,]*p.ladder[a,y,r,]-WRF_C[a,y,r,])*
         exp(-(MW[a,y,r,2,]*(2/12)))*surv_migr[a,y,r,]
       
       }
     
       for(u in 1:4){
-        RRF_C[a,y,u,]<-MatR_2[a,y,u,]*exp(-(MW[a,y,u,2,]*F_seal[y,a,u]*(1/12)))*RRF_HR[a,y,u,]
-        MatR_3[a,y,u,]<-((MatR_2[a,y,u,]*exp(-(MR[a,y,u,2,]*F_seal[y,a,u]*(1/12))))-
-                               RRF_C[a,y,u,])*exp(-(MR[a,y,u,2,]*(2/12)))
+        RRF_C[a,y,u,]<-MatR_2[a,y,u,]*RRF_HR[a,y,u,]
+        MatR_3[a,y,u,]<-(MatR_2[a,y,u,]-RRF_C[a,y,u,])*exp(-(MR[a,y,u,2,]*(2/12)))
       }
     }
     

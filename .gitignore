@@ -18,6 +18,7 @@ FLHM*
 *.txt
 #*.xlsx
 *.csv
+*.xlsx
 
 .Rproj.user
 .Rhistory

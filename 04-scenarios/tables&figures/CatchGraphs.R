@@ -27,14 +27,14 @@ for(s in 1:8){
 #s<-1  
   EffScen<-scen_nr[s]
   #Load the file containing stats
-  File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")
+  File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,"_new_check.RData")
   
   File
   load(File)
   
-  Coef1<-0.7
-  CoefTrollingF<-0.763 # this coef produces the 26.7k of recr catch when commercial fisheries are removed
-  if(EffScen==1){Coef2<-2.249} # previous advice approach
+  Coef1<-1
+  CoefTrollingF<-0.737 # this coef produces the 26.7k of recr catch when commercial fisheries are removed
+  if(EffScen==1){Coef2<-1.611} # previous advice approach
   if(EffScen==2){Coef2<-2.78} #+20%
   if(EffScen==3){Coef2<-1.761} #-20%
   if(EffScen==8){Coef2<-5.237} #+100% 
@@ -66,10 +66,10 @@ for(s in 1:8){
   CalC_recr<-array(NA, c(1000,Nyears))
   for(i in 1:1000){
     for(y in 1:Nyears){
-      C_OLL[i,y]<-sum(WOLLCtot[2:6,y,1:Nstocks,i], na.rm=T)+
-                  sum(ROLLCtot[2:6,y,1:4,i])    
-      C_CTN[i,y]<-sum(WCTNCtot[2:6,y,1:Nstocks,i], na.rm=T)+
-                  sum(RCTNCtot[2:6,y,1:4,i])
+      C_OLL[i,y]<-sum(WOLL_C[2:6,y,1:Nstocks,i], na.rm=T)+
+                  sum(ROLL_C[2:6,y,1:4,i])    
+      C_CTN[i,y]<-sum(WCTN_C[2:6,y,1:Nstocks,i], na.rm=T)+
+                  sum(RCTN_C[2:6,y,1:4,i])
       
       # p_wantCRep is the proportion of wanted catch reported out of all commercial, see T4_3_2_1_workfile.xlsx 
       
