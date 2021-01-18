@@ -29,6 +29,7 @@ source("C:/Rprojects/WGBAST/04-scenarios/paths_scens.r") #Henni
 
 #Model<-"2020" # Assessment model version, hist model from 2019 assessment
 Model<-"2020_updated" # Assessment model version, updated with 2019 data
+Model<-"test"
 
 #stocknames<-read.table(paste0(PathData,"rivernames.txt")) # proper names
 stock_indices<-c(1:17)
@@ -65,14 +66,14 @@ MaxCoef<-10000 # Optimisation terminates, if a value higher than this is propose
  
 
 
-Optim<-T # Turns on secant method optimisation. Initial values are not too critical, could be = 1 for all,
+Optim<-F # Turns on secant method optimisation. Initial values are not too critical, could be = 1 for all,
          # but guessing improves the speed a bit. Does not work for trolling only scenario (6) at the moment!
 
 #for(EffScen in 1:6){
 set.seed(6789)
 
 #! Removal scenarios for the future
-EffScen<-1
+EffScen<-6
 
 # workflow for effort scenarios:
 # 1. Run scenario 5 and ScenarioTable.R for that scenario -> input total PFA to cell R4 in T4321_workflow.xlsx
@@ -140,13 +141,14 @@ E_CTN_SWE_31<-c(rep(7.7,2))
 
 
 # Initialise arrays
-source(paste0(PathFiles,"InitArrays_new.r"))
+#source(paste0(PathFiles,"InitArrays_new.r")) # rewritten ProjEffort
+source(paste0(PathFiles,"InitArrays_tr.r")) # time varying Htr, ql, qd
 
 # =============================================================
 
 # Run projections
-#source(paste0(PathFiles,"ProjEffort_loops_new.r"))
-source(paste0(PathFiles,"ProjEffort_loops_new_Fsealcorrected.r"))
+#source(paste0(PathFiles,"ProjEffort_loops_new.r"))# rewritten ProjEffort
+source(paste0(PathFiles,"ProjEffort_loops_tr.r")) # time varying Htr, ql, qd
 
 
 # =============================================================
@@ -181,7 +183,8 @@ Perform_Stats <- c(
 )
 
 # Save to RData-file
-File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,"_new.RData")
+#File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,"_new.RData")
+File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")
 save(list = Perform_Stats, file = File)
 
 # =============================================================
