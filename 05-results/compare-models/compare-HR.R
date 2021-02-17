@@ -45,7 +45,7 @@ summary(chains1[ ,regexpr("HdcW",varnames(chains))>0])
   }
   hlW<-hlR<-array(NA, dim=c(3,length(Years)-3, nsample))
   for(y in 4:(length(Years))){ 
-    for(a in 1:3){ # PS, Grilse, 2SW=MSW
+    for(a in 1:3){ # PS, 2SW, 3SW=MSW
       hlW[a,y-3,]<-chains1[,str_c("HlW[",y-a,",",a,"]")][[1]]
       hlR[a,y-3,]<-chains1[,str_c("HlR[",y-a,",",a,"]")][[1]]
       if(trolling1==T){ 

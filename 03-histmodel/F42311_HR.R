@@ -2,7 +2,6 @@
 
 nsample<-length(chains[,1][[1]])
 
-
 # from cohort+age to calendar years
 hrW<-array(NA, dim=c(2,length(Years)-2, nsample))
 hrR<-array(NA, dim=c(2,length(Years)-2, nsample))
@@ -31,7 +30,7 @@ hdoR<-array(NA, dim=c(2,length(Years)-2, nsample))
 hlW<-array(NA, dim=c(2,length(Years)-2, nsample))
 hlR<-array(NA, dim=c(2,length(Years)-2, nsample))
 for(y in 3:(length(Years))){ 
-  for(a in 1:2){ # Grilse & 2SW (=MSW)
+  for(a in 1:2){ # 1SW & 2SW (=MSW)
     
     #hdoW[grilse:MSW, ]
     hdoW[a,y-2,]<-chains[,str_c("HdoW[",y-a,",",a,"]")][[1]]
@@ -41,6 +40,16 @@ for(y in 3:(length(Years))){
     hlW[a,y-2,]<-chains[,str_c("HlW[",y-a,",",a,"]")][[1]]
     hlR[a,y-2,]<-chains[,str_c("HlR[",y-a,",",a,"]")][[1]]
   }}
+
+htW<-htR<-array(NA, dim=c(2,length(Years)-2, nsample))
+for(y in 3:(length(Years))){ 
+  for(a in 1:2){ # 1SW, 2SW=MSW
+   # hlW[a,y-2,]<-chains[,str_c("HlW[",y-a,",",a,"]")][[1]]
+   # hlR[a,y-2,]<-chains[,str_c("HlR[",y-a,",",a,"]")][[1]]
+    htW[a,y-2,]<-chains[,str_c("HtW[",y-a,",",a,"]")][[1]]
+    htR[a,y-2,]<-chains[,str_c("HtR[",y-a,",",a,"]")][[1]]
+  }}
+
 
 
 # wrangle
@@ -165,6 +174,29 @@ df.2.Hl
 #View(df.2.Hl%>%filter(Age=="MSW"))
 
 
+# OFFSHORE (RECREATIONAL) TROLLING
+for(a in 1:2){
+  dfW<-boxplot.bugs.df2(htW, a ,1:(length(Years)-2))%>%
+    mutate(age=a, Fishery="Trolling", Type="Wild")
+  ifelse(a>1, dfW2<-bind_rows(dfW2,dfW),dfW2<-dfW)
+  
+  dfR<-boxplot.bugs.df2(htR, a ,1:(length(Years)-2))%>%
+    mutate(age=a, Fishery="Trolling", Type="Reared")
+  ifelse(a>1, dfR2<-bind_rows(dfR2,dfR),dfR2<-dfR)
+}
+
+df<-full_join(dfW2,dfR2, by=NULL)
+
+df.2.Ht<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fishery","Type")))%>%
+  select(Age, Fishery, Type, everything())%>%
+  mutate(Year=Year+1989)%>%
+  mutate(Age=fct_recode(factor(Age),
+                        "1SW"= "1",
+                        "MSW"="2"))
+df.2.Ht
+
+
+
 ## ---- F42311a
 
 #View(df.2.Hdo)
@@ -198,6 +230,20 @@ ggplot(df2, aes(Year, group=Year))+
   facet_wrap(~Age, scales="free") 
 
 View(df.2.Hl)
+
+df2<-filter(df.2.Ht, Type=="Wild")
+
+ggplot(df2, aes(Year, group=Year))+
+  theme_bw()+
+  geom_boxplot(
+    aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+    stat = "identity",fill=rgb(1,1,1,0.1))+
+  geom_line(aes(Year,q50))+
+  labs(x="Year", y="Harvest rate", title=str_c("Offshore trolling HR wild"))+
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 5))+
+  facet_wrap(~Age, scales="free") 
+
 
 ## ---- F42311b
 

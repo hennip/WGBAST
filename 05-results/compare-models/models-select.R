@@ -29,7 +29,10 @@ Rivername_long<-read.table(str_c(pathData, "rivernames.txt"))[,1]
 # load(file="C:/output/wgbast/flhm/FLHM_2019_trolling_LL_DN.RData"); trolling1<-T ;Mname1<-"2019 assessment data, AR model for trolling, LL, DN, reared q == wild q" # is trolling included as a separate fishery?
 # chains1<-as.mcmc.list(run)
 
-load(file="C:/output/wgbast/flhm/FLHM_2020.RData"); trolling1<-F;Mname1<-"2020 data, 2018/2019 assessment model structure" # Same model structure as in 2019 wg version
+#load(file="C:/output/wgbast/flhm/FLHM_2020.RData"); trolling1<-F;Mname1<-"2020 data, 2018/2019 assessment model structure" # Same model structure as in 2019 wg version
+#chains1<-as.mcmc.list(run)
+
+load(file="C:/output/wgbast/flhm/FLHM_2020XY2_test_data2020.RData"); trolling1<-T;Mname1<-"2020 data, AR models for offshore fisheries, estimate marginal variances, test struct LW"
 chains1<-as.mcmc.list(run)
 
 
@@ -50,7 +53,8 @@ chains1<-as.mcmc.list(run)
 # Model 2:
 # =================
 #load(file="C:/output/wgbast/flhm/FLHM_2019_trolling_LL_DN.RData"); trolling2<-T ;Mname2<-"2019 assessment data, AR model for trolling, LL, DN, reared q == wild q" # is trolling included as a separate fishery?
-#load(file="C:/output/wgbast/flhm/FLHM_2020.RData"); trolling2<-F;Mname2<-"2020 data, 2018/2019 assessment model structure" # Same model structure as in 2019 wg version
+
+  load(file="C:/output/wgbast/flhm/FLHM_2020.RData"); trolling2<-F;Mname2<-"2020 data, 2018/2019 assessment model structure" # Same model structure as in 2019 wg version
 #load(file="C:/output/wgbast/flhm/FLHM_2020Xdata_2020.RData"); trolling2<-T;Mname2<-"2020 data, AR models for offshore fisheries, qeff's, HrW corrected"
 #load(file="C:/output/wgbast/flhm/FLHM_2020X_2_data2020.RData"); trolling2<-T;Mname2<-"2020 data, AR models for offshore and coastal fisheries, qeff's, HrW corrected"
 #load(file="C:/output/wgbast/flhm/FLHM_2020XY_data2020.RData"); trolling2<-T;Mname2<-"2020 data, AR models for offshore fisheries, fixed sdq & sdtr"
@@ -71,12 +75,26 @@ chains1<-as.mcmc.list(run)
  
  
  
+# Testeboån prior corrected  
+#load(file="C:/output/wgbast/flhm/FLHM_2020XY2_test_data2020_Jan21.RData"); trolling2<-T;Mname2<-"2020 data, AR models for offshore fisheries, estimate marginal variances, test struct LW"
+#dim(chains[[1]])
+
+#test<-combine.mcmc(mcmc.objects = list(chains[[1]], chains[[2]]))#, thin = 2)
+#test2<-window(test, start=201)
+#dim(test)
+#chains<-test
+
   
-load(file="C:/output/wgbast/flhm/FLHM_2020XY2_test_data2020.RData"); trolling2<-T;Mname2<-"2020 data, AR models for offshore fisheries, estimate marginal variances, test struct LW"
-chains<-as.mcmc.list(run)
-
-
-
+  chains<-as.mcmc.list(run)
+  length(chains[,"MW"][[1]])
+  test<-window(chains, start=230000, end=579651 )
+  length(test[,"MW"][[1]])
+  #length(test[[1]])
+  
+  chains<-combine.mcmc(mcmc.objects = list(test[[1]], test[[2]]), thin = 2)
+  length(chains[,"MW"])
+  
+  
 # Is comparison for run from the same year? T if yes, F if no
 # Note that older version should be set as Model 1
 sameYear<-T

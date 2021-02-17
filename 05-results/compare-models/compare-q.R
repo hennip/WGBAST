@@ -33,11 +33,15 @@ df<-full_join(dfW2,dfR2, by=NULL)
 
 df.ql.2<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Type")))%>%
   select(Age, Type, everything())%>%
-  mutate(Year=Year+1986)%>%
   mutate(Age=fct_recode(factor(Age),
                         "1SW"= "1",
                         "2SW"= "2",
-                        "3SW"= "3"))
+                        "3SW"= "3",
+                        "MSW"="4"))%>%
+  mutate(Year=ifelse(Age=="1SW", Year+1986, 
+                      ifelse(Age=="2SW", Year+1987, 
+                             ifelse(Age=="3SW", Year+1988, Year+1989))))
+  
 df.ql.2
 
 
@@ -57,14 +61,20 @@ df<-full_join(dfW2,dfR2, by=NULL)
 
 df.qd.2<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Type")))%>%
   select(Age, Type, everything())%>%
-  mutate(Year=Year+1986)%>%
+  #mutate(Year=Year+1986)%>%
   mutate(Age=fct_recode(factor(Age),
                         "1SW"= "1",
                         "2SW"= "2",
                         "3SW"= "3",
                         "4SW"= "4",
                         "5SW"= "5",
-                        "6SW"="6"))
+                        "6SW"="6"))%>%
+  mutate(Year=ifelse(Age=="1SW", Year+1986, 
+                     ifelse(Age=="2SW", Year+1987, 
+                            ifelse(Age=="3SW", Year+1988, 
+                                   ifelse(Age=="4SW", Year+1989, 
+                                          ifelse(Age=="5SW", Year+1990, 1991))))))
+
 df.qd.2
 
 
@@ -74,7 +84,7 @@ df.qd.2
 ## ---- graphs-q
 
 # Wild ql
-df2<-filter(df.ql.2, Type=="Wild", Age!=4)
+df2<-filter(df.ql.2, Type=="Wild", Age=="1SW" | Age=="MSW")
 
 ggplot(df2, aes(Year, group=Year))+
   theme_bw()+
@@ -90,10 +100,11 @@ ggplot(df2, aes(Year, group=Year))+
   geom_line(aes(Year,q50))+
 #  geom_line(data=df1,aes(Year,q50),col="grey")+
   scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
-  facet_wrap(~Age)#, scales="free")
+#  scale_x_continuous(limits = c(1987,2020))+
+  facet_wrap(~Age, scales="free")
 
 # reared ql
-df2<-filter(df.ql.2, Type=="Reared", Age!=4)
+df2<-filter(df.ql.2, Type=="Reared", Age=="1SW" | Age=="MSW")
 
 ggplot(df2, aes(Year, group=Year))+
   theme_bw()+
@@ -109,11 +120,11 @@ ggplot(df2, aes(Year, group=Year))+
   geom_line(aes(Year,q50))+
   #  geom_line(data=df1,aes(Year,q50),col="grey")+
   scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
-  facet_wrap(~Age)#, scales="free")
+  facet_wrap(~Age, scales="free")
 
 
 
-# Wild qd
+  # Wild qd
 df2<-filter(df.qd.2, Type=="Wild", Age=="1SW"| Age=="2SW"| Age=="3SW"| Age=="4SW")
 
 ggplot(df2, aes(Year, group=Year))+
@@ -130,7 +141,7 @@ ggplot(df2, aes(Year, group=Year))+
   geom_line(aes(Year,q50))+
   #  geom_line(data=df1,aes(Year,q50),col="grey")+
   scale_x_continuous(breaks = scales::pretty_breaks(n = 5))+
-  facet_wrap(~Age)#, scales = "free")
+  facet_wrap(~Age, scales = "free")
 
 # Reared qd
 df2<-filter(df.qd.2, Type=="Reared", Age=="1SW"| Age=="2SW"| Age=="3SW"| Age=="4SW")
