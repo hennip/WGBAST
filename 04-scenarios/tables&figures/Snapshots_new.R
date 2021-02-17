@@ -29,6 +29,19 @@ File
 load(File)
 
 ##############################################################################
+stats0<-function(var){
+  q5<-q50<-q95<-c()
+  
+    tmp<-summary(as.mcmc(var), quantiles=c(0.05,0.5,0.95))
+    q5<-tmp$quantiles[1]
+    q50<-tmp$quantiles[2]
+    q95<-tmp$quantiles[3]
+    
+  #res<-cbind(year[1]:year[length(year)],q50,q5,q95)
+  res<-cbind(q50,q5,q95)
+  return(res)
+}
+
 
 stats<-function(var){
   q5<-q50<-q95<-c()
@@ -88,7 +101,7 @@ sumAges2<-function(x,z1,z2){
   return(sumx)
 }
 
-sumAges2(MatW_1[,2:Nyears,,],1,4)
+#sumAges2(MatW_1[,2:Nyears,,],1,4)
 #####################################################
 
 # Coastal mortality (%)
@@ -126,20 +139,47 @@ ascW<-RiverCatchW+MatW_3+river_MW
 ascR<-RiverCatchR+MatR_3+river_MR
 
 dim(SmoltW) # number of smolts
+dim(PFAW2)
 dim(May1stW) # Total abundance May 1st
+dim(ImmW_1) # Immature at May 1st
 dim(MatW_1) # Mature at May 1st
 dim(WCTN_C) # Coastal catch
-dim(coast_MW) # Coastal catch
+dim(coast_MW) # Coastal natural mortality
 dim(MatW_2) # Number ascending to rivers, history currently NA
 dim(RiverCatchW) # river catch
 dim(MatW_3) # Spawners per age
+
+#apply(PFAW[,,1,],1:2,stats0)
+
+pfa<-cbind(stats(PFAW2[1,,1,])[,1],stats(PFAW2[2,,1,])[,1],stats(PFAW2[3,,1,])[,1],stats(PFAW2[4,,1,])[,1],
+      stats(PFAW2[5,,1,])[,1]) # Includes post-smolts, age 6=0 because no immature at that age (PFA is calculated from immature at may 1st)
+colnames(pfa)<-c("1SW_q50","2SW_q50","3SW_q50","4SW_q50","5SW_q50")
+
+# 
+may1st<-sum_immW<-sum_pfa<-array(NA, dim=c(dim(PFAW2)[2],dim(PFAW2)[4]))
+for(i in 1:dim(PFAW2)[2]){
+  for(j in 1:dim(PFAW2)[4]){
+    sum_pfa[i,j]<-sum(PFAW2[2:6,i,1,j]) #!!!!!!!!! # Add/remove grilse!
+    sum_immW[i,j]<-sum(ImmW_1[2:6,i,1,j])
+    may1st[i,j]<-sum(May1stW[3:6,i,1,j]) # grilse = age 2, add or remove
+  }
+}
+stats(sum_pfa)[,1]
+
+immw<-rbind(rep(NA, 6),cbind(stats(ImmW_1[1,2:Nyears,1,])[,1],stats(ImmW_1[2,2:Nyears,1,])[,1],stats(ImmW_1[3,2:Nyears,1,])[,1],
+      stats(ImmW_1[4,2:Nyears,1,])[,1],stats(ImmW_1[5,2:Nyears,1,])[,1],stats(ImmW_1[6,2:Nyears,1,])[,1]))
+colnames(immw)<-c("1SW_q50","2SW_q50","3SW_q50","4SW_q50","5SW_q50","6SW_q50")
+
 
 
 # Välituloksia Atsolle, mediaanit:
 # Torne
 Torne<-as_tibble(cbind(
 stats2(SmoltW[1,,],1,T),
+pfa,
 stats2(May1stW[,,1,],1,F),
+immw,
+#rbind(rep(NA, 5),stats2(ImmW_1[,2:Nyears,1,],1,F)),
 rbind(rep(NA, 5),stats2(MatW_1[,2:Nyears,1,],1,F)),
 stats2(WCTN_C[,,1,],1,F),
 stats2(coast_MW[,,1,],1,F),
@@ -157,13 +197,15 @@ write_xlsx(Torne,path=paste0(PathScen,"Snapshots_medians_Torne2.xlsx"))
 
 df<-cbind(
   stats2(SmoltW[1,,],1,T),
-  stats2(sumAges(May1stW[,,1,]),1,T),
+  stats(sum_pfa)[,1],
+  stats(may1st)[,1],
+  #stats2(sumAges(May1stW[,,1,]),1,T),
   c(NA,stats2(sumAges(MatW_1[,2:Nyears,1,]),1,T)),
   stats2(sumAges(WCTN_C[,,1,]),1,T),
   stats2(sumAges(ascW[,,1,]),1,T),
   stats2(sumAges(RiverCatchW[,,1,]),1,T),
   stats2(sumAges(MatW_3[,,1,]),1,T))
-colnames(df)<-c("Smolts","May1st", "Mature_may1st", "CoastalCatch", "Asc_river", "RiverCatch", "Spawners")
+colnames(df)<-c("Smolts","PFA","May1st", "Mature_may1st", "CoastalCatch", "Asc_river", "RiverCatch", "Spawners")
 
 
 TorneSums<-as_tibble(df)%>%
