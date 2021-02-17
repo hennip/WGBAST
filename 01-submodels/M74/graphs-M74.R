@@ -12,7 +12,7 @@ mean2<-read_tsv(str_c(pathM74,"/prg/output/coda_mean2_M74_20.txt"), col_names = 
 mean1<-as.data.frame(mean1)
 mean2<-as.data.frame(mean2)
 
-Years<-c(1985:2018) #spawning years, add +1 each year
+Years<-c(1985:2019) #spawning years, add +1 each year
 Rivers<-c(1:14)
 
 length(Rivers)*length(Years)
@@ -48,8 +48,6 @@ df.bugs<-as_tibble(setNames(df2,c("Year","q5","q25","q50","q75","q95","stock")))
   mutate(YEAR=Year+1984)  #%>%
 #  mutate(river=as.factor(stock))
 
-df.bugs
-dfM74
 
 df1<-full_join(df.bugs, dfM74)%>%
   arrange(stock)%>% # Arranges rivers into ascending order
@@ -63,6 +61,7 @@ df1<-full_join(df.bugs, dfM74)%>%
 
 
 windows()
+
   ggplot(df1, aes(x=YEAR,group=YEAR,
                   ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95))+
     geom_boxplot(stat = "identity")+
@@ -87,7 +86,7 @@ for(r in 1:length(Rivers)){
 
   
 
-df.bugs<-as.tibble(setNames(df2,c("Year","q5","q25","q50","q75","q95","River")))%>%
+df.bugs<-as_tibble(setNames(df2,c("Year","q5","q25","q50","q75","q95","River")))%>%
   select(River, everything())%>%
   mutate(Year=Year+1984)  %>%
   mutate(river=as.factor(River))%>%
@@ -115,6 +114,11 @@ ggplot(df1, aes(Year, group=Year))+
 
 
   
+
+
+
+
+
 
 
 

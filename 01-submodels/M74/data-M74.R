@@ -13,7 +13,7 @@ library(rjags)
 library(runjags)
 library(tidyverse)
 library(readxl)
-library(xlsx)
+#library(xlsx)
 library(forcats)
 library(lubridate)
 library(stringr)
@@ -22,12 +22,13 @@ library(coda)
 
 source("00-functions/tidy-functions.r")
 
-pathM74<-"H:/Projects/WGBAST/SubE_M74/2020/"
+pathM74<-"H:/Projects/WGBAST/SubE_M74/2021/"
 
 # FI data
 
-dat<-read_xlsx(path=str_c(pathM74,"dat/orig/Finnish_M74_data-2019_paivitetty.xlsx"), 
+dat<-read_xlsx(path=str_c(pathM74,"dat/orig/Finnish_M74_data-2020_paivitetty_TPa_13012021.xlsx"), 
               col_names = T, guess_max = 10000, sheet=1, na=c("", "NA"))   
+#View(dat)
 
 df<-dat%>%
   mutate(river=fct_recode(RIVER,
@@ -66,22 +67,26 @@ dfFI<-df%>%
 df1<-read_tsv(str_c(pathM74,"dat/der/M74dataSE16.txt"), col_names = T)
               
 # New Swedish M74 data
-df2<-read_xlsx(str_c(pathM74,"dat/der/Swedish_M74_data_18-19.xlsx"), na="NA")
+df2<-read_xlsx(str_c(pathM74,"dat/der/Swedish_M74_data_17-20.xlsx"), na="NA")
 
 df2<-df2%>%
-  mutate(river=as_factor(river))%>%
-  mutate(stock=fct_recode(river,
-                       "11"="Dal", "10"="Ljusnan", "8"="Indals", "7"="Angerman",
-                       "6"="Ume", "5"="Skellefte", "4"="Lule"))%>%
+  #mutate(river=as_factor(river))%>%
+  mutate(stock=ifelse(river=="Dal",11, 
+                      ifelse(river=="Ljusnan", 10,
+                             ifelse(river=="Indals", 8,
+                                    ifelse(river=="Angerman",7,
+                                           ifelse(river=="Ume",6,
+                                                  ifelse(river=="Skellefte",5,
+                                                         ifelse(river=="Lule",4,"X"))))))))%>%
   mutate(yy=year-1985)%>%
   mutate(Females=Kramade)%>%
   mutate(xx=`Antal M74`)%>%
   select(stock,river, yy, Females, xx)
-
+#View(df2)
 
 # add missing data for swedish stocks with no recent M74 data, plus for unsampled stock 
 df3<-tibble(
-  yy=33, #2018, add +1 each year
+  yy=34, #2019, add +1 each year
   stock=as_factor(c(9,12,13)), # Ljungan, Morrum, unsampled stock
   Females=100,
   xx=as.numeric(NA)
@@ -97,6 +102,7 @@ dfSE<-df2%>%
   full_join(df1) # df1 has correct stock numbers
 
 # Check that stock >= 5 for all swedish stocks
+dfSE%>%filter(stock<5)
 #View(dfSE)
 
 
@@ -104,17 +110,17 @@ dfSE<-df2%>%
 # input to BUGS:
 
 length(dfFI$eggs)
-# 1699
+# 1754
 length(dfSE$xx)
-# 337
+# 344
 
 dfFI.bugs<-dfFI%>%
-  select(eggs, year, rivername, surv_eggs, M74, mortality100)
+  select(eggs, year, stock, surv_eggs, M74, mortality100)
 
 dfSE.bugs<-dfSE
   
-write_csv(dfFI.bugs, str_c(pathM74,"prg/input/M74dataFI19.csv"))
-write_csv(dfSE.bugs, str_c(pathM74,"prg/input/M74dataSE19.csv"))
+write_csv(dfFI.bugs, str_c(pathM74,"prg/input/M74dataFI20.csv"))
+write_csv(dfSE.bugs, str_c(pathM74,"prg/input/M74dataSE20.csv"))
 
 
 
