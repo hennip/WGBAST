@@ -12,7 +12,7 @@ for(loop in 1:10){
   # We will write the simulation results to the sim folder using 10 Rdata-files 
   # under these names 
   BH_dataFile<-
-      paste0(PathScen, "ScenHist_JAGSmodel", Model,"_",loop,"_long.RData") # name to separate historical part from future projections?
+      paste0(PathScen, "ScenHist_JAGSmodel", Model,"_",loop,".RData") # name to separate historical part from future projections?
 
   #Sims stores the numbers for the simulation in the MCMC chain
   sims<-c(1+100*(loop-1),100*loop)   #1st and last indices of sims
@@ -105,6 +105,7 @@ for(loop in 1:10){
   
   PFAtmpW<-iniAgeQuantW
   PFAtmpR<-iniAgeQuantR
+  PFAtmpW2<-iniAgeQuantW
   
   WOLL_HRtmp<-iniAgeQuantW;  WODN_HRtmp<-iniAgeQuantW
   WCDN_HRtmp<-iniAgeQuantW;  WCGN_HRtmp<-iniAgeQuantW
@@ -820,6 +821,11 @@ for(loop in 1:10){
         PFAtmpW[a,y,r,1,]<-PropCW[y-a+6]*WsalmStock[a,y,r,1,]*exp(-((WsalmNatMort[a,y,r,1,]*(11/12))+
                                                                       (WsalmNatMort[a,y,r,1,]*F_seal[y,a,AU[r]]/12)+
                                                                       (WsalmNatMort[2,y,r,1,]*(4/12))))
+       
+        # Stock specific PFA (without AU5-6 fish)
+        PFAtmpW2[a,y,r,1,]<-WsalmStock[a,y,r,1,]*exp(-((WsalmNatMort[a,y,r,1,]*(11/12))+
+                                   (WsalmNatMort[a,y,r,1,]*F_seal[y,a,AU[r]]/12)+
+                                   (WsalmNatMort[2,y,r,1,]*(4/12))))
         
         WODN_Ctmp[a,y,r,1,]<-WsalmStock[a,y,r,1,]*exp(-(WsalmNatMort[a,y,r,1,]*(7/12)))*
           exp(-(WsalmNatMort[a,y,r,1,]*F_seal[y,a,AU[r]]/12))*WODN_HRtmp[a,y,r,1,]
@@ -846,6 +852,9 @@ for(loop in 1:10){
     for(a in 2:6){
       PFAtmpW[a,y,,1,]<-PropCW[y-a+6]*WsalmStock[a,y,,1,]*exp(-(WsalmNatMort[a,y,,1,]*((8+6)/12)))
       PFAtmpR[a,y,,1,]<-PropCR[y-a+6]*RsalmStock[a,y,,1,]*exp(-(RsalmNatMort[a,y,,1,]*((8+6)/12)))
+
+      # Stock specific PFA, MW until Jan 1st
+      PFAtmpW2[a,y,,1,]<-WsalmStock[a,y,,1,]*exp(-(WsalmNatMort[a,y,,1,]*(8/12)))
       
       # On January 1st, the number of fish at sea caught by the offshore driftnet 
       # fishery is determined by
@@ -985,7 +994,7 @@ for(loop in 1:10){
   #!##########################################################################
   BS_data <- c(
     "PropCR","PropCW",
-    "PFAtmpW","PFAtmpR",
+    "PFAtmpW","PFAtmpR", "PFAtmpW2",
     "WsalmStock","RsalmStock","WsalmNatMort","RsalmNatMort",
     "WsalmMatRate","RsalmMatRate","F_seal","R_zero","BH_alpha","BH_beta","M74",
     "precisionBH", "BH_z","EffortICES", "EffortAssesUnit",

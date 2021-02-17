@@ -69,7 +69,8 @@ while(apu==0){
   # save the data for each of the pieces of the MCMC chain
   for(loop in 1:10){
 # loop<-1    
-    BH_dataFile<-paste0(PathScen, "ScenHist_JAGSmodel", Model,"_",loop,"_long.RData") 
+    #BH_dataFile<-paste0(PathScen, "ScenHist_JAGSmodel", Model,"_",loop,"_long.RData") 
+    BH_dataFile<-paste0(PathScen, "ScenHist_JAGSmodel", Model,"_",loop,".RData") 
     load(BH_dataFile)
   
     for(y in 1:Nyears){
@@ -95,6 +96,11 @@ while(apu==0){
       
       WCTN_C[,y,,sims[1]:sims[2]]<-WCTN_Ctmp[,y,,2,]
       RCTN_C[,y,,sims[1]:sims[2]]<-RCTN_Ctmp[,y,,2,]
+      WCGN_C[,y,,sims[1]:sims[2]]<-WCGN_Ctmp[,y,,2,]
+      RCGN_C[,y,,sims[1]:sims[2]]<-RCGN_Ctmp[,y,,2,]
+      WCDN_C[,y,,sims[1]:sims[2]]<-WCDN_Ctmp[,y,,2,]
+      RCDN_C[,y,,sims[1]:sims[2]]<-RCDN_Ctmp[,y,,2,]
+      
       WRF_C[,y,,sims[1]:sims[2]]<-WRF_Ctmp[,y,,2,]
       RRF_C[,y,,sims[1]:sims[2]]<-RRF_Ctmp[,y,,2,]
       WOLL_C[,y,,sims[1]:sims[2]]<-WOLL_Ctmp[,y,,1,]
@@ -104,6 +110,9 @@ while(apu==0){
       
       PFAW[,y,,sims[1]:sims[2]]<-PFAtmpW[,y,,1,]  
       PFAR[,y,,sims[1]:sims[2]]<-PFAtmpR[,y,,1,]  
+      
+      PFAW2[,y,,sims[1]:sims[2]]<-PFAtmpW2[,y,,1,]  
+      
     }
     for(y in 1:Nyears){
       MW[,y,,,sims[1]:sims[2]]<-WsalmNatMort[,y,,,]
@@ -317,6 +326,10 @@ while(apu==0){
     RODN_HR[,y,1:4,]<-0
     WODN_C[,y,1:Nstocks,]<-0
     RODN_C[,y,1:4,]<-0
+    WCDN_C[,y,1:Nstocks,]<-0
+    RCDN_C[,y,1:4,]<-0
+    WCGN_C[,y,1:Nstocks,]<-0 # All future coastal fishery is accounted for in the CTN
+    RCGN_C[,y,1:4,]<-0
     
     #AU4 effort=0
     for(u in 1:4){
@@ -378,7 +391,7 @@ while(apu==0){
     for(a in 1:6){
       for(r in 1:Nstocks){
         #a<-2;r<-1
-
+  
         # 2/12: May, June
         WCTN_C[a,y,r,]<- MatW_1[a,y,r,]*exp(-(MW[a,y,r,2,]*(1/12)))*
           exp(-(MW[a,y,r,2,]*F_seal[y,a,AU[r]]*(1/12)))*WCTN_HR[a,y,r,]
@@ -442,6 +455,9 @@ while(apu==0){
         PFAW[a,y,r,]<-PropCW[y-a+6]*ImmW_1[a,y,r,]*
           exp(-((MW[a,y,r,1,]*(11/12))+(MW[a,y,r,1,]*F_seal[y,a,AU[r]]/12)+(MW[2,y,r,1,]*(4/12))))
         
+        PFAW2[a,y,r,]<-ImmW_1[a,y,r,]*
+          exp(-((MW[a,y,r,1,]*(11/12))+(MW[a,y,r,1,]*F_seal[y,a,AU[r]]/12)+(MW[2,y,r,1,]*(4/12))))
+        
         WOLL_C[a,y,r,]<-PropCW[y-a+6]*(ImmW_1[a,y,r,]*exp(-(MW[a,y,r,1,]*(8/12)))*
           exp(-(MW[a,y,r,1,]*F_seal[y,a,AU[r]]/12))*WOLL_HR[a,y,r,])
          
@@ -472,6 +488,9 @@ while(apu==0){
       # the year of pfa is the same as the year of winter fishing
       PFAW[a,y,,]<-PropCW[y-a+6]*ImmW_1[a,y,,]*exp(-(MW[a,y,,1,]*((8+6)/12)))
       PFAR[a,y,,]<-PropCR[y-a+6]*ImmR_1[a,y,,]*exp(-(MR[a,y,,1,]*((8+6)/12)))
+      
+      PFAW2[a,y,,]<-ImmW_1[a,y,,]*exp(-(MW[a,y,,1,]*(8/12)))
+      
       
       #this used to be in an a in 2:6 loop but seems to be an error as a indexing was missing
       #WOLL_HR is 0 for smolts
@@ -564,6 +583,8 @@ while(apu==0){
     }
   }
     
+  CoastCatchW<-WCTN_C+WCGN_C+WCDN_C
+  CoastCatchR<-RCTN_C+RCGN_C+RCDN_C
   CatchSeaW<-WOLL_C+WODN_C
   CatchSeaR<-ROLL_C+RODN_C
   RiverCatchW<-WRF_C

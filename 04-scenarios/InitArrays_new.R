@@ -24,6 +24,10 @@ TotR_HR<-array(NA, dim=c(2,Nyears, nsim))
 
 WCTN_C<-array(NA, dim=c(6,Nyears,Nstocks, nsim))
 RCTN_C<-array(NA, dim=c(6,Nyears,4, nsim))
+WCGN_C<-array(NA, dim=c(6,Nyears,Nstocks, nsim))
+RCGN_C<-array(NA, dim=c(6,Nyears,4, nsim))
+WCDN_C<-array(NA, dim=c(6,Nyears,Nstocks, nsim))
+RCDN_C<-array(NA, dim=c(6,Nyears,4, nsim))
 WRF_C<-array(NA, dim=c(6,Nyears,Nstocks,nsim))
 RRF_C<-array(NA, dim=c(6,Nyears,4,nsim))
 WOLL_C<-array(NA, dim=c(6,Nyears,Nstocks,nsim))
@@ -85,6 +89,7 @@ FecR<-array(NA, dim = c(6,Nyears,nsim))
 
 # Pre fishery abundances for wild and reared
 PFAW<-array(NA, dim=c(6,Nyears,Nstocks,nsim))
+PFAW2<-array(NA, dim=c(6,Nyears,Nstocks,nsim))
 PFAR<-array(NA, dim=c(6,Nyears,4,nsim))
 
 BHalpha<-array(NA, dim=c(nsim,Nstocks))

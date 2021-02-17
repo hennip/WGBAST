@@ -27,8 +27,8 @@ source("C:/Rprojects/WGBAST/04-scenarios/paths_scens.r") #Henni
 
 # ===============
 
-Model<-"2020" # Assessment model version, hist model from 2019 assessment
-#Model<-"2020_updated" # Assessment model version, updated with 2019 data
+#Model<-"2020" # Assessment model version, hist model from 2019 assessment
+Model<-"2020_updated" # Assessment model version, updated with 2019 data
 
 #stocknames<-read.table(paste0(PathData,"rivernames.txt")) # proper names
 stock_indices<-c(1:17)
@@ -89,12 +89,12 @@ EffScen<-1
 
 
 Coef1<-1 # This can be 1!
-CoefTrollingF<-0.737 # # this coef produces the targetTr of recr catch when commercial fisheries are removed 
+CoefTrollingF<-1.245#0.737 # # this coef produces the targetTr of recr catch when commercial fisheries are removed 
 
 targetTr<-26.7 # Target trolling catch
 # Target is the total removal, including commercial and recreational,
 # discards, unrep and misrep
-if(EffScen==1){Coef2<-1.611; target<-142.7} # previous advice approach
+if(EffScen==1){Coef2<-2.582; target<-142.7} # previous advice approach
 if(EffScen==2){Coef2<-2.78; target<-165.9} #+20%
 if(EffScen==3){Coef2<-1.761; target<-119.5} #-20%
 if(EffScen==8){Coef2<-5.237; target<-258.7} #+100% 
@@ -155,6 +155,7 @@ Perform_Stats <- c(
   "MW", "MR", "F_seal", "AU",
   "BHalpha", "BHbeta",
   "May1stW","May1stR",
+  "ImmW_1", "ImmR_1", # Immature at may 1st
   "MatW_1", "MatR_1", # "MigrW","MigrR",
   "MatW_2", "MatR_2", # number ascending to rivers, history currently NA (if added, needs to be saved from Inputs)
   "MatW_3", "MatR_3", # Same as spW_age but indexes in a different order
@@ -175,13 +176,14 @@ Perform_Stats <- c(
   "Migr_AU1R","Migr_AU13R","Migr_AU13tot",
   "MorrumSeaCatch","MorrumRiverCatch",
   "RiverCatchW","RiverCatchR",
-  "PFAW", "PFAR",
+  "CoastCatchW", "CoastCatchR",
+  "PFAW", "PFAR", "PFAW2",
   "WOLL_C", "ROLL_C", #  "WOLLCtot", "ROLLCtot",
   "WCTN_C", "RCTN_C" #  "WCTNCtot", "RCTNCtot"
 )
 
 # Save to RData-file
-File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,"_new_check.RData")
+File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,"_new.RData")
 save(list = Perform_Stats, file = File)
 
 # =============================================================

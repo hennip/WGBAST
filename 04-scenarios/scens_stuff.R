@@ -14,9 +14,9 @@ Model<-"2020_updated"
 
 # Time
 LastHistYear<-2019
-#LastPredYear<-2032
-ymax<-15
-LastPredYear<-LastHistYear+ymax
+LastPredYear<-2032
+#ymax<-15
+#LastPredYear<-LastHistYear+ymax
 year<-c(1992:LastPredYear)
 Nyears<-length(year)
 Nstocks<-17
