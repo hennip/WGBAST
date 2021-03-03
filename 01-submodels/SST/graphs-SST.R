@@ -33,7 +33,7 @@ ggplot(df.plot) +
 
 
 # Expected April temperatures (median & 95% PI) from the model
-(april<-read_xlsx("01-submodels/SST/output-aprilSST.xlsx",skip=3))
+(april<-read_xlsx("H:/Projects/WGBAST/SST/2021/output-aprilSST.xlsx",skip=3))
 april<-mutate(april,Year=year)%>%
 select(-year)
 
