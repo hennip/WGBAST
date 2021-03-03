@@ -1,17 +1,17 @@
 ## ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 # Project: 		 Baltic salmon stock assessment (WGBAST)
 
-# Contents:		 Calculate catches and efforts for Latvia
+# Contents:		 Calculate catches and efforts for Lithuania
 
 ## ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 
 
-latvia<-filter(salmon, COUNTRY=="LV", FISHERY=="O")
+lithuania<-filter(salmon, COUNTRY=="LT", FISHERY=="O" | FISHERY=="C")
 
-latvia%>%count(TP_TYPE)
-# Only MON/QTR
+lithuania%>%count(TP_TYPE)
+# MON/QTR/YR
 
-latvia%>%
+lithuania%>%
   group_by(FISHERY)%>%
   count(GEAR)
 
@@ -20,7 +20,7 @@ latvia%>%
 ################################################################################
 # Gear GND
 
-Lat_ODN<-latvia%>%
+Lit_ODN<-lithuania%>%
   filter(GEAR=="GND")%>%
   group_by(YEAR, HYR)%>%
   summarise(Catch=sum(NUMB, na.rm=T),
@@ -31,36 +31,25 @@ Lat_ODN<-latvia%>%
 #  Longlining:
 ################################################################################
 
-latvia%>%
+#lithuania%>%
+#  filter(GEAR!="GND" & GEAR!="AN")%>%
+#  filter(is.na(HYR)==T)
+
+# Effort
+LitE_OLL<-lithuania%>%
   filter(GEAR=="LLD")%>%
   group_by(YEAR, HYR)%>%
   summarise(Effort=round(sum(EFFORT, na.rm=T)))
 
-# No LV effort -> calculate effort with catch & CPUE from other countries
-
-# Effort
-# LatE_OLL<-latvia%>%
-#   filter(GEAR=="LLD")%>%
-#   group_by(YEAR, HYR)%>%
-#   summarise(Effort=round(sum(EFFORT, na.rm=T)))
-
-View(OLL_CPUE)
-
 # Catch
-LatC_OLL<-latvia%>%
+LitC_OLL<-lithuania%>%
   filter(GEAR!="GND" & GEAR!="AN")%>% 
   group_by(YEAR, HYR)%>%
+  mutate(HYR=ifelse(is.na(HYR)==T, 1, HYR))%>% # 2008 catch data missing HYR information, set HYR as 1
   summarise(Catch=round(sum(NUMB, na.rm=T)))
 
-LatE_OLL_est<-full_join(LatC_OLL, select(OLL_CPUE, YEAR, HYR, CPUE_tot))%>%
-  mutate(Effort=round(Catch/CPUE_tot))%>%
-  filter(is.na(Catch)==F)
+Lit_OLL<-full_join(LitC_OLL, LitE_OLL)
 
-#Lat_OLL<-full_join(LatC_OLL, LatE_OLL)
-Lat_OLL<-full_join(LatC_OLL, LatE_OLL_est)%>%
-  select(-CPUE_tot)
+#filter(Lit_OLL, YEAR>2016)%>%
+#  mutate(cpue=Catch/Effort)
 
-# latvia%>%
-#   filter(GEAR=="LLD")%>%
-#   group_by(YEAR, HYR)%>%
-#   summarise(catch=round(sum(NUMB, na.rm=T)))

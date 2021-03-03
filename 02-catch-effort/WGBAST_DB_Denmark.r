@@ -14,7 +14,7 @@ denmark%>%
   group_by(FISHERY, TP_TYPE)%>%
   count(GEAR)
 
-filter(denmark, TP_TYPE=="YR") # All YR data is RECR AN O
+filter(denmark, TP_TYPE=="YR", F_TYPE!="RECR", GEAR!="AN") # All YR data is RECR AN O
 
 # Do not take into account RECR AN at Offshore, that will be calculated separately!
 

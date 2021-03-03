@@ -159,7 +159,7 @@ Fin_COT_YR<-finland%>%
 tmp1<-Fin_OTtot%>%
   select(-Effort_COT)%>%
   ungroup()%>%
-  group_by(YEAR, add=T)%>%
+  group_by(YEAR, .add=T)%>%
   mutate(sumC=sum(Catch_COT))%>%
   mutate(p=Catch_COT/sumC)
 
@@ -267,3 +267,4 @@ Fin_R<-finland%>%
   summarise(Catch=round(sum(NUMB, na.rm=T)))%>%
   select(-HYR)
 Fin_R        
+

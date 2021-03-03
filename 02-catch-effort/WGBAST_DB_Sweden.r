@@ -65,7 +65,7 @@ tmp1<-Swe_sea%>%
   group_by(YEAR, HYR)%>%
   summarise(Catch_HYR=round(sum(NUMB, na.rm=T)))%>%
   mutate(sumC=sum(Catch_HYR))%>%
-  group_by(YEAR, add=T)%>%
+  group_by(YEAR, .add=T)%>%
   mutate(p=Catch_HYR/sumC)
 
 tmp2<-Swe_sea%>%
@@ -127,7 +127,7 @@ tmp1<-Swe_coast%>%
   group_by(YEAR, HYR)%>%
   summarise(Catch_HYR=round(sum(NUMB, na.rm=T)))%>%
   mutate(sumC=sum(Catch_HYR))%>%
-  group_by(YEAR, add=T)%>%
+  group_by(YEAR, .add=T)%>%
   mutate(p=Catch_HYR/sumC)
 
 tmp2<-Swe_coast%>%
@@ -149,7 +149,7 @@ tmp1<-Swe_coast%>%
   group_by(YEAR, HYR)%>%
   summarise(Catch_HYR=round(sum(NUMB, na.rm=T)))%>%
   mutate(sumC=sum(Catch_HYR))%>%
-  group_by(YEAR, add=T)%>%
+  group_by(YEAR, .add=T)%>%
   mutate(p=Catch_HYR/sumC)
 
 # No YR OT data!
@@ -244,7 +244,7 @@ tmp1<-Swe_coast%>%
   group_by(YEAR, HYR)%>%
   summarise(Catch_HYR=round(sum(NUMB, na.rm=T)))%>%
   mutate(sumC=sum(Catch_HYR))%>%
-  group_by(YEAR, add=T)%>%
+  group_by(YEAR, .add=T)%>%
   mutate(p=Catch_HYR/sumC)
 
 tmp2<-Swe_coast%>%
@@ -266,7 +266,7 @@ tmp1<-Swe_coast%>%
   group_by(YEAR, HYR)%>%
   summarise(Catch_HYR=round(sum(NUMB, na.rm=T)))%>%
   mutate(sumC=sum(Catch_HYR))%>%
-  group_by(YEAR, add=T)%>%
+  group_by(YEAR, .add=T)%>%
   mutate(p=Catch_HYR/sumC)
 
 tmp2<-Swe_coast%>%
@@ -289,7 +289,7 @@ tmp1<-Swe_coast%>%
   group_by(YEAR, HYR)%>%
   summarise(Catch_HYR=round(sum(NUMB, na.rm=T)))%>%
   mutate(sumC=sum(Catch_HYR))%>%
-  group_by(YEAR, add=T)%>%
+  group_by(YEAR, .add=T)%>%
   mutate(p=Catch_HYR/sumC)
 
 tmp2<-Swe_coast%>%
@@ -312,7 +312,7 @@ tmp1<-Swe_coast%>%
   group_by(YEAR, HYR)%>%
   summarise(Catch_HYR=round(sum(NUMB, na.rm=T)))%>%
   mutate(sumC=sum(Catch_HYR))%>%
-  group_by(YEAR, add=T)%>%
+  group_by(YEAR, .add=T)%>%
   mutate(p=Catch_HYR/sumC)
 
 tmp2<-Swe_coast%>%
