@@ -13,15 +13,16 @@ library(gridExtra)
 
 
 min_year<-2000
-max_year<-2019
+max_year<-2020
 years<-min_year:max_year
 NumYears<-length(years)
 
-pathIn<-"H:/Projects/WGBAST/FLHM/2020/"
+pathIn<-"H:/Projects/WGBAST/FLHM/2021/"
 
 df<-read_xlsx(str_c(pathIn, 
-                    "dat/orig/catch&effort/WGBAST_Catch_2020_Tartu_02042020_ver2.xlsx"),
-              range="A1:Q13936", # Update!
+                    #"dat/orig/catch&effort/WGBAST_2021_Catch_18022021_Hennille.xlsx"),
+              "dat/orig/WGBAST_2021_Catch_18022021_Hennille.xlsx"),
+              range="A1:Q15115", # Update!
               sheet="Catch data", col_names = T, guess_max = 8000, na=c("",".", "NaN"))%>%
   filter(YEAR>2005)%>% # Include results only 2009 onwards, catch DB has only updates from those years 
   mutate(NUMB=parse_double(NUMB))%>%
@@ -58,17 +59,18 @@ df2<-df%>%filter(SUB_DIV!=32, F_TYPE!="DISC", F_TYPE!="SEAL",F_TYPE!="ALV",F_TYP
 MON<-df2%>%filter(TP_TYPE=="MON")%>%mutate(HYR=ifelse(TIME_PERIOD<7,1,2))
 QTR<-df2%>%filter(TP_TYPE=="QTR")%>%mutate(HYR=ifelse(TIME_PERIOD<3,1,2))
 HYR<-df2%>%filter(TP_TYPE=="HYR")%>%mutate(HYR=ifelse(TIME_PERIOD<2,1,2))
-YR<-df2%>%filter(TP_TYPE=="YR")%>%mutate(HYR="NA")%>%mutate(HYR=parse_double(HYR))
+YR<-df2%>%filter(TP_TYPE=="YR")%>%mutate(HYR="NA")%>%mutate(HYR=parse_double(HYR)) 
 
 df2<-full_join(MON, QTR)%>%
   full_join(HYR)%>%
   full_join(YR)%>%
   select(SPECIES, COUNTRY, YEAR, TIME_PERIOD, TP_TYPE, HYR, sub_div2, FISHERY, F_TYPE, GEAR, NUMB, EFFORT, everything())
-# 8326
+# 9767
 
 salmon<-df2%>%filter(SPECIES=="SAL")
-#3546
+#4183
 
+source("02-catch-effort/WGBAST_DB_Lithuania.r")
 source("02-catch-effort/WGBAST_DB_Germany.r")
 source("02-catch-effort/WGBAST_DB_Latvia.r")
 source("02-catch-effort/WGBAST_DB_Denmark.r")
@@ -146,6 +148,7 @@ ifelse(pl==1,
        )
 
 OLL<-full_join(Ger_OLL, Den_OLL)%>%
+  full_join(Lit_OLL)%>%
   full_join(Lat_OLL)%>%
   full_join(Fin_OLL)%>%
   full_join(Swe_OLL)%>%
@@ -206,6 +209,8 @@ full_join(Swe_R,Fin_R)%>%
 # Ignore that Ger and Swe (2012->) effort data are missing. Catches are quite low.
 
 OLL<-full_join(Ger_OLL, Den_OLL)%>%
+  full_join(Lat_OLL)%>%
+#  full_join(Lit_OLL)%>% # Strangely large effort, but small catch. Ignore
   full_join(Fin_OLL)%>%
   full_join(Swe_OLL)%>%
   full_join(PolE_OLL)
@@ -284,7 +289,7 @@ cbind(yearx,COT_AU1, COT_AU2, COT_AU3)
 #########################
 
 salmon%>%
-  filter(YEAR>2017, F_TYPE=="RECR", FISHERY=="O", GEAR=="AN")%>%
+  filter(YEAR>2015, F_TYPE=="RECR", FISHERY=="O", GEAR=="AN")%>%
   group_by(YEAR)%>%
   summarise(Catch=sum(NUMB))
   
@@ -294,5 +299,6 @@ salmon%>%
   summarise(Catch=sum(NUMB))
 
 
-
+View(salmon%>%
+       filter(YEAR>2015,F_TYPE=="RECR", FISHERY=="C", GEAR=="AN"))
 
