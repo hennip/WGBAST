@@ -1,0 +1,214 @@
+---
+title: "Comparison of two WGBAST JAGS runs"
+author: ""
+date: "`r format(Sys.time(), '%d/%m/%y')`"
+output: html_document
+---
+  
+  
+```{r setup, include=F, cache=F}
+#knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+
+source("05-results/flhm-compare/models-select.r")
+
+```
+
+## Grey boxplots:
+
+`r Mname1`
+
+## Black boxplots:
+
+`r Mname2`
+
+
+# Mps
+
+```{r cache=F, include=F}
+knitr::read_chunk("05-results/flhm-compare/compare-Mps.r")
+
+```
+
+```{r load-mps, include=F}
+
+```
+
+```{r graphs-mps, echo=F}
+
+```
+
+```{r graphs-mortality-traces, echo=F}
+
+```
+
+
+
+
+# Homing rates
+
+```{r cache=F, include=F}
+knitr::read_chunk("05-results/flhm-compare/compare-maturation.r")
+
+```
+
+```{r load-mat, include=F}
+
+```
+
+```{r graphs-mat, echo=F}
+
+```
+
+```{r graphs-mat-traces, echo=F}
+
+```
+
+# SR parameters
+
+```{r cache=F, include=F}
+knitr::read_chunk("05-results/flhm-compare/compare-SR.r")
+
+```
+
+```{r load-SR, include=F}
+
+```
+
+```{r graphs-SR, echo=F}
+
+```
+
+psrf > 1.1
+```{r graphs-SR-traces, echo=F}
+
+```
+
+
+# Wild proportions
+
+```{r cache=F, include=F}
+knitr::read_chunk("05-results/flhm-compare/compare-wprop.r")
+
+```
+
+```{r load-wprop, include=F}
+
+```
+
+```{r graphs-wprop, echo=F, warning=F}
+
+```
+
+```{r graphs-wprop-traces, echo=F, warning=F}
+
+```
+
+
+
+
+# Catches
+
+```{r cache=F, include=F}
+knitr::read_chunk("05-results/flhm-compare/compare-catches.r")
+
+```
+
+```{r load-catches, include=F}
+
+```
+
+```{r graphs-catches, echo=F, warning=F}
+
+```
+
+
+# Catchabilities
+```{r cache=F, include=F}
+knitr::read_chunk("05-results/flhm-compare/compare-q.r")
+
+```
+
+```{r load-q, include=F}
+
+```
+
+```{r graphs-q, echo=F, warning=F}
+
+```
+
+```{r graphs-q-traces, echo=F, warning=F}
+
+```
+
+
+
+# Harvest rates
+```{r cache=F, include=F}
+knitr::read_chunk("05-results/flhm-compare/compare-HR.r")
+
+```
+
+```{r load-HR, include=F}
+
+```
+
+
+
+```{r graphs-Hr, echo=F, warning=F}
+
+```
+
+```{r graphs-Hc, echo=F, warning=F}
+
+```
+
+```{r graphs-Hdc, echo=F, warning=F}
+
+```
+
+```{r graphs-Hdo, echo=F, warning=F}
+
+```
+
+```{r graphs-Hl, echo=F, warning=F}
+
+```
+
+```{r graphs-Ht, echo=F, warning=F}
+
+```
+
+
+
+
+# Number of smolts
+
+```{r cache=F, include=F, eval=T}
+knitr::read_chunk("05-results/flhm-compare/compare-smolts.r")
+
+```
+
+```{r load-smolts, include=F}
+
+```
+
+```{r graphs-smolts, echo=F, warning=F}
+
+```
+
+
+
+# Number of spawners
+```{r cache=F, include=F}
+knitr::read_chunk("05-results/flhm-compare/compare-Nsp.r")
+
+```
+
+```{r load-nsp, include=F}
+
+```
+
+```{r graphs-nsp, echo=F, warning=F}
+
+```

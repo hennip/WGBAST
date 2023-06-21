@@ -1,0 +1,31 @@
+
+model{
+  means~dbeta(2,2)
+  mu<-log(means/(1-means))	
+  c<-mu*(1-w)
+  sigma2~dunif(0,10)
+  sigma2e<-(1-w*w)*sigma2
+  tau<-1/sigma2e
+  w~dunif(0,1)
+  
+  for(r in 1:Nstocks){
+    x[1,r]~dnorm(0,0.001)
+
+    for(i in 2:(Nyears+9)){
+      x[i,r]<-x[i-1,r]*w+e[i,r]
+      e[i,r]~dnorm(c,tau)
+      logit(S[i,r])<-x[i,r]
+    }
+
+    for(i in 1:Nyears){ #1992->  :history
+      M74_obs[i,r]~dnorm(x[i,r],T_obs[i,r])
+      T_obs[i,r]<-1/pow(sd_obs[i,r],2)
+    }
+  }
+	for(i in 1:(Nyears+9)){
+		meanx[i]<-mean(x[i,1:Nstocks])
+  }
+  pred_averageMean[1]<-mean(meanx[1:8]) # 1992:1999
+  pred_averageMean[2]<-mean(meanx[1:31]) # 1992:2022
+
+}

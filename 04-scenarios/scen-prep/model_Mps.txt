@@ -1,0 +1,40 @@
+
+model{
+	
+  # input from the model
+  # Mps_obs: Medians of the instantaneous mortalities 
+  # cv_obs: Cv's of the instantaneous mortalities
+  for(i in 1:m){
+    Mps_obs[i]~dlnorm(logM[i],T_obs[i])
+    T_obs[i]<-1/log(cv_obs[i]*cv_obs[i]+1)
+  }
+  
+  # 1st time step
+  x[1]~dnorm(0,0.1)
+  M[1]<--log(S[1])
+  logit(S[1])<-x[1]
+  logM[1]<-log(M[1])
+  
+  # next time steps
+  for(i in 2:100){
+    x[i]<-x[i-1]*w+e[i] # AR(1)
+    e[i]~dnorm(c,tau)
+    M[i]<--log(S[i])
+    logit(S[i])<-x[i]
+    logM[i]<-log(M[i])
+  }
+  
+  means~dbeta(2,2)	# mean
+  mu<-log(means/(1-means)) # mean on logit-scale
+  c<-mu*(1-w)
+  sigma2~dunif(0,1)
+  sigma2e<-(1-w*w)*sigma2 # variance of the error term
+  tau<-1/sigma2e
+  w~dunif(0,1) # autocorrelation coefficient
+  
+  pred_averageMean<-mean(x[32:35]) #2018-2021, 4 year average without last year which is more uncertain
+  #pred_averageLow<-x[19] # 19= 2005
+  #pred_averageLast<-x[25] # 25= 2011
+  #pred_average<-mu
+
+}
