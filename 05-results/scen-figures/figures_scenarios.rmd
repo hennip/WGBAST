@@ -1,0 +1,131 @@
+---
+title: "Scen pics from flhm 2023"
+output:
+  html_document:
+    keep_md: true
+---
+
+RMD document to draw scenario pictures for WGBAST report based on 
+flhm and scenario results.Pictures will be automatically set to
+be at sufficient quality (300dpi)
+
+```{r dir-set, include=FALSE, cache=FALSE}
+#   dev = "png" saves all figures as png
+#   fig.path is the path for saving figures
+knitr::opts_chunk$set(#dev = "png",
+                      dpi = 300,
+                      echo = TRUE
+                      #cache = TRUE,
+                      #fig.path = "03-histmodel/figures/modded for rmd/figures_rdy/"
+                      )
+#   setting directory for rmd document, otherwise uses location of rmd as root
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+#   loading paths etc
+source("run-this-first.R")                   
+
+```
+
+
+```{r setup, include=FALSE}
+
+
+source(paste0(PathBasics,"boxplot-functions.R"))
+source(paste0(PathBasics,"plotfunctions.R"))
+source(paste0(PathBasics,"tidy-functions_2chains.R"))
+
+#   libraryrs
+library(tidyverse)
+library(runjags)
+#library(R2jags)
+library(gridExtra)
+library(cowplot)
+library(coda)
+library(writexl)
+library(stringr)
+library(grid)
+library(gridExtra)
+
+#   loading results
+load(file.path(PathOut_FLHM, "FLHM_2023_rivHR_data2023_thin350.RData"))
+#   result are stored in run named object
+
+#   chains
+chains = run %>% as.mcmc() %>% window(thin = run$thin*4)
+
+Model<-"2023"
+
+
+PathScen<-paste0(PathOut_Scen, Model, "/output/") # scenario results
+PathRefP = paste0(PathOut_Scen, Model, "/Ref pts/") # refpoints already calculated
+
+
+#source("04-scenarios/paths_scens.r")
+#source("04-scenarios/scens_stuff.r")
+
+# Version of the estimation model
+
+# Time
+
+LastHistYear<-2022
+#LastPredYear<-2032
+ymax<-40
+LastPredYear<-LastHistYear+ymax
+year<-c(1992:LastPredYear)
+Nyears<-length(year)
+Nstocks<-17
+Years<-c(1992:LastHistYear)
+yBreak<-length(Years)
+nsim<-1000
+
+RiverNames<-c("Tornionjoki","Simojoki","Kalixälven","Råneälven"
+              ,"Piteälven","Åbyälven","Byskeälven","Rickleån","Sävarån"
+              ,"Vindelälven","Öreälven","Lögdeälven","Ljungan","Mörrumsån"
+              ,"Emån", "Kågeälven","Testeboån")
+
+
+```
+
+
+Figure 4324 Catch_Graphs
+```{r, F4_3_2_4, warning=FALSE, message=FALSE, fig.height=7.5}
+source("05-results/scen-figures/rmd_figures/CatchGraphs.R", local = knitr::knit_global(), encoding = "UTF-8")
+```
+
+Figure 4321_Mps & M74
+```{r, F4_3_2_1 & M74, warning=FALSE, message=FALSE, fig.height=7.5}
+source("05-results/scen-figures/rmd_figures/F4321_Mps&M74.R", local = knitr::knit_global(), encoding = "UTF-8")
+```
+
+Figure 4322_Maturation
+```{r, F4_3_2_2, warning=FALSE, message=FALSE, fig.height=7.5}
+source("05-results/scen-figures/rmd_figures/F4322_Maturation.R", local = knitr::knit_global(), encoding = "UTF-8")
+```
+
+Figure 4328_HarvestRate
+```{r, F4_3_2_8, warning=FALSE, message=FALSE}
+source("05-results/scen-figures/rmd_figures/HarvestRateGraphs.R", local = knitr::knit_global(), encoding = "UTF-8")
+```
+
+Figure 4326_IncreaseInSmoltProduction
+```{r, F4_3_2_6, warning=FALSE, message=FALSE, fig.height=10, fig.width=7.5}
+source("05-results/scen-figures/rmd_figures/IncreaseInSmoltProduction.R", 
+       local = knitr::knit_global(), encoding = "UTF-8")
+```
+
+Figure 4323_PFA
+```{r, F4_3_2_3, warning=FALSE, message=FALSE, fig.height=10, fig.width=7.5}
+source("05-results/scen-figures/rmd_figures/F4323_PFA.R", 
+       local = knitr::knit_global(), encoding = "UTF-8")
+```
+
+Figure Annual riskriver-graph
+```{r, F4_ risk, warning=FALSE, message=FALSE, fig.height=10, fig.width=7.5}
+source("05-results/scen-figures/rmd_figures/annualriskrivergraph.R", 
+       local = knitr::knit_global(), encoding = "UTF-8")
+```
+
+Figure 4328
+```{r, F4_3_2_8_SmoSpa, warning=FALSE, message=FALSE, fig.height=10, fig.width=7.5}
+source("05-results/scen-figures/rmd_figures/F4328_smoltspawners.R", 
+       local = knitr::knit_global(), encoding = "UTF-8")
+```

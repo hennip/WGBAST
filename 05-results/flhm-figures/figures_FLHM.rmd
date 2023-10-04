@@ -1,0 +1,190 @@
+---
+title: "Pics from flhm 2023"
+output:
+  html_document:
+    keep_md: true
+---
+#    mitä tekee 
+
+
+RMD document to draw pictures for WGBAST report based on flhm results without
+result from scenarios and Rmsy,lim,0
+Pictures will be automatically set to be at sufficient quality (300dpi)
+```{r dir-set, include=FALSE}
+#   dev = "png" saves all figures as png
+#   fig.path is the path for saving figures
+knitr::opts_chunk$set(#dev = "png",
+                      dpi = 300,
+                      echo = TRUE
+                      #cache = TRUE,
+                      #fig.path = "03-histmodel/figures/modded for rmd/figures_rdy/"
+                      )
+#   setting directory for rmd document, otherwise uses location of rmd as root
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+#   this sets paths etc
+source("run-this-first.R") 
+
+
+```
+
+```{r setup, include=FALSE}
+
+
+source(paste0(PathBasics,"boxplot-functions.R"))
+source(paste0(PathBasics,"plotfunctions.R"))
+source(paste0(PathBasics,"tidy-functions_2chains.R"))
+
+#   libraryrs
+library(tidyverse)
+library(runjags)
+library(R2jags)
+library(gridExtra)
+library(cowplot)
+
+
+#   setting some parameters for global options for all plots
+
+#   loading results
+#   change last part to the most recent results file
+load(file.path(PathOut_FLHM, "FLHM_2023_rivHR_data2023_thin350.RData"))
+#   result are stored in run named object
+
+
+#   my scripts use path called PathData, just assigning it to PathData_FLHM 
+#   from run-this-firs.R file
+PathData = PathData_FLHM
+folder<-PathData
+#   thinning to get 1000 samples for faster plotting, original size is 4000
+chains = run %>% as.mcmc() %>% window(thin = run$thin*4)
+#   some pictures use matixpresentation of chains
+d <- as.matrix(chains)
+#   years
+years <- Years <- c(1987:2023)
+#   deletes last element from years
+Years_m <- Years[-length(Years)]
+
+
+#   stocks
+Nstocks <- nstocks <- allstocks <- 17
+assessment_year <- 2023
+
+#   number of chains
+nchains = 1
+nsim = nrow(chains)
+
+#   priors for K:s
+#source("05-results/flhm-figures/rmd_prior&data/run_FLHM_priors_2023.R")
+source("05-results/flhm-figures/rmd_prior_data/run_FLHM_priors_2023.R")
+
+#   Rivernames
+#Rivernames<-read.table(file="C:/Users/03195892.VALTION/OneDrive - #Valtion/WGBAST_shared/data_2021/rivernames.txt")
+
+RiverNames<-c("Tornionjoki","Simojoki","Kalixälven","Råneälven"
+              ,"Piteälven","Åbyälven","Byskeälven","Rickleån","Sävarån"
+              ,"Vindelälven","Öreälven","Lögdeälven","Ljungan","Mörrumsån"
+              ,"Emån", "Kågeälven","Testeboån")
+Rivernames <- cbind(RiverNames)
+
+
+
+```
+
+
+Figure 4211_K
+```{r, F4_2_1_1, warning=FALSE, message=FALSE}
+#source("03-histmodel/figures/modded for rmd/F4211_K.R", local = knitr::knit_global(),
+source("05-results/flhm-figures/rmd_figures/F4211_K.R", 
+       local = knitr::knit_global(), encoding = "UTF-8")
+
+```
+
+Figure 4321_Mps
+```{r, F4_2_3_1, warning=FALSE, message=FALSE}
+#source("03-histmodel/figures/modded for rmd/F4321_Mps.R", local = knitr::knit_global(), 
+source("05-results/flhm-figures/rmd_figures/F4321_Mps.R", 
+       local = knitr::knit_global(), encoding = "UTF-8")
+```
+
+Figure 4232_Maturation
+```{r, F4_2_3_2, warning=FALSE, message=FALSE, fig.height=7.5}
+#knitr::opts_chunk$set(fig.width=1600, fig.height = 2000, unit = "px")
+#source("03-histmodel/figures/modded for rmd/F4232_Maturation.R", local = #knitr::knit_global(), encoding = "UTF-8")
+source("05-results/flhm-figures/rmd_figures/F4232_Maturation.R", 
+       local = knitr::knit_global(), encoding = "UTF-8")
+```
+
+Figure 4233_SR
+```{r, F4_2_3_3, warning=FALSE, message=FALSE, fig.height=10}
+#knitr::opts_chunk$set(fig.width=1600, fig.height = 2000, unit = "px")
+#source("03-histmodel/figures/modded for rmd/F4233_SR.R", local = knitr::knit_global(), 
+#       encoding = "UTF-8")
+source("05-results/flhm-figures/rmd_figures/F4233_SR.R", 
+       local = knitr::knit_global(), encoding = "UTF-8")
+
+``` 
+
+Figure 4236_Catch
+```{r, F4_2_3_6, warning=FALSE, message=FALSE, fig.height=10, fig.width=10}
+#knitr::opts_chunk$set(fig.width=1600, fig.height = 2000, unit = "px")
+#source("03-histmodel/figures/modded for rmd/F4236_Catch.R", local = knitr::knit_global(), 
+#       encoding = "UTF-8")
+source("05-results/flhm-figures/rmd_figures/F4236_Catch.R", 
+       local = knitr::knit_global(), encoding = "UTF-8")
+``` 
+
+Figure 4237_Wprop
+```{r, F4_2_3_7, warning=FALSE, message=FALSE}
+#source("03-histmodel/figures/modded for rmd/F4237_Wprop.R", local = knitr::knit_global(), 
+#       encoding = "UTF-8")
+source("05-results/flhm-figures/rmd_figures/F4237_Wprop.R", 
+       local = knitr::knit_global(), encoding = "UTF-8")
+``` 
+
+Figure 4238_Spawners
+```{r, F4_2_3_8, warning=FALSE, message=FALSE, fig.height=7.5}
+#knitr::opts_chunk$set(fig.width=1600, fig.height = 2000, unit = "px")
+#source("03-histmodel/figures/modded for rmd/F2438_Spawners.R", local = #knitr::knit_global(), encoding = "UTF-8")
+source("05-results/flhm-figures/rmd_figures/F2438_Spawners.R", 
+       local = knitr::knit_global(), encoding = "UTF-8")
+``` 
+
+Figure 4239_HR
+```{r, F4_2_3_9, warning=FALSE, message=FALSE}
+#source("03-histmodel/figures/modded for rmd/F4239_HR.R", local = knitr::knit_global(), 
+#       encoding = "UTF-8")
+source("05-results/flhm-figures/rmd_figures/F4239_HR.R", 
+       local = knitr::knit_global(), encoding = "UTF-8")
+```
+
+Figure 4239_Wprop
+#```{r, F4239_Wprop, warning=FALSE, message=FALSE}
+#source("03-histmodel/figures/modded for rmd/F4239_Wprop.R", local = knitr::knit_global(), 
+#       encoding = "UTF-8")
+#```
+
+Figure 42310_HR
+```{r, F4_2_3_10, warning=FALSE, message=FALSE}
+#source("03-histmodel/figures/modded for rmd/F42310_HR.R", local = knitr::knit_global(), 
+#       encoding = "UTF-8")
+source("05-results/flhm-figures/rmd_figures/F42310_HR.R", 
+       local = knitr::knit_global(), encoding = "UTF-8")
+```
+
+#Figure 42310_Spawners
+#```{r, F42310_Spawners, warning=FALSE, message=FALSE}
+##knitr::opts_chunk$set(fig.width=1600, fig.height = 2000, unit = "px")
+#source("03-histmodel/figures/modded for rmd/F42310_Spawners.R", local = knitr::knit_global(), 
+#       encoding = "UTF-8")
+#```
+
+#Figure 42311_HR
+#```{r, F42311_HR, warning=FALSE, message=FALSE}
+#source("03-histmodel/figures/modded for rmd/F42311_HR.R", local = knitr::knit_global(), 
+#       encoding = "UTF-8")
+#```
+
+#Figure 42312_HR
+#```{r, F42312_HR, warning=FALSE, message=FALSE}
+#source("03-histmodel/figures/modded for rmd/F42312_HR.R", local = knitr::knit_global(), 
+#       encoding = "UTF-8")
+#```
