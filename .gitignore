@@ -1,5 +1,11 @@
 run-this-first.R
 
+# JAGS output
+*.txt
+*.sh
+*.Rsave
+*.cmd
+
 *.Rproj
 *.RData
 
