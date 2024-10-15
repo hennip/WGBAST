@@ -20,7 +20,9 @@ Rivername_long<-read.table(str_c(PathData_FLHM, "rivernames.txt"))[,1]
 # =================
 
 #Cleaned version 2022 (no stucked chains)
-load(file=paste0(pathMain,"WGBAST_shared/flhm/2022/FLHM_2022_results_cleaned.RData")); trolling1<-T;Mname1<-"2022 base model, cleaned"
+load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/CR_2024_selected_chain.RData")); trolling1<-T;Mname1<-"2022 base model, cleaned"
+
+
 chains1<-chains_new
 summary(chains1[,"MW"])
 
