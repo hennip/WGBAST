@@ -1,5 +1,8 @@
 run-this-first.R
 
+
+*.html
+
 # JAGS output
 *.txt
 *.sh
