@@ -22,10 +22,7 @@
 #16 "Kagealven"
 #17 "Testeboan"
 
-folder<-paste0(PathData,"data_",assessment_year,"/")  
-        
-library(reshape)
-library(abind)
+folder<-PathData_FLHM
 
 avail_r<-c(1:17)  #note Emån Mörrum now added, 2023!
 avail_dc<-c(1:13,16:17)  #should Mörrum be added here next year?
