@@ -189,7 +189,7 @@ for(i in 1:length(Years)){
   #   }
   # }else{
      gd<-gelman.diag(chainsGR[,str_c("MpsW[",i,"]")])
-    if(gd$psrf[2]>1.2){
+    if(gd$psrf[2]>1.1){
       #print(c(i, gd$psrf))
       traceplot(chainsGR[,str_c("MpsW[",i,"]")], main=str_c("MpsW ",df.2$Year[i]))
     }
@@ -197,7 +197,7 @@ for(i in 1:length(Years)){
  par(mfrow=c(2,3))
   for(i in 1:length(Years)){
        gd<-gelman.diag(chainsGR[,str_c("MpsR[",i,"]")])
-     if(gd$psrf[2]>1.2){
+     if(gd$psrf[2]>1.1){
        #print(c(i, gd$psrf))
        traceplot(chainsGR[,str_c("MpsR[",i,"]")], main=str_c("MpsR ",df.2$Year[i]))
      }

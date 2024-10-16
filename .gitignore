@@ -1,5 +1,6 @@
 run-this-first.R
 
+*.html
 *.Rproj
 *.RData
 
