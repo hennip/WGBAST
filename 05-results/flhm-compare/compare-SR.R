@@ -85,10 +85,18 @@ df.2
 # ==========================
 
 ## ---- graphs-SR
+#   adding ume to filter
+df1<-filter(df.1, par=="K", stock!=1 & stock!=3 & stock !=10)
+df2<-filter(df.2, par=="K", stock!=1 & stock!=3 & stock !=10)
 
-df1<-filter(df.1, par=="K", stock!=1 & stock!=3)
-df2<-filter(df.2, par=="K", stock!=1 & stock!=3)
+#   filtering to 4 plots
+#   first all
+#   second (small) 
+#   third 2,4,6,7,11,12,14,15,16 (medium)
 
+
+
+#   changing ylim to 200
 ggplot(df2, aes(stock, group=stock))+
   theme_bw()+
   geom_boxplot(
@@ -100,12 +108,15 @@ ggplot(df2, aes(stock, group=stock))+
     aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
     stat = "identity",fill=rgb(1,1,1,0.6))+
   labs(x="Stock", y="K", title="Asymptotic smolt production capacity")+
-  coord_cartesian(ylim=c(0,250))+
+  coord_cartesian(ylim=c(0,200))+
   scale_x_continuous(breaks = c(1:17), labels=Rivername)
 
+#   chaing the filter for torne, kalix, ume
+# df1<-filter(df.1, par=="K", stock<4 & stock!=2)
+# df2<-filter(df.2, par=="K", stock<4 & stock!=2)
+df1<-filter(df.1, par=="K", stock %in% c(1,3,10))
+df2<-filter(df.2, par=="K", stock %in% c(1,3,10))
 
-df1<-filter(df.1, par=="K", stock<4 & stock!=2)
-df2<-filter(df.2, par=="K", stock<4 & stock!=2)
 
 ggplot(df2, aes(stock, group=stock))+
   theme_bw()+
@@ -119,7 +130,8 @@ ggplot(df2, aes(stock, group=stock))+
     stat = "identity",fill=rgb(1,1,1,0.6))+
   labs(x="Stock", y="K", title="Asymptotic smolt production capacity")+
   #coord_cartesian(ylim=c(0,450))+
-  scale_x_continuous(breaks = c(1:3), labels=Rivername[1:3])
+  #scale_x_continuous(breaks = c(1:10), labels=Rivername[1:10])
+  scale_x_continuous(breaks = c(1,3,10), labels=Rivername[c(1,3,10)])
   
 
 
@@ -158,8 +170,9 @@ ggplot(df2, aes(stock, group=stock))+
   scale_x_continuous(breaks = c(1:17), labels=Rivername)
 
 
-df1<-filter(df.1, par=="beta")
-df2<-filter(df.2, par=="beta")
+# ljungan and testeboan seperate 13, 17
+df1<-filter(df.1, par=="beta", stock != 13 & stock != 17)
+df2<-filter(df.2, par=="beta", stock != 13 & stock != 17)
 
 ggplot(df2, aes(stock, group=stock))+
   theme_bw()+
@@ -174,6 +187,24 @@ ggplot(df2, aes(stock, group=stock))+
   labs(x="Stock", y="beta", title="beta SR")+
   #coord_cartesian(ylim=c(0,2500))+
   scale_x_continuous(breaks = c(1:17), labels=Rivername)
+
+df1<-filter(df.1, par=="beta", stock %in% c(13,17))
+df2<-filter(df.2, par=="beta", stock %in% c(13,17))
+
+ggplot(df2, aes(stock, group=stock))+
+  theme_bw()+
+  geom_boxplot(
+    data=df1,
+    mapping= aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+    stat = "identity",
+    colour="grey", fill="grey95")+
+  geom_boxplot(
+    aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+    stat = "identity",fill=rgb(1,1,1,0.6))+
+  labs(x="Stock", y="beta", title="beta SR")+
+  #coord_cartesian(ylim=c(0,2500))+
+  scale_x_continuous(breaks = c(13,17), labels=Rivername[c(13,17)])
+
 
 
 ## ---- graphs-SR-traces

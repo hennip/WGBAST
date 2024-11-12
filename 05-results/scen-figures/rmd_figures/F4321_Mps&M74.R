@@ -5,12 +5,14 @@
 
 # Maturation is the same in all scenarios
 #! Effort 
-EffScen<-1
+EffScen<-scen_MPS
 
 #Load the file containing stats
 File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,"_RCzero23-35.RData")
 
 File
+
+
 load(File)
 
 # ===============================================================================
@@ -68,3 +70,4 @@ segments(year, low[1:length(year)], year, high[1:length(year)])
 #med
 
 p <- recordPlot();p
+

@@ -1,9 +1,3 @@
-# ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
-# Project: 		 Baltic salmon stock assessment (WGBAST)
-
-# Contents:		 produce figure F4.2.3.7, Wprop
-
-## ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 
 Years_m <- Years[-length(Years)]
 # Scale data
@@ -27,9 +21,10 @@ colnames(obs)<-c("obs_prop", "Type", "Year")
 # Model estimates
 # =================
 
+#df_2sw<-boxplot.jags.df2(chains, "Wprop[", "1]", 6:(length(Years_m)-1),1)%>%
 df_2sw<-boxplot.jags.df2(chains, "Wprop[", "1]", 6:(length(Years_m)-1))%>%
   mutate(Type="2SW")%>%filter(is.na(x)==F)
-
+#df_3sw<-boxplot.jags.df2(chains, "Wprop[", "2]", 6:(length(Years_m)-1),1)%>%
 df_3sw<-boxplot.jags.df2(chains, "Wprop[", "2]", 6:(length(Years_m)-1))%>%
   mutate(Type="3SW")%>%filter(is.na(x)==F)
 

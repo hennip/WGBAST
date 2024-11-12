@@ -5,8 +5,8 @@
 # for coastal, offshore and river fisheries and in total.
 # ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~ 
 
-
-scen_nr<-c(7,9,10,12:15)
+#scen_nr<-c(7,9,10,12:15)
+scen_nr <- scen_CG
 
 for(s in 1:length(scen_nr)){
   #s<-5  
@@ -62,11 +62,13 @@ for(s in 1:length(scen_nr)){
 } 
 
 
-df<-df%>%mutate(Scen2= as.character(Scen))%>%
-  mutate(Scen3= recode(Scen2, "1"="7", "2"="9", "3"="10", "4"="12", 
-                       "5"="13", "6"="14", "7"="15"))%>%
-  mutate(Scen4= as.integer(Scen3))
+# df<-df%>%mutate(Scen2= as.character(Scen))%>%
+#   mutate(Scen3= recode(Scen2, "1"="7", "2"="9", "3"="10", "4"="12",
+#                        "5"="13", "6"="14", "7"="15"))%>%
+#   mutate(Scen4= as.integer(Scen3))
 
+df<- df %>% 
+  mutate(Scen4 = scen_CG[Scen])
 #scen_nr<-c(7,9,10,12:15)
 
 

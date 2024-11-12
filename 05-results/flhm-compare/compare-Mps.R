@@ -24,6 +24,8 @@ for(y in 1:(length(YearsB))){
   ratio[,y]<-survMpsR[,y]/survMpsW[,y]
 }
   
+summary(survMpsW)
+
 dfW<-boxplot.bugs.df(survMpsW, 1:(length(YearsB)))%>%
     mutate(Type="Wild")
 dfR<-boxplot.bugs.df(survMpsR, 1:(length(YearsB)))%>%
