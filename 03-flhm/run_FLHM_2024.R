@@ -10,10 +10,16 @@
 
 #flexible indexing not complete!!
 
-source("run-this-first.R")
+#library(R2jags)
+library(runjags)
+library(rjags) 
+
+load.module("mix")
+load.module("glm")
+				  
 
 
-assessment_year<-2023
+assessment_year<-2024
 years<-length(seq(1987:assessment_year))
 
 proj_years<-0
@@ -47,12 +53,22 @@ trolling<-1
 #16 "Kagealven"
 #17 "Testeboan"
 
-source(paste0(PathModel_FLHM,"make_JAGS_data_",assessment_year,".R"))
+#source("/home/henni/WGBAST/03-histmodel/paths_FLHM.R") #AMD
+#source("03-histmodel/paths_FLHM.R") #windows
+setwd("C:/WGBAST15/WGBAST_2024")
+source("flhm/paths_FLHM.R") #windows
 
-modelName<-"FLHM_2024_rivHR" # Same model structure as in 2021 assessment
-#modelName<-"FLHM_2023_rivHR" 
+#modelName<-"FLHM_JAGS_2024_orig" # Same model structure as in 2023 assessment
+modelName<-"FLHM_JAGS_2024_CR"   #variant with trolling C&R 
 
-source(paste0(PathModel_FLHM,modelName,".R"))
+CR<-ifelse(grepl("CR",modelName),T,F) #boolean to read correct version of catch data file
+
+source(paste0(PathFunctions,"plotfunctions.r"))
+source(paste0(PathModel,"make_JAGS_data_",assessment_year,".R"))
+
+source(paste0(PathModel,modelName,".R"))
+#runName<-paste0(modelName,"_",startyear,"-",endyear)
+
 
 runName<-modelName
 print(runName)
@@ -152,7 +168,7 @@ parnames<-c("tau_MpsW","MpsW","MpsR","mu_MpsW","NspWtot","SmoltR",
             "muCO","muCR","nc_oll_Tot","nc_odn_Tot",
             "qcgnR","qcgnW","qctnR","qctnW","qdR","qdW","qrR","qrW","qlR","qlW",
             "reportc","reportd","reportl","reportrR","reportrW","rrR",
-            "surv_migr","p.mort","p.rel","nctW_rel")
+            "surv_migr","p.mort","p.rel","nctW_rel","nctW_Tot")
 
 
 
@@ -161,12 +177,14 @@ initsall<-list(inits.fn(),inits.fn())
 
 print(paste0(runName,"_data", assessment_year))
 
-#cat(WGBAST_model,file="wgbast_model.txt")
-#jm<-jags.model("wgbast_model.txt",n.adapt=1000,
-#data=datalist,inits=inits.fn())
-#
-#chains<-coda.samples(jm,variable.names=parnames,n.iter=100,thin=10)
-#v<-as.matrix(chains)
+##Quick test
+##cat(WGBAST_model,file="wgbast_model.txt")
+##jm<-jags.model("wgbast_model.txt",n.adapt=100,
+##data=datalist,inits=inits.fn())
+##
+##chains<-coda.samples(jm,variable.names=parnames,n.iter=100,thin=10)
+##v<-as.matrix(chains)
+
 # Burn-in
 t01<-Sys.time();print(t01)
 run0 <- run.jags(WGBAST_model, monitor= parnames,
@@ -186,7 +204,7 @@ t1<-Sys.time();print(t1)
  print("run1 done"); print(difftime(t2,t1))
 print("--------------------------------------------------")
  run<-run1
- save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
+ save(run, file=paste0(PathOut,runName, "_data",assessment_year,".RData"))
 
 
  t3<-Sys.time();print(t3)
@@ -195,7 +213,7 @@ print("--------------------------------------------------")
  print("run2 done");print(difftime(t4,t3))
 print("--------------------------------------------------")
  run<-run2
- save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
+ save(run, file=paste0(PathOut,runName, "_data",assessment_year,".RData"))
 
  t5<-Sys.time();print(t5)
  run3 <- extend.jags(run2, combine=T, sample=500, thin=100, keep.jags.files=T)
@@ -204,7 +222,7 @@ print("--------------------------------------------------")
 print("--------------------------------------------------")
 
  run<-run3
- save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
+ save(run, file=paste0(PathOut,runName, "_data",assessment_year,".RData"))
 
  t7<-Sys.time();print(t7)
  run4 <- extend.jags(run3, combine=T, sample=500, thin=100, keep.jags.files=T)
@@ -213,7 +231,7 @@ print("--------------------------------------------------")
 print("--------------------------------------------------")
 
  run<-run4
- save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
+ save(run, file=paste0(PathOut,runName, "_data",assessment_year,".RData"))
 
  t9<-Sys.time();print(t9)
  run5 <- extend.jags(run4, combine=T, sample=500, thin=100, keep.jags.files=T)
@@ -222,7 +240,7 @@ print("--------------------------------------------------")
 print("--------------------------------------------------")
 
  run<-run5
- save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
+ save(run, file=paste0(PathOut,runName, "_data",assessment_year,".RData"))
 
  t11<-Sys.time();print(t11)
  run6 <- extend.jags(run5, combine=T, sample=500, thin=100, keep.jags.files=T)
@@ -231,21 +249,21 @@ print("--------------------------------------------------")
 print("--------------------------------------------------")
 
  run<-run6
- save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData")) 			   
+ save(run, file=paste0(PathOut,runName, "_data",assessment_year,".RData")) 			   
 				
 #t13<-Sys.time();print(t13)
 # run7 <- extend.jags(run6, combine=T, sample=1000, thin=350, keep.jags.files=T)
 # t14<-Sys.time();print(t14)
 # print("run6 done");print(difftime(t13,t14))
 # run<-run7
-# save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData")) 			   
+# save(run, file=paste0(PathOut,runName, "_data",assessment_year,".RData")) 			   
 				
 #t15<-Sys.time();print(t15)
 # run8 <- extend.jags(run6, combine=T, sample=2000, thin=350, keep.jags.files=T)
 # t16<-Sys.time();print(t16)
 # print("run8 done");print(difftime(t16,t15))
 # run<-run8
-# save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData")) 			   
+# save(run, file=paste0(PathOut,runName, "_data",assessment_year,".RData")) 			   
 
 
 		  
