@@ -1,28 +1,13 @@
-#2024 ljungan egg to smolt delay from 4 to 3
-#Added priors for recreational trolling release mortality (and proportion of fish released by year)
-
 #NB modified ccd_ObsW file starts from 0SW not 1SW as before
 
-#stock codes
-#1 "Tornionjoki"
-#2 "Simojoki"
-#3 "Kalixalven"
-#4 "Ranealven"
-#5 "Pitealven"
-#6 "Abyalven"
-#7 "Byskealven"
-#8 "Ricklean"
-#9 "Savaran"
-#10 "Vindelalven"
-#11 "Orealven"
-#12 "Logdealven"
-#13 "Ljungan"
-#14 "Morrumsan"
-#15 "Eman"
-#16 "Kagealven"
-#17 "Testeboan"
+# First run beginning of run_FLHM_2023.R
 
-folder<-PathData_FLHM
+#folder<-paste0(PathData_FLHM,"data_",assessment_year,"/")  
+folder<-PathData_FLHM # Defined in run-this-first.R
+
+
+#WinBUGS reads data into an array by filling the right-most index first, whereas S-Plus (R) fills the leftmost
+#index first.
 
 avail_r<-c(1:17)  #note Emån Mörrum now added, 2023!
 avail_dc<-c(1:13,16:17)  #should Mörrum be added here next year?
@@ -34,8 +19,8 @@ au2_stocks<-which(AU==2)
 au3_stocks<-which(AU==3)
 au4_stocks<-which(AU==4)
 avail_seal<-c(1:3)    #AUS with seal M
-smolt_year<-c(rep(10,times=12),9,9,9,31,22)  #year first model-predicted smolts produced AU4 stocks and Testebo?n takes 9 years not 10. Testebo?n start year is 2000 (yr 14) 
-e_delay<-c(rep(4,times=12),3,3,3,4,3)
+smolt_year<-c(rep(10,times=13),9,9,31,22)  #year first model-predicted smolts produced AU4 stocks and Testebo?n takes 9 years not 10. Testebo?n start year is 2000 (yr 14) 
+e_delay<-c(rep(4,times=13),3,3,4,3)
 iinds<-seq(1,(allstocks*2-1),by=2)
 
 
@@ -445,24 +430,8 @@ beta_migr<-array(10,dim=c(years+5,allstocks))
 alpha_migr[1:(years-1),10]<-Ume_migr[,1]
 beta_migr[1:(years-1),10]<-Ume_migr[,2]
 
-alpha_migr[30:34,13]<-32  #Ljungan 2016-2020
-beta_migr[30:34,13]<-8
-
 
 rivHR<-as.matrix(read.table(paste0(folder,"rivHR.txt"),header=T,row.names=1))
 colnames(rivHR)<-NULL      
 rownames(rivHR)<-NULL 
-
-tmort<-read.table(paste0(folder,"Trolling_p.release.txt"),sep="\t",header=T)
-#calendar year 2022 is model year 2021!
-tmort1<-as.matrix(tmort[2:dim(tmort)[1],])
-alpha_rel<-tmort1[,1]
-beta_rel<-tmort1[,2]
-
-
-
-
-
-
-
 
