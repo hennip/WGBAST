@@ -21,6 +21,7 @@ Rivername_long<-read.table(str_c(PathData_FLHM, "rivernames.txt"))[,1]
 
 #Cleaned version 2024 (no stucked chains)
 load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/CR_2024_selected_chain.RData")); trolling1<-T;Mname1<-"2024 base model, cleaned"
+load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_spcount_data2024.RData")); trolling1<-T;Mname1<-"2024 Simo didson count removed"
 
 
 chains1<-chains
@@ -43,11 +44,12 @@ fix1<-1
 # Model 2:
 # =================
 
-load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_ar_data2024.RData")); trolling2<-T;Mname2<-"2024, AR model for Mps"
+   load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_coefDSHIER_data2024.RData")); trolling2<-T;Mname2<-"2024, Hierarchical priors over years for CoefDS"
+   #load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_ar_data2024.RData")); trolling2<-T;Mname2<-"2024, AR model for Mps"
 #load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_sp_ar_data2024.RData")); trolling2<-T;Mname2<-"2024 Simo didson count removed, AR model for Mps"
 #load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_spcount_data2024.RData")); trolling2<-T;Mname2<-"2024 Simo didson count removed"
 chains<-chainsGR<-as.mcmc.list(run)
-chains<-chainsGR<-window(chains, start=100000) #700=350*2
+#chains<-chainsGR<-window(chains, start=100000) #700=350*2
 
    
 
