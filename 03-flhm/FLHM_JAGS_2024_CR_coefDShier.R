@@ -795,8 +795,8 @@ for (i in 6:(m-1)){
     sp_count[i,2]~dlnorm(muDS[i], tauDS) # Simojoki Didson count
     sp_countX[i,2]~dlnorm(muDS[i], tauDS) 
   
-    muDS[i]<-log(NrWtot[i,2]/coefDS)-0.5*(1/tauDS)
-        muDS[i]<-log(NrWtot[i,2]/coefDS[i])-0.5*(1/tauDS)
+    #muDS[i]<-log(NrWtot[i,2]/coefDS)-0.5*(1/tauDS)
+    muDS[i]<-log(NrWtot[i,2]/coefDS[i])-0.5*(1/tauDS)
     
     coefDS[i]~dlnorm(log(mu_coefDS)-0.5/T_coefDS,T_coefDS)
 
