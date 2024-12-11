@@ -1,5 +1,7 @@
 
-EffScen<-15
+#EffScen<-15
+EffScen<-scen_PFA
+
 #Load the file containing stats
 File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,"_RCzero23-35.RData")
 
@@ -40,16 +42,18 @@ for(y in 1:length(year)){
     }
   }}
 
-df1<-boxplot.bugs.df(t(PFAW2[1,,]), 1:Nyears)%>%mutate(Type="Wild 1SW")%>%mutate(Year=year+1)
-df2<-boxplot.bugs.df(t(PFA[1,,]), 1:Nyears)%>%mutate(Type="Wild & reared 1SW")%>%mutate(Year=year+1)
-df3<-boxplot.bugs.df(t(PFAW2_MSW), 1:Nyears)%>%mutate(Type="Wild MSW")%>%mutate(Year=year+1)
-df4<-boxplot.bugs.df(t(PFA_MSW), 1:Nyears)%>%mutate(Type="Wild & reared MSW")%>%mutate(Year=year+1)
-df5<-boxplot.bugs.df(t(PFAall), 1:Nyears)%>%mutate(Type="All")%>%mutate(Year=year+1)
+df1<-boxplot.bugs.df(t(PFAW2[1,,]), 1:Nyears)%>%mutate(Type="Wild 1SW")%>%mutate(Year=year)
+df2<-boxplot.bugs.df(t(PFA[1,,]), 1:Nyears)%>%mutate(Type="Wild & reared 1SW")%>%mutate(Year=year)
+df3<-boxplot.bugs.df(t(PFAW2_MSW), 1:Nyears)%>%mutate(Type="Wild MSW")%>%mutate(Year=year)
+df4<-boxplot.bugs.df(t(PFA_MSW), 1:Nyears)%>%mutate(Type="Wild & reared MSW")%>%mutate(Year=year)
+df5<-boxplot.bugs.df(t(PFAall), 1:Nyears)%>%mutate(Type="All")%>%mutate(Year=year)
 
 df<-full_join(df1,df2)%>%
   full_join(df3)%>%
   full_join(df4)%>%
   full_join(df5)
+
+df %>% filter(Type == "")
 
 
 #   looping plots to list and plot_grid

@@ -25,6 +25,9 @@
 if(trolling2==T){
 tmp<-read_tsv(str_c(PathData_FLHM, "Catch_TrollingSeparated.txt"), show_col_types = FALSE)
 colnames(tmp)<-c("river", "coast", "offs", "trolling")
+}else if(trollingCT==T){
+  tmp<-read_tsv(str_c(PathData_FLHM, "Catch_TrollingSeparated_CR.txt"), show_col_types = FALSE)
+  colnames(tmp)<-c("river", "coast", "offs", "trolling")
 }else{
 tmp<-read_tsv(str_c(PathData_FLHM, "Catch.txt"), show_col_types = FALSE)
 colnames(tmp)<-c("river", "coast", "offs")
@@ -39,7 +42,7 @@ obs_o<-tmp[,3]%>%
 
 obs<-full_join(obs_r,obs_c, by=NULL)
 obs<-full_join(obs,obs_o, by=NULL)
-if(trolling2==T){
+if(trolling2==T ||trollingCT==T){
   obs_tr<-tmp[,4]%>%
   mutate(Type="Trolling", Year=Years[1:length(Years)], obs_catch=trolling)%>%select(-trolling)
   obs<-full_join(obs,obs_tr, by=NULL)
@@ -139,6 +142,7 @@ if(nchains2==1){
       #        chains[,str_c("nct_ObsTotX[",y,"]")],0)
   }
 }  
+
 if(nchains2==2){
   catch_tot<-array(NA, dim=c(nsims2,length(Years)))
   dim(catch_tot)
@@ -250,18 +254,18 @@ ggplot(df2, aes(Year, group=Year))+
 
 #summary(chains[ ,regexpr("nct",varnames(chains))>0])
 
-
-par(mfrow=c(2,3))
-for(i in 6:(length(Years)-1)){
-  gd<-gelman.diag(chains[,str_c("nct_ObsTotX[",i,"]")])
-  #print(gd)
-  
-  if(gd$psrf[2]>1.2){
-    #print(c(i, gd$psrf))
-    traceplot(chainsGR[,str_c("nct_ObsTotX[",i,"]")], main=str_c("nct_ObsTotX ",df.2$Year[i]))
+if(GR){
+  par(mfrow=c(2,3))
+  for(i in 6:(length(Years)-1)){
+    gd<-gelman.diag(chainsGR[,str_c("nct_ObsTotX[",i,"]")])
+    #print(gd)
+    
+    if(gd$psrf[2]>1.2){
+      #print(c(i, gd$psrf))
+      traceplot(chainsGR[,str_c("nct_ObsTotX[",i,"]")], main=str_c("nct_ObsTotX ",df.2$Year[i]))
+    }
+    
+    # }
   }
-  
-  # }
 }
-
 

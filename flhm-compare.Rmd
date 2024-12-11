@@ -5,10 +5,18 @@ date: "`r format(Sys.time(), '%d/%m/%y')`"
 output: html_document
 ---
   
+```{r, include=F, cache=F}
+library(tidyverse)
+library(runjags)
+library(coda)
+
+```
+  
   
 ```{r setup, include=F, cache=F}
 #knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(message = FALSE)
+#knitr::opts_chunk$set(echo = TRUE, fig.width=1600, fig.height = 2000, unit = "px")
 
 source("05-results/flhm-compare/models-select.r")
 
@@ -79,7 +87,7 @@ knitr::read_chunk("05-results/flhm-compare/compare-SR.r")
 
 ```
 
-psrf > 1.1
+
 ```{r graphs-SR-traces, echo=F}
 
 ```

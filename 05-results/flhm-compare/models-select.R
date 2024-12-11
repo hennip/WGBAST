@@ -1,4 +1,4 @@
-
+library(tidyverse)
 # Note! Comparison codes assume now each chains-variable to have only 1 chain
 # If there's 2, combine them together to make things run smooth
 
@@ -24,6 +24,7 @@ Rivername_long<-read.table(str_c(PathData_FLHM, "rivernames.txt"))[,1]
 load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_spcount_data2024.RData")); trolling1<-T;Mname1<-"2024 Simo didson count removed";chains<-as.mcmc.list(run)
 
 chains1<-chains
+
 summary(chains1[,"MW"])
 
 nchains1<-2
@@ -33,9 +34,8 @@ nsims1<-ifelse(nchains1==1,
 fix1<-1
 
 
- # 2022 assessment data
-   YearsB<-c(1987:2023)
-   Years2B<-c(1992:2023)
+YearsB<-c(1987:2023)
+Years2B<-c(1992:2023)
 
   
   
@@ -46,15 +46,21 @@ fix1<-1
 #   load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_coefDSHIER_data2024.RData")); trolling2<-T;Mname2<-"2024, Hierarchical priors over years for CoefDS"
    load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_coefDS_data2024.RData")); trolling2<-T;Mname2<-"2024, prior given to CoefDS"
    #load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_ar_data2024.RData")); trolling2<-T;Mname2<-"2024, AR model for Mps"
-#load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_sp_ar_data2024.RData")); trolling2<-T;Mname2<-"2024 Simo didson count removed, AR model for Mps"
-#load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_spcount_data2024.RData")); trolling2<-T;Mname2<-"2024 Simo didson count removed"
+
+selCH=T
+
+if(selCH==F){
+  chainsGR<-as.mcmc.list(run)
+  chains<-as.mcmc(run)
+}
+ #chains<-chainsGR<-window(chains, thin=700) #700=350*2
 chains<-chainsGR<-as.mcmc.list(run)
 chains<-chainsGR<-window(chains, start=100000) #700=350*2
 
    
 
 summary(chains[,"MW"])
-nchains2<-2
+nchains2<-1
 nsims2<-ifelse(nchains2==1,
                  length(chains[,"MW"]),
                  length(chains[,"MW"][[1]])*2)
@@ -71,8 +77,8 @@ if(sameYear==T){
   Years<-YearsB
   Years2<-Years2B
 }else{
-  Years<-c(1987:2022)
-  Years2<-c(1992:2022)
+  Years<-c(1987:2023)
+  Years2<-c(1992:2024)
 }
 
 

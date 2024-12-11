@@ -1,13 +1,11 @@
-# ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
-# Project: 		 Baltic salmon stock assessment (WGBAST)
-
-# Contents:		 produce figure F4.2.3.6, catch graphs
-
-## ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 
 # Catch data (reported catches)
 # =================
-tmp<-read_tsv(str_c(PathData,"Catch_TrollingSeparated.txt"))
+if(CRt){
+  tmp<-read_tsv(str_c(PathData,"Catch_TrollingSeparated_CR.txt"))  
+}else{
+  tmp<-read_tsv(str_c(PathData,"Catch_TrollingSeparated.txt"))
+}
 colnames(tmp)<-c("river", "coast", "offs", "trolling")
 Years_m <- Years[-length(Years)]
 
@@ -69,18 +67,18 @@ if(nchains==2){
       chains[,str_c("nco_ObsTotX[",y,"]")][[1]]
   }
 }
+#dfr<-boxplot.jags.df(chains, "ncr_ObsTotX[", 1:(length(Years_m)-0),nchains)%>%
 dfr<-boxplot.jags.df(chains, "ncr_ObsTotX[", 1:(length(Years_m)-0))%>%
   mutate(Type="River")
-
+#dfc<-boxplot.jags.df(chains, "ncc_ObsTotX[", 1:(length(Years_m)-0),nchains)%>%
 dfc<-boxplot.jags.df(chains, "ncc_ObsTotX[", 1:(length(Years_m)-0))%>%
   mutate(Type="Coast")
-
+#dfo<-boxplot.jags.df(chains, "nco_ObsTotX[", 1:(length(Years_m)-0),nchains)%>%
 dfo<-boxplot.jags.df(chains, "nco_ObsTotX[", 1:(length(Years_m)-0))%>%
   mutate(Type="Offshore")
-
+#dft<-boxplot.jags.df(chains, "nct_ObsTotX[", 1:(length(Years_m)-0),nchains)%>%
 dft<-boxplot.jags.df(chains, "nct_ObsTotX[", 1:(length(Years_m)-0))%>%
   mutate(Type="Trolling")
-
 dftot<-boxplot.bugs.df(catch_tot, 1:(length(Years_m)-0))%>%
   mutate(Type="Total", x=y)%>%select(-y)
 

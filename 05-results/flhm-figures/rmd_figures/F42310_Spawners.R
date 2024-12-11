@@ -1,9 +1,3 @@
-# ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
-# Project: 		 Baltic salmon stock assessment (WGBAST)
-
-# Contents:		 produce figure F4.2.3.10, Spawners
-
-## ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 
 rivernames<-c("Torne","Simo","Kalix","Rane"
               ,"Pite","Aby","Byske","Rickle","Savaran"
@@ -29,8 +23,10 @@ counts<-read_tsv(str_c(PathData,"spawner_counts.txt"),skip=8,col_names=T, na="NA
 colnames(counts)<-rivernames
 counts<-counts%>%
   mutate(Year=c(1:(length(Years_m)+1)))%>%
+  #mutate(Year=c(1:(length(Years))))%>%
   mutate(Year=Year+1986)%>%
   select(Torne, Simo, Kalix, Pite, Ume, Morrum,Year)%>%
+  #gather(key="River", value="Count", `Torne`:`Ume`)%>%
   gather(key="River", value="Count", `Torne`:`Morrum`)%>%
   mutate(river=fct_recode(River,
                           "1"="Torne",

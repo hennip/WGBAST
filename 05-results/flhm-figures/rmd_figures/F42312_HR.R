@@ -1,9 +1,3 @@
-# ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
-# Project: 		 Baltic salmon stock assessment (WGBAST)
-
-# Contents:		 produce figure F4.2.3.12, HR graphs
-
-## ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 
 nsim<-length(chains[,str_c("HrW[",2,",",2,"]")])
 

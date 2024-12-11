@@ -1,15 +1,7 @@
 
-# ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
-# Project: 		 Baltic salmon stock assessment (WGBAST)
-
-# Contents:		 produce figure F4.2.1.1, K graphs
-
-## ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
-
-
 nstocks<-17
 
-source("05-results/flhm-figures/rmd_prior_data/make_JAGS_data_2023.R")
+#source("03-histmodel/figures/modded for rmd/make_JAGS_data_2023.R")
 proj_years<-0
 AUS<-4
 
@@ -23,6 +15,9 @@ stocks2<-which(e_delay==3)
 
 ######################################################################################################
 
+#load 2019 R0 prior (JAGS) or take from prior parameters text file...
+#load("Assessment results/wgbast_2019_prior_2019-04-02.Rdata")  
+#source("03-histmodel/figures/modded for rmd/run_FLHM_priors_2023.R")
 v<-as.matrix(chainsP)
 
 
@@ -66,13 +61,16 @@ abline(v=median(na.omit(d[,"K[6]"])),lty=2,lwd=2)
 
 p1 <- recordPlot()
 p1
+ 
+#dev.print()
+#plot(p1)
 
 # ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 
 #windows()
 par(mfrow=c(2,3))
 par(mar=c(3,4,4,2))
-plot(density(na.omit(d[ ,"K[7]"]),n=100000),xlim=c(0,500), lwd=2, ylim=c(0,0.015), main="Byskeälven, Unit 2")
+plot(density(na.omit(d[ ,"K[7]"]),n=100000),xlim=c(0,500), lwd=2, ylim=c(0,0.0175), main="Byskeälven, Unit 2")
 lines(density(exp(rnorm(10000,M_K[7],sqrt(1/tau_K[7]))),bw=15),lwd=2,col="grey")
 abline(v=exp(M_K[7]),lty=2,col="grey",lwd=2)
 abline(v=median(na.omit(d[,"K[7]"])),lty=2,lwd=2)
@@ -92,12 +90,12 @@ lines(density(exp(rnorm(10000,M_K[10],sqrt(1/tau_K[10]))),bw=30),lwd=2,col="grey
 abline(v=exp(M_K[10]),lty=2,col="grey",lwd=2)
 abline(v=median(na.omit(d[,"K[10]"])),lty=2,lwd=2)
 
-plot(density(na.omit(d[ ,"K[11]"]),n=100000), xlim=c(0,150), lwd=2, ylim=c(0,0.03), main="Öreälven, Unit 2")
+plot(density(na.omit(d[ ,"K[11]"]),n=100000), xlim=c(0,150), lwd=2, ylim=c(0,0.05), main="Öreälven, Unit 2")
 lines(density(exp(rnorm(10000,M_K[11],sqrt(1/tau_K[11]))),bw=2),lwd=2,col="grey")
 abline(v=exp(M_K[11]),lty=2,col="grey",lwd=2)
 abline(v=median(na.omit(d[,"K[11]"])),lty=2,lwd=2)
 
-plot(density(na.omit(d[ ,"K[12]"]),n=100000),xlim=c(0,200), lwd=2, ylim=c(0,0.02), main="Lögdeälven, Unit 2")
+plot(density(na.omit(d[ ,"K[12]"]),n=100000),xlim=c(0,200), lwd=2, ylim=c(0,0.035), main="Lögdeälven, Unit 2")
 lines(density(exp(rnorm(10000,M_K[12],sqrt(1/tau_K[12]))),bw=5),lwd=2,col="grey")
 abline(v=exp(M_K[12]),lty=2,col="grey",lwd=2)
 abline(v=median(na.omit(d[,"K[12]"])),lty=2,lwd=2)
@@ -106,6 +104,7 @@ p2 <- recordPlot()
 p2
  
 # ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
+#windows()
 par(mfrow=c(2,3))
 par(mar=c(3,4,4,2))
 
@@ -114,12 +113,12 @@ lines(density(exp(rnorm(10000,M_K[16],sqrt(1/tau_K[16]))),bw=5),lwd=2,col="grey"
 abline(v=exp(M_K[16]),lty=2,col="grey",lwd=2)
 abline(v=median(na.omit(d[,"K[16]"])),lty=2,lwd=2)
 
-plot(density(na.omit(d[ ,"K[13]"]),n=100000),xlim=c(0,12), lwd=2, ylim=c(0,0.4),   main="Ljungan, Unit 3")
+plot(density(na.omit(d[ ,"K[13]"]),n=100000),xlim=c(0,30), lwd=2, ylim=c(0,0.2),   main="Ljungan, Unit 3")
 lines(density(exp(rnorm(10000,M_K[13],sqrt(1/tau_K[13]))),bw=0.6),lwd=2,col="grey")
 abline(v=exp(M_K[13]),lty=2,col="grey",lwd=2)
 abline(v=median(na.omit(d[,"K[13]"])),lty=2,lwd=2)
 
-plot(density(na.omit(d[ ,"K[17]"]),n=100000),xlim=c(0,12), lwd=2, ylim=c(0,0.8),   main="Testeboån, Unit 3")
+plot(density(na.omit(d[ ,"K[17]"]),n=100000),xlim=c(0,20), lwd=2, ylim=c(0,0.4),   main="Testeboån, Unit 3")
 lines(density(exp(rnorm(10000,M_K[17],sqrt(1/tau_K[17]))),bw=0.6),lwd=2,col="grey")
 abline(v=exp(M_K[17]),lty=2,col="grey",lwd=2)
 abline(v=median(na.omit(d[,"K[17]"])),lty=2,lwd=2)

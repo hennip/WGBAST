@@ -1,11 +1,3 @@
-# ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
-# Project: 		 Baltic salmon stock assessment (WGBAST)
-
-# Contents:		 produce figure F4.2.3.11, HR graphs
-
-## ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
-
-
 nsample<-nsim
 
 # from cohort+age to calendar years

@@ -49,38 +49,55 @@ maxSpawner<-c(
   0.6,20,5,10,0.5)
 
 
-File<-c()
-File[1]<-paste0(PathScen,"ScenProj_",Model,"_EScen1_RCzero23-35.RData")
-File[2]<-paste0(PathScen,"ScenProj_",Model,"_EScen12_RCzero23-35.RData")
-File[3]<-paste0(PathScen,"ScenProj_",Model,"_EScen15_RCzero23-35.RData")
+# File<-c()
+# File[1]<-paste0(PathScen,"ScenProj_",Model,"_EScen1_RCzero23-35.RData")
+# File[2]<-paste0(PathScen,"ScenProj_",Model,"_EScen12_RCzero23-35.RData")
+# File[3]<-paste0(PathScen,"ScenProj_",Model,"_EScen15_RCzero23-35.RData")
 
-Smolts<-Spawners<-array(NA, dim=c(Nyears,3,Nstocks,3))
-for(f in 1:3){
+File = c()
+nfile = 1
+for(scen in scen_smolspa){
+  EffScen = scen 
+  nam <-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,"_RCzero23-35.RData")
+  File[nfile] <- nam 
+  nfile <- nfile+1
+}
+#Nyears = 382
+Nyears_long = 382
+Smolts<-Spawners<-array(NA, dim=c(Nyears_long,3,Nstocks,length(scen_smolspa)))
+#for(f in 1:3){
+for(f in 1:length(File)){
+  print(paste("Scenario", scen_smolspa[f], "Starting"))
+  
   load(File[f]); print(File[f])
   
   for(r in 1:17){
     Smolts[,1,r,f]<-stats(SmoltW[r,,])[,1]
     Smolts[,2,r,f]<-stats(SmoltW[r,,])[,2]
     Smolts[,3,r,f]<-stats(SmoltW[r,,])[,3]
-    
+
     Spawners[,1,r,f]<-stats(SpawnerW[r,,])[,1]
     Spawners[,2,r,f]<-stats(SpawnerW[r,,])[,2]
     Spawners[,3,r,f]<-stats(SpawnerW[r,,])[,3]
     
+    print(paste(rep("*", r)) %>% noquote())
   }
+  print(paste("Scenario", scen_smolspa[f], "Done"))
 }
 
 
 
 plotyears<-which(year==assessment_year+15)
 yStart<-c(rep(1,15),17,9)
-colX<-c("dodgerblue3","black", "red")
+colX<-c("dodgerblue3","black", "red", "orange")
 ## uncomment 1 tiff and 1 r-loop at a time!
 par(mfrow=c(4,2))
 par(mar=c(2.5,4,4,1))
-for(r in 1:4){     
+#for(r in 1:4){
+ylimqt = 0.85
+for(r in 1:17){
   
-  for(f in 1:3){
+  for(f in 1:length(scen_smolspa)){
     #load(File[f])
     med<-Smolts[,1,r,f]
     low<-Smolts[,2,r,f]
@@ -88,20 +105,23 @@ for(r in 1:4){
     
     if(f==1){
       plot(Years[yStart[r]:plotyears],med[yStart[r]:plotyears], pch=19, ylab="1000's of salmon", 
-           ylim=c(0,maxSmolt[r]), xlab="",
+           #ylim=c(0,maxSmolt[r]), xlab="",
+           ylim=c(0,quantile(high[yStart[r]:plotyears], ylimqt)[[1]]), xlab="",
            main=paste(sep="",river[r]," smolts"),col=colX[f])
       segments(Years[yStart[r]:plotyears], low[yStart[r]:plotyears], 
                Years[yStart[r]:plotyears], high[yStart[r]:plotyears],col=colX[f])
       
     }else{
-      points(Years[yStart[r]:plotyears]+f*0.2,med[yStart[r]:plotyears], pch=19, ylim=c(0,maxSmolt[r]),
+      #points(Years[yStart[r]:plotyears]+f*0.2,med[yStart[r]:plotyears], pch=19, ylim=c(0,maxSmolt[r]),
+      points(Years[yStart[r]:plotyears]+f*0.2,med[yStart[r]:plotyears], pch=19, 
+             ylim=c(0,quantile(high[yStart[r]:plotyears], ylimqt)[[1]]),
              col=colX[f])
       segments(Years[yStart[r]:plotyears]+f*0.2, low[yStart[r]:plotyears], 
                Years[yStart[r]:plotyears]+f*0.2, high[yStart[r]:plotyears],col=colX[f])
     }
   }
   
-  for(f in 1:3){
+  for(f in 1:length(scen_smolspa)){
     #load(File[f])
     med<-Spawners[,1,r,f]
     low<-Spawners[,2,r,f]
@@ -109,14 +129,16 @@ for(r in 1:4){
     
     if(f==1){
       plot(Years[yStart[r]:plotyears],med[yStart[r]:plotyears], pch=19, ylab="1000's of salmon", 
-           ylim=c(0,maxSpawner[r]), xlab="",
+           ylim=c(0,quantile(high[yStart[r]:plotyears], ylimqt)[[1]]), 
+           xlab="",
            main=paste(sep="",river[r]," spawners"),col=colX[f])
       segments(Years[yStart[r]:plotyears], low[yStart[r]:plotyears], 
                Years[yStart[r]:plotyears], high[yStart[r]:plotyears],col=colX[f])
       
     }else{
       points(Years[yStart[r]:plotyears]+f*0.2,med[yStart[r]:plotyears], pch=19,
-             ylim=c(0,maxSpawner[r]),col=colX[f])
+             ylim=c(0,quantile(high[yStart[r]:plotyears], ylimqt)[[1]]),
+             col=colX[f])
       segments(Years[yStart[r]:plotyears]+f*0.2, low[yStart[r]:plotyears], 
                Years[yStart[r]:plotyears]+f*0.2, high[yStart[r]:plotyears],col=colX[f])
     }
