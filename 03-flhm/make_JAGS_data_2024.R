@@ -22,7 +22,12 @@
 #16 "Kagealven"
 #17 "Testeboan"
 
+#folder<-paste0(PathData,"data_",assessment_year,"/")  
 folder<-PathData_FLHM
+
+# Packages are called in run-this-first.r (calls packages.r) 
+#library(reshape)
+#library(abind)
 
 avail_r<-c(1:17)  #note Emån Mörrum now added, 2023!
 avail_dc<-c(1:13,16:17)  #should Mörrum be added here next year?
@@ -110,7 +115,7 @@ Smolt_Rsp[Smolt_Rsp[,2]==0,2]<-0.001
 Rsp<-which(apply(Smolt_Rsp,2,sum)>0)
 
 SmoltW<-as.matrix(read.table(paste0(folder,"SmoltW.txt"),header=T))
-SmoltRdata<-as.matrix(read.table(paste0(folder,"SmoltR.txt"),header=T))
+SmoltRdata<-as.matrix(read.table(paste0(folder,"SmoltR.txt"),header=T))  #goes straight to model
 
 
 mu_SmoltW<-SmoltW[ ,iinds]
@@ -172,18 +177,18 @@ El<-as.matrix(Effort1[ ,7:12])
 Edo<-as.matrix(Effort1[ ,1:6])
 Edc<-as.matrix(Effort1[ ,13:18])
 
-Ectn[ ,1,1:4]<-Effort2[ ,1:4]
-Ectn[ ,2,1:4]<-Effort2[ ,5:8]
-Ectn[ ,3,1:4]<-Effort2[ ,9:12]
-Ectn[ ,4,1:4]<-Effort2[ ,13:16]
-Ectn[ ,5,1:4]<-Effort2[ ,17:20]
-Ectn[ ,6,1:4]<-Effort2[ ,21:24]
-Ecgn[ ,1,1:4]<-Effort2[ ,25:28]
-Ecgn[ ,2,1:4]<-Effort2[ ,29:32]
-Ecgn[ ,3,1:4]<-Effort2[ ,33:36]
-Ecgn[ ,4,1:4]<-Effort2[ ,37:40]
-Ecgn[ ,5,1:4]<-Effort2[ ,41:44]
-Ecgn[ ,6,1:4]<-Effort2[ ,45:48]
+Ectn[ ,1,1:4]<-Effort2[1:years,1:4]
+Ectn[ ,2,1:4]<-Effort2[1:years,5:8]
+Ectn[ ,3,1:4]<-Effort2[1:years,9:12]
+Ectn[ ,4,1:4]<-Effort2[1:years,13:16]
+Ectn[ ,5,1:4]<-Effort2[1:years,17:20]
+Ectn[ ,6,1:4]<-Effort2[1:years,21:24]
+Ecgn[ ,1,1:4]<-Effort2[1:years,25:28]
+Ecgn[ ,2,1:4]<-Effort2[1:years,29:32]
+Ecgn[ ,3,1:4]<-Effort2[1:years,33:36]
+Ecgn[ ,4,1:4]<-Effort2[1:years,37:40]
+Ecgn[ ,5,1:4]<-Effort2[1:years,41:44]
+Ecgn[ ,6,1:4]<-Effort2[1:years,45:48]
 
 Er0<-array(0,dim=c(proj_years,6)) 
 El0<-array(0,dim=c(proj_years,6)) 
@@ -206,9 +211,11 @@ Ecgn<-abind(Ecgn,Ecgn0, along=1)
 #river catch up to current year-1, NA thereafter
 #coastal catch up to current year-1, NA thereafter
 #offshore catch up to current year-2, NA thereafter
-
+if(CR){
+cat<-as.matrix(read.table(paste0(folder,"Catch_TrollingSeparated_CR.txt"),header=T))
+}else{
 cat<-as.matrix(read.table(paste0(folder,"Catch_TrollingSeparated.txt"),header=T))
-#cat<-as.matrix(read.table(paste0(folder,"Catch.txt"),header=T)))
+}
 
 cat_r<-cat[,1]
 cat_c<-cat[,2]
@@ -303,8 +310,8 @@ mu_sp_beta[2]<-50
 mu_sp_alpha[3]<-16   #Kalix
 mu_sp_beta[3]<-13
 
-mu_sp_alpha[14]<-20.4   #Mörrum
-mu_sp_beta[14]<-82.7
+mu_sp_alpha[14]<-16.2   #Mörrum
+mu_sp_beta[14]<-56
 
 CV_sp_alpha<-rep(1, allstocks)
 CV_sp_beta<-rep(1, allstocks)
@@ -445,8 +452,8 @@ beta_migr<-array(10,dim=c(years+5,allstocks))
 alpha_migr[1:(years-1),10]<-Ume_migr[,1]
 beta_migr[1:(years-1),10]<-Ume_migr[,2]
 
-alpha_migr[30:34,13]<-32  #Ljungan 2016-2020
-beta_migr[30:34,13]<-8
+alpha_migr[30:34,13]<-1.75  #Ljungan 2016-2020 prop that dies~Beta(2.75,1.75)
+beta_migr[30:34,13]<-2.75
 
 
 rivHR<-as.matrix(read.table(paste0(folder,"rivHR.txt"),header=T,row.names=1))
@@ -455,10 +462,12 @@ rownames(rivHR)<-NULL
 
 tmort<-read.table(paste0(folder,"Trolling_p.release.txt"),sep="\t",header=T)
 #calendar year 2022 is model year 2021!
-tmort1<-as.matrix(tmort[2:dim(tmort)[1],])
-alpha_rel<-tmort1[,1]
-beta_rel<-tmort1[,2]
+addna<-matrix(rep(tmort[dim(tmort)[1],],times=7),ncol=2, byrow=TRUE)
+colnames(addna)<-c("alpha_rel","beta_rel")  
 
+tmort<-rbind(tmort[2:dim(tmort)[1],],addna)
+alpha_rel<-as.numeric(tmort$alpha_rel)
+beta_rel<-as.numeric(tmort$beta_rel)
 
 
 

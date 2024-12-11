@@ -19,38 +19,23 @@ Rivername_long<-read.table(str_c(PathData_FLHM, "rivernames.txt"))[,1]
 # Model 1
 # =================
 
-<<<<<<< HEAD
-#Cleaned version 2023
-load(file=paste0(pathMain,"WGBAST_shared/flhm/2023/output/FLHM_2023_rivHR_data2023_thin350.RData"))
-trolling1<-T;Mname1<-"2023 Model run"
-#load("C:/Users/03195892/OneDrive - Valtion/WGBAST-antti/FLHM_2024/res_ORIG/FLHM_JAGS_2024_orig_data2024_run8.RData")
-#trolling1=T;Mname1<-"2024 ORIG run"
-chains1<-as.mcmc(run)
-chains1_GR <- as.mcmc.list(run)
-=======
 #Cleaned version 2024 (no stucked chains)
-load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/CR_2024_selected_chain.RData")); trolling1<-T;Mname1<-"2024 base model, cleaned"
-
+#load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/CR_2024_selected_chain.RData")); trolling1<-T;Mname1<-"2024 base model, cleaned"
+load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_spcount_data2024.RData")); trolling1<-T;Mname1<-"2024 Simo didson count removed";chains<-as.mcmc.list(run)
 
 chains1<-chains
->>>>>>> 1700616a8348fe6b69a373a50ddb061468905c32
+
 summary(chains1[,"MW"])
 
-nchains1<-1
+nchains1<-2
 nsims1<-ifelse(nchains1==1,
                length(chains1[,"MW"]),
                length(chains1[,"MW"][[1]])*2)
 fix1<-1
 
 
-<<<<<<< HEAD
- # 2023 assessment data
-   YearsB<-c(1987:2022)
-=======
- # 2022 assessment data
-   YearsB<-c(1987:2023)
->>>>>>> 1700616a8348fe6b69a373a50ddb061468905c32
-   Years2B<-c(1992:2023)
+YearsB<-c(1987:2023)
+Years2B<-c(1992:2023)
 
   
   
@@ -58,19 +43,9 @@ fix1<-1
 # Model 2:
 # =================
 
-<<<<<<< HEAD
-# load(file=paste0(pathMain,"output/wgbast/flhm/2023/FLHM_2023_rivHR_data2023_thin100.RData")); trolling2<-T;Mname2<-"2023 rivHR"
-# chains<-chainsGR<-window(as.mcmc.list(run), start=150000)
-# chains<-chainsGR<-window(chains, thin=300)
-# summary(chains[,"MW"])
-
-#load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_orig_data2024.RData")); trolling2<-T
-   
-#load("C:/Users/03195892/OneDrive - Valtion/WGBAST-antti/FLHM_2024/res_ORIG/FLHM_JAGS_2024_orig_data2024_run8.RData")
-#Mname2<-"2024 Model run (Ljungan in Southern river model)";trolling2<-T;trollingCT=F
-load("C:/Users/03195892/OneDrive - Valtion/WGBAST-antti/FLHM_2024/res_CR/CR_2024_selected_chain.Rdata")
-#load("C:/Users/03195892/OneDrive - Valtion/WGBAST-antti/FLHM_2024/res_CR/FLHM_JAGS_2024_CR_data2024_run9.RData")
-Mname2<-"2024 CR trolling run";trolling2<-F;trollingCT=T
+#   load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_coefDSHIER_data2024.RData")); trolling2<-T;Mname2<-"2024, Hierarchical priors over years for CoefDS"
+   load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_coefDS_data2024.RData")); trolling2<-T;Mname2<-"2024, prior given to CoefDS"
+   #load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_ar_data2024.RData")); trolling2<-T;Mname2<-"2024, AR model for Mps"
 
 selCH=T
 
@@ -79,13 +54,8 @@ if(selCH==F){
   chains<-as.mcmc(run)
 }
  #chains<-chainsGR<-window(chains, thin=700) #700=350*2
-=======
-load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_ar_data2024.RData")); trolling2<-T;Mname2<-"2024, AR model for Mps"
-#load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_sp_ar_data2024.RData")); trolling2<-T;Mname2<-"2024 Simo didson count removed, AR model for Mps"
-#load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_spcount_data2024.RData")); trolling2<-T;Mname2<-"2024 Simo didson count removed"
 chains<-chainsGR<-as.mcmc.list(run)
 chains<-chainsGR<-window(chains, start=100000) #700=350*2
->>>>>>> 1700616a8348fe6b69a373a50ddb061468905c32
 
    
 
