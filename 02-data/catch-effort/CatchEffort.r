@@ -12,8 +12,8 @@ max_year<-2022
 years<-min_year:max_year
 NumYears<-length(years)
 
-source("00-basics/run-this-first.R")
-source("00-basics/packages.R")
+source("run-this-first.R")
+#source("00-basics/packages.R")
 pathIn<-pathDataCatchEffort
 
 df_all<-read_xlsx(str_c(pathIn, 

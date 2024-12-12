@@ -65,3 +65,16 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# .html -files
+*.html
+
+# files -folders
+*_files/
+
+#   csv_files
+*.csv
+*.xlsx
+*.xlxs
+
+*.png

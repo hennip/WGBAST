@@ -144,7 +144,7 @@ relx<-7 # relationship between x and y axis is 1:8
 
 #windows()
 
-plot(eggs, smolts[1,,1], type="l",ylim=c(0,relx*800), xlim=c(0,800), col=col1, ylab="Smolts (thousands)",
+plot(eggs, smolts[1,,1], type="l",ylim=c(0,relx*500), xlim=c(0,800), col=col1, ylab="Smolts (thousands)",
      xlab="Eggs (millions)", main=Rivernames[1,], cex.lab=cexLab, cex.axis=cexAxis, cex.main=cexMain)
 
 for(i in 1:Nyears){
@@ -173,7 +173,7 @@ for(j in 2:length(samp)){
 ############
 # Kalix
 
-plot(eggs, smolts[3,,1], type="l",ylim=c(0,relx*300), xlim=c(0,300), col=col1, ylab="Smolts (thousands)",
+plot(eggs, smolts[3,,1], type="l",ylim=c(0,relx*225), xlim=c(0,300), col=col1, ylab="Smolts (thousands)",
      xlab="Eggs (millions)", main=Rivernames[3,], cex.lab=cexLab, cex.axis=cexAxis, cex.main=cexMain)
 
 for(i in 1:Nyears){
@@ -188,7 +188,7 @@ for(j in 2:length(samp)){
 ############
 # R?ne
 
-plot(eggs, smolts[4,,1], type="l",ylim=c(0,relx*35), xlim=c(0,35), col=col1, ylab="Smolts (thousands)",
+plot(eggs, smolts[4,,1], type="l",ylim=c(0,relx*35), xlim=c(0,30), col=col1, ylab="Smolts (thousands)",
      xlab="Eggs (millions)", main=Rivernames[4,], cex.lab=cexLab, cex.axis=cexAxis, cex.main=cexMain)
 
 for(i in 1:Nyears){
@@ -224,7 +224,7 @@ for(j in 2:length(samp)){
 ############
 # ?by
 
-plot(eggs2, smolts2[6,,1], type="l",ylim=c(0,relx*10), xlim=c(0,10), col=col1, ylab="Smolts (thousands)",
+plot(eggs2, smolts2[6,,1], type="l",ylim=c(0,relx*7), xlim=c(0,10), col=col1, ylab="Smolts (thousands)",
      xlab="Eggs (millions)", main=Rivernames[6,], cex.lab=cexLab, cex.axis=cexAxis, cex.main=cexMain)
 
 for(i in 1:Nyears){
@@ -237,7 +237,7 @@ for(j in 2:length(samp)){
 ############
 # Byske
 
-plot(eggs, smolts[7,,1], type="l",ylim=c(0,relx*90), xlim=c(0,90), col=col1, ylab="Smolts (thousands)",
+plot(eggs, smolts[7,,1], type="l",ylim=c(0,relx*45), xlim=c(0,90), col=col1, ylab="Smolts (thousands)",
      xlab="Eggs (millions)", main=Rivernames[7,], cex.lab=cexLab, cex.axis=cexAxis, cex.main=cexMain)
 
 for(i in 1:Nyears){

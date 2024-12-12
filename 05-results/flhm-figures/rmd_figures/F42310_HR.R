@@ -1,9 +1,3 @@
-# ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
-# Project: 		 Baltic salmon stock assessment (WGBAST)
-
-# Contents:		 produce figure F4.2.3.10, HR
-
-## ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 
 # from cohort+age to calendar years
 hrW<-array(NA, dim=c(2,length(Years_m)-2, nsim))
@@ -110,6 +104,8 @@ df.2.stot<-as_tibble(setNames(df,c("Year","q5","q25","q50","q75","q95","Age","Fi
   mutate(Year=Year+1988)%>%
   mutate(Age=fct_recode(factor(Age),
                         "Grilse"= "1","MSW"= "2"))  
+
+#print(as_tibble(df.2.stot), n=120)
 
 
 labels <- c(Coastal_tot = "Combined coastal HR, AU1", Sea_tot = "Combined offshore HR")

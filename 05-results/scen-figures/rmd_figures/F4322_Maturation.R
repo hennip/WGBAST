@@ -4,8 +4,8 @@
 
 
 # Maturation is the same in all scenarios
-#! Effort 
-EffScen<-1
+#! Effort
+EffScen<-scen_Matur
 
 #Load the file containing stats
 File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,"_RCzero23-35.RData")

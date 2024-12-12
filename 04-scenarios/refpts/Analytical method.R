@@ -1,64 +1,90 @@
-#Get R_MSY and R_lim reference points
-
-rm(list=ls(all=T))   
-
-source("run-this-first.R") # This file should be located at the root of the Rproject file. If not using Rstudio, pls define the location
+##Make sure to use long input files with long F_seal !!!
 
 
-Model<-"2023"  #MSY  #"MSY_new_M74"   
+library(coda)
+
+# # Becky:
+
+# # ===============
+   PathSim<-"//storage-dh.slu.se/home$/rewh0001/My Documents/ICES WGBAST/2024/Scenarios/" # results from the simulation model and output from scenarios
+   PathData<-"C:/WGBAST15/WGBAST_2024/data_2024/" # extra input files 
+   PathScen<-"C:/WGBAST15/2024_scenarios/" # scenario results 
+   PathFiles<-"//storage-dh.slu.se/home$/rewh0001/My Documents/ICES WGBAST/2024/Reference points/"
+   PathOut<-"//storage-dh.slu.se/home$/rewh0001/My Documents/ICES WGBAST/2024/Reference points/"
+
+setwd(PathFiles)
+
+# Henni:
+#source(paste0("/04-scenarios/paths_scens.r")) 
+
+assess_year<-2024
+Model<-paste0(assess_year,"_JAGS_Mps") 
+
+# Fetch model
+load(file=paste0(PathSim,"CR_2024_selected_chain.RData"))
+load(file=paste0(PathSim,"SR_devs_2024.RData"))
+Nimble<-grepl("Nimble",Model)
+
+if(Nimble){
+v1 <- mcmc(chain_output[[1]]$samples)
+v2 <- mcmc(chain_output[[2]]$samples)
+chains<-mcmc.list(list(v1,v2)) 
+}else{
+#chains<-run$mcmc #JAGS
+chains<-chains
+}
+
+d<-as.matrix(chains)
+keep.sample<-seq(7,7000,by=7)  #keep 1000 samples for scens
+#keep.sample<-seq(3,6000,by=3)  #keep 2000 samples for scens
+d<-d[keep.sample,]
+nsim<-dim(d)[1]
 
 stocknames<-c("Torne", "Simo","Kalix","Rane","Pite","Aby","Byske","Rickle","Savaran",
               "Ume","Ore","Logde","Ljungan","Morrum","Eman","Kage","Test")
 
+AU<-c(1,1,1,1,2,2,2,2,2,2,2,2,3,4,4,2,3)
 stock_indices<-c(1:17)
 Nstocks<-length(stock_indices) # number of stocks
-AU<-c(1,1,1,1,2,2,2,2,2,2,2,2,3,4,4,2,3)
-e_delay<-c(rep(4,times=13),3,3,4,3)
+e_delay<-c(rep(4,times=12),3,3,3,4,3)    #Ljungan from 4 to 3 2024
+stocks<-c(1:17)                  #stocks to run
 
-ymax<-70
-LastHistYear<-2020
+# Time
+#! Set the last year for historic part and the last year for predictions:
+ymax<-350
+LastHistYear<-assess_year-1
 LastPredYear<-1992+ymax
 #FUTURE PROJECTIONS BASED ON EFFORT SCENARIOS
 NumFutYears<-LastPredYear-LastHistYear
-
-years<-c(1992,LastPredYear)
-years<-c(years[],years[2]-years[1]+1)
-
-yCTN<-years[3]
 HistYears<-c(1992:LastHistYear)
 
 #Define a year that separates historic part from future part
-yBreak<-length(HistYears) 
-stocks<-c(1:17)                  #stocks to rune
+yBreak<-length(HistYears)
+    
+years<-c(1992,LastPredYear)
+years<-c(years[],years[2]-years[1]+1)   #yBreak+NumFutYears
+yCTN<-years[3]
 
-load(file=paste0(PathSim,"FLHM_2023_rivHR_data2023_thin350.RData"))
-#chains<-as.mcmc.list(run)
-chains<-run$mcmc
-d<-as.matrix(chains)
-keep.sample<-seq(4,4000,by=4)
-d<-d[keep.sample,]
-nsamp<-dim(d)[1]
+Smolt_MSY<-array(0,dim=c(Nstocks,nsim))
+Smolt_lim<-array(0,dim=c(Nstocks,nsim))
+Eggs0<-array(0,dim=c(Nstocks,nsim))
+Eggs_MSY<-array(0,dim=c(Nstocks,nsim))
+Eggs_lim<-array(0,dim=c(Nstocks,nsim))
+MSY<-array(0,dim=c(Nstocks,nsim))
 
-Smolt_MSY<-array(0,dim=c(Nstocks,nsamp))
-Smolt_lim<-array(0,dim=c(Nstocks,nsamp))
-Eggs_MSY<-array(0,dim=c(Nstocks,nsamp))
-MSY<-array(0,dim=c(Nstocks,nsamp))
+comp.inds<-array(0,dim=c(Nstocks,nsim))  #which samples to use in comparisons (1 means ref pt exists)
+comp.inds1<-array(0,dim=c(Nstocks,nsim))  #which samples to use in comparisons (1 means ref pt exists)
 
-comp.inds<-array(0,dim=c(Nstocks,nsamp))  #which samples to use in comparisons (1 means ref pt exists)
-comp.inds1<-array(0,dim=c(Nstocks,nsamp))  #which samples to use in comparisons (1 means ref pt exists)
-
-
-
-a<-d[1:nsamp,grep("alphaSR",colnames(d))]
-b<-d[1:nsamp,grep("betaSR",colnames(d))]
-tau<-d[1:nsamp,grep("tau_SR",colnames(d))]  #precision of the recruitment process error deviates
+a<-d[1:nsim,grep("alphaSR",colnames(d))]
+b<-d[1:nsim,grep("betaSR",colnames(d))]
+tau<-d[1:nsim,grep("tau_SR",colnames(d))]  #precision of the recruitment process error deviates
 
 #parameters are from this parameterisation of Bev-Holt
 #log(R)<-log(E/(alpha+beta*E))
     
 
-K<-array(0,dim=c(nsamp,17))
-for(s in 1:length(stocks)){
+K<-array(0,dim=c(nsim,Nstocks))
+for(s in 1:Nstocks){
    #K[,stocks[s]]<-exp(log(1/b[,stocks[s]])+0.5/tau) #correction applied in 2021 only
 K[,stocks[s]]<-1/b[,stocks[s]]  #K is the maximum recruitment
 }
@@ -66,7 +92,7 @@ K[,stocks[s]]<-1/b[,stocks[s]]  #K is the maximum recruitment
 rm(d,chains)
 
 for(s in 1:length(stocks)){
-
+#s<-1
 a_s<-a[,stocks[s]]   #select parameters for a subset of stocks
 b_s<-b[,stocks[s]]
 K_s<-K[,stocks[s]]
@@ -74,10 +100,17 @@ K_s<-K[,stocks[s]]
 a_s<-1/a_s
 E<-1:10000
 
+
+#e0<-E0_1[E0_1 <0 & E0_1 > -2000000]
+#inds2<-which(E0_1 <0 & E0_1 > -2000000)
+#R0[inds2]<-0.999*K_s[inds2] 
+#E0<-R0[inds2]/(a_s[inds2]*(1-R0[inds2]/K_s[inds2]))  # Solve E0
+#E0/(1/a_s+1/K_s*E0)
+
 #Read in values for R0 (should be same length as for SR parameters above)
-# Note! Make R0_1000-folder
-R0<-read.table(paste0(PathOut_Scen,"R0_1000/eqm_stats_error1_",stocknames[stocks[s]],".csv"),sep=",")[,1]
+R0<-read.table(paste0(PathFiles,"eqm_stats_",stocknames[stocks[s]],"_",Model,".csv"),sep=",")[,1]
 E0_1<-R0/(a_s*(1-R0/K_s))  # Solve E0
+
 #inds<-which(E0_1>0)  #indices where R0 < K
 #comp.inds[stocks[s],inds]<-1
 
@@ -86,6 +119,15 @@ comp.inds1[stocks[s],inds1]<-1
 
 R0[which(R0>K_s)]<-0.999*K_s[which(R0>K_s)] 
 E0<-R0/(a_s*(1-R0/K_s))  # Solve E0
+#E0/(1/a_s+1/K_s*E0)
+
+par(mfrow=c(1,2))
+hist(E0_1,breaks=50)
+hist(E0,breaks=50)
+
+#E75<-R0*0.75/(a_s*(1-R0*0.75/K_s))  
+#E80<-R0*0.80/(a_s*(1-R0*0.80/K_s))
+
 inds<-which(R0<K_s)
 comp.inds[stocks[s],inds]<-1
 
@@ -100,7 +142,6 @@ b_s<-K_s/a_s
 # solution for the polynomial
 #E_MSY=(-b_s+sqrt(b_s^2-4*a_s*gamma_s))/2*a_s
 
-
 # E_MSY is where the derivative of the surplus production = 0
 E_MSY<-(-2*(K_s/a_s)+sqrt((2*(K_s/a_s))^2-4*(b_s^2-E0*(K_s/a_s)*K_s/(R0))))/2   # That is the key result!
 R_MSY<-E_MSY*K_s/(K_s/a_s+E_MSY) # R_MSY at E_MSY
@@ -111,6 +152,8 @@ R_lim<-E_MSY*(R0/E0)
 E_lim<-(R_lim/a_s)/(1-R_lim/K_s)
 
 Eggs_MSY[stocks[s],which(comp.inds[stocks[s],]==1)]<-E_MSY
+Eggs_lim[stocks[s],which(comp.inds[stocks[s],]==1)]<-E_lim
+Eggs0[stocks[s],which(comp.inds[stocks[s],]==1)]<-E0
 Smolt_MSY[stocks[s],which(comp.inds[stocks[s],]==1)]<-R_MSY
 Smolt_lim[stocks[s],which(comp.inds[stocks[s],]==1)]<-R_lim
 MSY[stocks[s],which(comp.inds[stocks[s],]==1)]<-R_MSY-R0*E_MSY/E0 # Surplus production
@@ -220,7 +263,7 @@ if(s==1){
 }#s
 
 
-save(comp.inds,Smolt_MSY,Smolt_lim,Eggs_MSY,MSY,file="ref_pts_long_2023.RData")
+save(comp.inds,Smolt_MSY,Smolt_lim,Eggs_MSY,Eggs_lim,Eggs0,MSY,file=paste0("ref_pts_2024","_",Model,"_eggs.RData"))
 
 
 

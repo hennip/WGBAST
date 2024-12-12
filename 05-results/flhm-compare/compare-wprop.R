@@ -2,12 +2,13 @@
 
 #source("models-select.R")
 
+
 ## ---- load-wprop
 
 tmp1<-read.table(str_c(PathData_FLHM, "Scale.txt"), header=T)[,1]
 tmp2<-read.table(str_c(PathData_FLHM, "Scale.txt"), header=T)[,3]
 
-add<-2 # 1 or 2
+add<-1 # 1 or 2
 Year<-c(1987:(Years[length(Years)]+add))
 
 tmp1<-as_tibble(cbind(tmp1,Year))%>%mutate(Type="2SW")
@@ -60,18 +61,24 @@ df.2
 ## ---- graphs-wprop
 
 
-df1<-filter(df.1, is.na(Year)==F)
-df2<-filter(df.2, is.na(Year)==F)
+df1<-filter(df.1, is.na(Year)==F) %>% 
+  filter(!is.na(q50))
+df2<-filter(df.2, is.na(Year)==F) %>% 
+  filter(!is.na(q50))
 
-ggplot(df2, aes(Year, group=Year))+
+#ggplot(df2, aes(Year, group=Year))+
+ggplot(df2, aes(Year, group = interaction(Year, Type)))+
   theme_bw()+
   geom_boxplot(
     data=df1,
     mapping= aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+
     stat = "identity",
     colour="grey", fill="grey95")+
   geom_boxplot(
-    aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+    #aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+    aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95,
+        group  =interaction(Type, Year)),
     stat = "identity",fill=rgb(1,1,1,0.6))+
   labs(x="Year", y="proportion", title="Wild proportion")+
   geom_line(aes(Year,q50))+
@@ -80,6 +87,7 @@ ggplot(df2, aes(Year, group=Year))+
   coord_cartesian(ylim=c(0,1))+
   geom_point(aes(x=Year, y=obs_prop))+
   facet_grid(Type~.)
+  #facet_grid(~group,scales="free_x")
 
 
 ## ---- graphs-wprop-traces

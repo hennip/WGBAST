@@ -8,15 +8,18 @@
 # Morrumsån="13",`Unsampled stock`="14"))
 
 
-source("00-basics/run-this-first.R")
+source("run-this-first.R")
 source("00-basics/packages.r")
 source("00-basics/boxplot-functions.r")
 pathM74old<-pathM74_2021
 pathM74<-pathM74_current
   
 # FI data
-dat<-read_xlsx(path=str_c(pathM74,"dat/orig/Finnish_M74_data-2022_paivitetty_TPa_21_01_2023.xlsx"), 
-              col_names = T, guess_max = 10000, sheet="Data", na=c("", "NA"))   
+# dat<-read_xlsx(path=str_c(pathM74,"dat/orig/Finnish_M74_data-2022_paivitetty_TPa_21_01_2023.xlsx"), 
+#               col_names = T, guess_max = 10000, sheet="Data", na=c("", "NA"))   
+
+dat<-read_xlsx(path="C:/Users/03195892/OneDrive - Valtion/01-PROJECTS/M74/2024/data/Finnish_M74_data-2023_päivitetty_TPa_08_02_2024.xlsx", 
+               col_names = T, guess_max = 10000, sheet="Data", na=c("", "NA"))  
 #View(dat)
 
 df<-dat%>%
@@ -115,8 +118,8 @@ dfFI.bugs<-dfFI%>%
 
 dfSE.bugs<-dfSE
   
-write_csv(dfFI.bugs, str_c(pathM74,"prg/input/M74dataFI22.csv"))
-write_csv(dfSE.bugs, str_c(pathM74,"prg/input/M74dataSE22.csv"))
+#write_csv(dfFI.bugs, str_c(pathM74,"prg/input/M74dataFI22.csv"))
+#write_csv(dfSE.bugs, str_c(pathM74,"prg/input/M74dataSE22.csv"))
 
 
 

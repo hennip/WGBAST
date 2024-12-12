@@ -1,9 +1,3 @@
-# ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
-# Project: 		 Baltic salmon stock assessment (WGBAST)
-
-# Contents:		 produce figure F4.2.3.5
-
-## ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 
 
 
@@ -18,6 +12,7 @@ AU<-c(1,1,1,1,2,2,2,2,2,2,2,2,3,4,4,2,3)
 tend<-years+2
 yend<-1987+years+1
 
+#R0_mult<-0.75
 
 #get SmoltW variables into array
 sm<-d[ ,grep("SmoltW\\[",colnames(d))]  #34 x 16 for 2018 assess

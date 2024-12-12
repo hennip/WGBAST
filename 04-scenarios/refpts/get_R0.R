@@ -80,7 +80,7 @@ CoefTrollingF<-0  #value from 2019 ProjEffort code
  for(loop in 1:(nsim/100)){
  #       loop<-1
 
-    BH_dataFile<-paste0(PathOut_Scen, "ScenHist_JAGSmodel", Model,"_",loop,".RData")
+    BH_dataFile<-paste0(PathOut_Scen, "2023/output/ScenHist_JAGSmodel", Model,"_",loop,".RData")
 
   load(BH_dataFile)
 

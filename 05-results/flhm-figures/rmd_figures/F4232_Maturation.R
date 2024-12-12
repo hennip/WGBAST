@@ -1,11 +1,13 @@
 #   one year less!!!
 
 for(a in 1:4){
-
+  #a<-1
+  #dfW<-boxplot.jags.df2(chains, "LW[",str_c(a,"]"),1:length(Years), nchains)%>%
   dfW<-boxplot.jags.df2(chains, "LW[",str_c(a,"]"),1:length(Years_m))%>%
     mutate(Age=a, Type="Wild")
   ifelse(a>1, dfW2<-bind_rows(dfW2,dfW),dfW2<-dfW)
   
+  #dfR<-boxplot.jags.df2(chains, "LR[",str_c(a,"]"),1:length(Years), nchains)%>%
   dfR<-boxplot.jags.df2(chains, "LR[",str_c(a,"]"),1:length(Years_m))%>%
     mutate(Age=a, Type="Reared")
   ifelse(a>1, dfR2<-bind_rows(dfR2,dfR),dfR2<-dfR)

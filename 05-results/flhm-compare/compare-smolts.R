@@ -50,21 +50,23 @@ for(r in 1:16){
   #r<-1
   df1<-filter(df.1, River==r, Year>1991)
   df2<-filter(df.2, River==r, Year>1991)
-  print(ggplot(df2, aes(Year, group=Year))+
-          theme_bw()+
-          geom_boxplot(
-            data=df1,
-            mapping= aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
-            stat = "identity",
-            colour="grey", fill="grey95")+
-          geom_boxplot(
-            aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
-            stat = "identity",fill=rgb(1,1,1,0.1))+
-          labs(x="Year", y="Number of smolts (1000s)", title=Rivername[r])+
-          geom_line(aes(Year,q50))+
-          geom_line(data=df1,aes(Year,q50),col="grey")+  
-          scale_x_continuous(breaks = scales::pretty_breaks(n = 5))
-  )
+  gp <- ggplot(df2, aes(Year, group=Year))+
+      theme_bw()+
+      geom_boxplot(
+        data=df1,
+        mapping= aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+        stat = "identity",
+        colour="grey", fill="grey95")+
+      geom_boxplot(
+        aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+        stat = "identity",fill=rgb(1,1,1,0.1))+
+      labs(x="Year", y="Number of smolts (1000s)", title=Rivername[r])+
+      geom_line(aes(Year,q50))+
+      geom_line(data=df1,aes(Year,q50),col="grey")+  
+      scale_x_continuous(breaks = scales::pretty_breaks(n = 5))
+  if(r == 13) gp <- gp+ylim(0, 25)
+  print(gp)
+  
 }
 
 # Testeboån

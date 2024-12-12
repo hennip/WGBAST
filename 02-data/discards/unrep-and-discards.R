@@ -24,6 +24,7 @@
 #	k=management unit {1,2}; 1=SD22-31(Main Basin and Gulf of Bothnia), 2=SD32 (Gulf of Finland)
 
 
+
 # modelData('C:/Users/03081178/Work Folders/WGBAST/2024 Gävle/Reporting rates/data/Unrep_discard_rates_2024.txt')
 # modelData('C:/Users/03081178/Work Folders/WGBAST/2024 Gävle/Reporting rates/data/PL_Seal_corr_factor.txt')
 # modelData('C:/Users/03081178/Work Folders/WGBAST/2024 Gävle/Reporting rates/data/Country_list_MU2.txt')
@@ -34,6 +35,7 @@ read.table(paste0(pathMain, ))
 list(cry=c(1,8,9,2,3,4,5,6,7))
 
 C:\Users\03080932\OneDrive - Valtion\WGBAST_shared\submodels\reporting rates
+
 model{
   
   for (i in 1:17){       # years 2001-2017, see years 2018-2022 further down

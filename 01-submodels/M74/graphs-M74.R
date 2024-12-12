@@ -1,5 +1,6 @@
 
 source("01-submodels/M74/data-M74.r")
+
 ## ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 # Input mean2_M74 and mean_M74 codas from one file (note! all rivers and 
 # years are in the same chain) 
@@ -7,6 +8,9 @@ source("01-submodels/M74/data-M74.r")
 
 mean1<-read_tsv(str_c(pathM74,"/prg/output/coda_mean_M74_22.txt"), col_names = c("s", "mean1"))
 mean2<-read_tsv(str_c(pathM74,"/prg/output/coda_mean2_M74_22.txt"), col_names = c("s", "mean2"))
+
+res <- read_rds("JAGS/res/res24M74.rds")
+
 
 # change format, otherwise the loops below won't work 
 mean1<-as.data.frame(mean1)
@@ -49,7 +53,7 @@ df.bugs<-as_tibble(setNames(df2,c("Year","q5","q25","q50","q75","q95","stock")))
 #  mutate(river=as.factor(stock))
 
 
-df1<-full_join(df.bugs, dfM74)%>%
+df1<-full_join(df.bugs, rbind(Mfi, Mse), by = c("Year", "stock"))%>%
   arrange(stock)%>% # Arranges rivers into ascending order
   mutate(river=as.factor(stock))%>%
   mutate(rivername=fct_recode(river,

@@ -8,7 +8,7 @@
 # PathOut<-"//storage-dh.slu.se/home$/rewh0001/My Documents/ICES WGBAST/2023/R0_1000/"
 #setwd(PathFiles)
 
-source("run-this-first.R") # This file should be located at the root of the Rproject file. If not using Rstudio, pls define the location
+#source("run-this-first.R") # This file should be located at the root of the Rproject file. If not using Rstudio, pls define the location
 source(paste0(PathFiles,"refpts/get_R0.R"))
 
 Model<-"2023"  #MSY  #"MSY_new_M74"   
@@ -39,7 +39,7 @@ yCTN<-years[3]
  
 
 nsim<-1000    #number of posterior samples to run
-load(paste0(PathFiles,"SR_devs_2023.RData"))
+load(paste0(PathOut_Scen,"2023/codes/SR_devs_2023.RData"))
 keep.sample<-seq(4,4000,by=4)
 errorSR<-errorSR[keep.sample,,] #thin to keep every 4th sample
 
@@ -51,7 +51,8 @@ stocks<-c(1:17)                  #stocks to run
 nstocks<-length(stocks)
 
 
-ptm<-proc.time()
+#ptm<-proc.time()
+ptm<-Sys.time()
 
 load(file=paste0(PathSim,"FLHM_2023_rivHR_data2023_thin350.RData"))
 #chains<-as.mcmc.list(run)
@@ -69,14 +70,17 @@ spawner0<-array(0,dim=c(nstocks,nsim))
 
 #simulate R0s
 for(ij in 1:nstocks){   #nstocks
+  t1 <- Sys.time()
   print(ij)
   R0file<-paste0(PathOut_Scen,"R0_1000/eqm_stats_error1_",stocknames[stocks[ij]],".csv")
-  eqstats<-get_R0(stocks[ij],histyr=LastHistYear,ymax=ymax,evec=errorSR[,,stocks[ij]],nsim=nsim)
+  #R0file<-paste0(,"R0_1000/eqm_stats_error1_",stocknames[stocks[ij]],".csv")
+  eqstats<-get_R0(stock = stocks[ij],histyr=LastHistYear,ymax=ymax,evec=errorSR[,,stocks[ij]],nsim=nsim)
   smolt0[ij,]<-eqstats[[1]]
   spawner0[ij,]<-eqstats[[2]]
   print.R0<-cbind(smolt0[ij,],spawner0[ij,])
-
-  write.table(print.R0,row.names=F,col.names=F,file=R0file,sep=",",append=T)
+  #write.table(print.R0,row.names=F,col.names=F,file=R0file,append=T)
+  print(difftime(Sys.time(), t1, units = "mins"))
 
 }
-proc.time()-ptm
+#proc.time()-ptm
+difftime(Sys.time(), ptm, units = "mins")
