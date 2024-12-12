@@ -14,7 +14,7 @@
 # 4: Produce input data for the full life history model (SSTinputToJAGS.xlsx)
 
 
-source(here("../run-this-first-wgbast.R"))
+source("../run-this-first-wgbast.R")
 
 
 pathIn<-pathDataSST
