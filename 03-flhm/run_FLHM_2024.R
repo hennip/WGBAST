@@ -16,7 +16,8 @@
 # library(rjags) 
 # load.module("mix")
 # load.module("glm")
-source("run-this-first.R")				  
+library(here)
+source(here("../run-this-first-wgbast.R"))
 
 
 assessment_year<-2024
@@ -59,8 +60,8 @@ trolling<-1
 #source("flhm/paths_FLHM.R") #windows
 
 #modelName<-"FLHM_JAGS_2024_orig" # Same model structure as in 2023 assessment
-#modelName<-"FLHM_JAGS_2024_CR"   #variant with trolling C&R 
-modelName<-"FLHM_JAGS_2024_CR_coefDShier"   #variant with trolling C&R 
+modelName<-"FLHM_JAGS_2024_CR"   #variant with trolling C&R 
+#modelName<-"FLHM_JAGS_2024_CR_coefDShierEE"   #variant with trolling C&R 
 
 CR<-ifelse(grepl("CR",modelName),T,F) #boolean to read correct version of catch data file
 
