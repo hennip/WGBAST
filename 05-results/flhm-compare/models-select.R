@@ -1,12 +1,10 @@
-library(tidyverse)
 # Note! Comparison codes assume now each chains-variable to have only 1 chain
 # If there's 2, combine them together to make things run smooth
 
 # For gelman diagnostics to work, have 2-chain version of the model2
 
 
-library(here)
-source(here("../run-this-first-wgbast.R"))
+source("../run-this-first-wgbast.R")
 
 nstocks<-17
 
@@ -20,7 +18,7 @@ Rivername_long<-read.table(str_c(PathData_FLHM, "rivernames.txt"))[,1]
 
 #Cleaned version 2024 (no stucked chains)
 #load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/CR_2024_selected_chain.RData")); trolling1<-T;Mname1<-"2024 base model, cleaned"
-load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_spcount_data2024.RData")); trolling1<-T;Mname1<-"2024 Simo didson count removed";chains<-as.mcmc.list(run)
+load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2024_CR_spcount_data2024.RData")); trolling1<-T;Mname1<-"2024 Simo didson count removed";chains<-as.mcmc.list(run)
 
 chains1<-chains
 
@@ -42,9 +40,9 @@ Years2B<-c(1992:2023)
 # Model 2:
 # =================
 
-#   load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_coefDSHIER_data2024.RData")); trolling2<-T;Mname2<-"2024, Hierarchical priors over years for CoefDS"
-   load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_coefDS_data2024.RData")); trolling2<-T;Mname2<-"2024, prior given to CoefDS"
-   #load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_ar_data2024.RData")); trolling2<-T;Mname2<-"2024, AR model for Mps"
+#load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_coefDSHIER_data2024.RData")); trolling2<-T;Mname2<-"2024, Hierarchical priors over years for CoefDS"
+#load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_ar_data2024.RData")); trolling2<-T;Mname2<-"2024, AR model for Mps"
+load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2024_CR_coefDS_data2024.RData")); trolling2<-T;Mname2<-"2024, prior given to CoefDS"
 
 selCH=T
 

@@ -16,9 +16,7 @@
 # library(rjags) 
 # load.module("mix")
 # load.module("glm")
-library(here)
-source(here("../run-this-first-wgbast.R"))
-
+source("../run-this-first-wgbast.R")
 
 assessment_year<-2024
 years<-length(seq(1987:assessment_year))

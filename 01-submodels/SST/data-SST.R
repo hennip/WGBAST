@@ -14,7 +14,6 @@
 # 4: Produce input data for the full life history model (SSTinputToJAGS.xlsx)
 
 
-library(here)
 source(here("../run-this-first-wgbast.R"))
 
 
