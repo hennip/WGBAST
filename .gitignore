@@ -1,4 +1,8 @@
+
+# These are not needed if the files are stored outside the repo folder,
+# yet for now let's keep them here just in case
 run-this-first.R
+run-this-first-wgbast.R
 
 
 *.html

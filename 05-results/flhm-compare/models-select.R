@@ -5,9 +5,8 @@ library(tidyverse)
 # For gelman diagnostics to work, have 2-chain version of the model2
 
 
-
-source("run-this-first.R") # This file should be located at the root of the Rproject file. If not using Rstudio, pls define the location
-
+library(here)
+source(here("../run-this-first-wgbast.R"))
 
 nstocks<-17
 
