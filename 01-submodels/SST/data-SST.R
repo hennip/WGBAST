@@ -13,12 +13,11 @@
 # 3: Run graphs-SST.R for figures
 # 4: Produce input data for the full life history model (SSTinputToJAGS.xlsx)
 
-#install.packages("tidyverse")
+
+library(here)
+source(here("../run-this-first-wgbast.R"))
 
 
-# Path for input data
-source("00-basics/run-this-first.R")
-source("00-basics/packages.R")
 pathIn<-pathDataSST
 
 #############
