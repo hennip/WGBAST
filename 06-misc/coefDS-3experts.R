@@ -1,4 +1,3 @@
-library(tidyverse)
 ###########################################################
 #   Simojoen yliarvio parametrin priorijakauman luonti    #
 #       3 ekspertin estimaattien yhdistely                #
