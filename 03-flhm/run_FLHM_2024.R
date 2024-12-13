@@ -58,8 +58,8 @@ trolling<-1
 #source("flhm/paths_FLHM.R") #windows
 
 #modelName<-"FLHM_JAGS_2024_orig" # Same model structure as in 2023 assessment
-modelName<-"FLHM_JAGS_2024_CR"   #variant with trolling C&R 
-#modelName<-"FLHM_JAGS_2024_CR_coefDShierEE"   #variant with trolling C&R 
+#modelName<-"FLHM_JAGS_2024_CR"   #variant with trolling C&R 
+modelName<-"FLHM_JAGS_2024_CR_coefDShierEE"   #variant with trolling C&R 
 
 CR<-ifelse(grepl("CR",modelName),T,F) #boolean to read correct version of catch data file
 
@@ -148,7 +148,8 @@ list(fec=c(exp(8),exp(9),exp(9.5),exp(9.5),exp(9.7)),
 
 
 
-parnames<-c("tau_MpsW","MpsW","MpsR","mu_MpsW","NspWtot","SmoltR",
+parnames<-c("coefDS", "mu_coefDS", "cv_coefDS",
+  "tau_MpsW","MpsW","MpsR","mu_MpsW","NspWtot","SmoltR",
             "SmoltW","EPR","EPR_M74","alphaSR","betaSR","tau_SR","z","K","R0",
             "nco_ObsTotX","ncr_ObsTotX","ncc_ObsTotX",
             "sp_countX","LW","LR","M74",
@@ -199,7 +200,7 @@ print("run0 done");print(difftime(t02,t01))
 print("--------------------------------------------------")
 
 t1<-Sys.time();print(t1)
- run1 <- extend.jags(run0, combine=F, sample=500, thin=100, keep.jags.files=T)
+ run1 <- extend.jags(run0, combine=F, sample=1000, thin=100, keep.jags.files=T)
  t2<-Sys.time();print(t2)
  print("run1 done"); print(difftime(t2,t1))
 print("--------------------------------------------------")
@@ -208,7 +209,7 @@ print("--------------------------------------------------")
 
 
  t3<-Sys.time();print(t3)
- run2 <- extend.jags(run1, combine=T, sample=500, thin=100, keep.jags.files=T)
+ run2 <- extend.jags(run1, combine=T, sample=1000, thin=100, keep.jags.files=T)
  t4<-Sys.time();print(t4)
  print("run2 done");print(difftime(t4,t3))
 print("--------------------------------------------------")
@@ -216,7 +217,7 @@ print("--------------------------------------------------")
  save(run, file=paste0(PathOut,runName, "_data",assessment_year,".RData"))
 
  t5<-Sys.time();print(t5)
- run3 <- extend.jags(run2, combine=T, sample=500, thin=100, keep.jags.files=T)
+ run3 <- extend.jags(run2, combine=T, sample=1000, thin=100, keep.jags.files=T)
  t6<-Sys.time();print(t6)
  print("run3 done");print(difftime(t6,t5))
 print("--------------------------------------------------")
@@ -225,7 +226,7 @@ print("--------------------------------------------------")
  save(run, file=paste0(PathOut,runName, "_data",assessment_year,".RData"))
 
  t7<-Sys.time();print(t7)
- run4 <- extend.jags(run3, combine=T, sample=500, thin=100, keep.jags.files=T)
+ run4 <- extend.jags(run3, combine=T, sample=1000, thin=100, keep.jags.files=T)
  t8<-Sys.time();print(t8)
  print("run4 done");print(difftime(t8,t7))
 print("--------------------------------------------------")

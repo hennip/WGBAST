@@ -169,7 +169,7 @@ for(s in 1:2){     #Torne, Simo
         PropWgrilse[i,s]<-NrW[(i-1), 2,s] /(NrW[(i-1), 2,s]+NrRsp[(i-1), 2,s])   #propn of grilse that are wild
         PropWMSW[i,s]<-NrW_msw[i,s]/NrAll_msw[i,s]   #propn MSW wild
          	
-        NrWtot[i,s] <- round((NrW_tot[i,s]+NrRsp_tot[i,s])*1000)+1  
+       NrWtot[i,s] <- round((NrW_tot[i,s]+NrRsp_tot[i,s])*1000)+1  
         #doesn't make a diff for Ume here if NrW or NladderW used to calc below ratio as p.ladder same all ages 
  	      probMSW[i,s] <- NrAll_msw[i,s]/NrAll_tot[i,s] 
         
@@ -796,9 +796,12 @@ for (i in 6:(m-1)){
     sp_countX[i,2]~dlnorm(muDS[i], tauDS) 
   
     #muDS[i]<-log(NrWtot[i,2]/coefDS)-0.5*(1/tauDS)
-    muDS[i]<-log(NrWtot[i,2]/coefDS[i])-0.5*(1/tauDS)
     
-    coefDS[i]~dlnorm(log(mu_coefDS)-0.5/T_coefDS,T_coefDS)
+    NrW_msw_Simo[i]<-round((NrW_msw[i,2]+NrRsp_msw[i,])*1000)+1   
+    #muDS[i]<-log(NrWtot[i,2]/coefDS[i])-0.5*(1/tauDS)
+    muDS[i]<-log(NrW_msw_Simo[i]/coefDS[i])-0.5*(1/tauDS)
+    coefDS[i]<-coefDS_tmp[i]+1   # To ensure Simo count is always overestimation  
+    coefDS_tmp[i]~dlnorm(log(mu_coefDS)-0.5/T_coefDS,T_coefDS)
 
 	
    
@@ -1582,8 +1585,13 @@ cvDS~dlnorm(-2.37,8)
 #coefDS~dlnorm(0.04,45) # assume that Simojoki Didson count is underestimate 
 #   hierarchical structure for coefDS
 T_coefDS<-1/log(cv_coefDS*cv_coefDS+1)
-mu_coefDS~dlnorm(0.04,200)
-cv_coefDS~dunif(0.01,0.25)
+#mu_coefDS~dlnorm(0.04,200)
+#cv_coefDS~dunif(0.01,0.25)
+
+mu_coefDS~dlnorm(log(1.205355-1)-0.5/Tmu,Tmu)
+Tmu<-1/log(0.4*0.4+1)
+cv_coefDS~dunif(0.01,5)
+
 
  
 for(rs in 1:rstocks){
