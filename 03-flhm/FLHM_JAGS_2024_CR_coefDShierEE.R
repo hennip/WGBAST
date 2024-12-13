@@ -797,7 +797,7 @@ for (i in 6:(m-1)){
   
     #muDS[i]<-log(NrWtot[i,2]/coefDS)-0.5*(1/tauDS)
     
-    NrW_msw_Simo[i]<-round((NrW_msw[i,2]+NrRsp_msw[i,])*1000)+1   
+    NrW_msw_Simo[i]<-round((NrW_msw[i,2]+NrRsp_msw[i,2])*1000)+1   
     #muDS[i]<-log(NrWtot[i,2]/coefDS[i])-0.5*(1/tauDS)
     muDS[i]<-log(NrW_msw_Simo[i]/coefDS[i])-0.5*(1/tauDS)
     coefDS[i]<-coefDS_tmp[i]+1   # To ensure Simo count is always overestimation  
