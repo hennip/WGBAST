@@ -101,20 +101,39 @@ TX2<-1/log(0.01970493*0.01970493+1)
 
   
   #coefDS[i]~dlnorm(M_coefDS,T_coefDS)
+  
+  X<-x+1
   x~dlnorm(M_coefDS,T_coefDS)
   M_coefDS<-log(mu_coefDS)-0.5/T_coefDS
   T_coefDS<-1/log(cv_coefDS*cv_coefDS+1)
   
-  mu_coefDS~dlnorm(log(1.205355)-0.5/Tmu,Tmu)
-  Tmu<-1/log(0.01970493*0.01970493+1)
+  #mu_coefDS~dlnorm(log(1.205355)-0.5/Tmu,Tmu)
+  #Tmu<-1/log(0.01970493*0.01970493+1)
+ mu_coefDS~dlnorm(log(1.205355-1)-0.5/Tmu,Tmu)
+  Tmu<-1/log(0.4*0.4+1)
+  cv_coefDS~dunif(0.01,5)
   
-  cv_coefDS~dunif(0.01,0.03)
+  
+  # mu_coefDS~dlnorm(log(0.24)-0.5/Tmu,Tmu)
+  # Tmu<-1/log(3.26*3.26+1)
+  # cv_coefDS~dunif(0.01,1)
+  # 
+  
+  tmp<-mu_coefDS+1
+  
+  
+  
   
 
 }"
 
-var_names=c("E1", "E2", "E3", 
-            "X1", "X2","x", "mu_coefDS", "cv_coefDS")
+var_names=c(#"E1", "E2", "E3", 
+            #"X1", 
+            #"X2",
+  "tmp",
+  "X",
+            "x", 
+            "mu_coefDS", "cv_coefDS")
 #inits=list(p=array(0.01,dim=c(1754,2)))
 
 run0 <- run.jags(M3,
@@ -125,7 +144,7 @@ run0 <- run.jags(M3,
 chains<-as.mcmc(run0)
 summary(run0)
 summary(chains, quantiles=c(0.05, 0.5, 0.95))
-
+plot(run0)
 
 #   Ekspertti 1
 #   mediaani 1.5 90%PI 1.1-2.2
@@ -135,5 +154,9 @@ summary(chains, quantiles=c(0.05, 0.5, 0.95))
 
 #   Ekspertti 3
 #   mediaani 1.025 90%PI 1-1.05
+
+#jos kaikki yhdisteään, tulevan lognormaalin mu =1.205355 ja cv = 0.2229662
+#jos vain juha ja erkki mu = 1.031237 ja cv = 0.01970493
+
 
 
