@@ -1,5 +1,7 @@
-source("run-this-first.R")
+source("../run-this-first-wgbast.R")
 
+#jos kaikki yhdisteään, tulevan lognormaalin mu =1.205355 ja cv = 0.2229662
+#jos vain juha ja erkki mu = 1.031237 ja cv = 0.01970493
 
 M1<-"model{
 
