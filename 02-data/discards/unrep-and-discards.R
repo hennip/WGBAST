@@ -28,15 +28,255 @@
 # modelData('C:/Users/03081178/Work Folders/WGBAST/2024 Gävle/Reporting rates/data/Unrep_discard_rates_2024.txt')
 # modelData('C:/Users/03081178/Work Folders/WGBAST/2024 Gävle/Reporting rates/data/PL_Seal_corr_factor.txt')
 # modelData('C:/Users/03081178/Work Folders/WGBAST/2024 Gävle/Reporting rates/data/Country_list_MU2.txt')
-source("run-this-first.R")
+source("../run-this-first-wgbast.R")
 
-read.table(paste0(pathMain, ))
+#read.table(paste0(pathMain, ))
 
-list(cry=c(1,8,9,2,3,4,5,6,7))
+# Countries 1=FI, 2=SE, 3=DK, 4=PL, 5=LV, 6=LT, 7=DE, 8=EE, 9=RU																																																																																																																																																																		
 
-C:\Users\03080932\OneDrive - Valtion\WGBAST_shared\submodels\reporting rates
+df<-read.table("../../WGBAST_shared/submodels/reporting rates/data/Unrep_discard_rates_2024.txt", header=T)
+#df<-as_tibble(df)
 
-model{
+# Kuinka suuri osuus saaliista on alamittaisia, perustuu kolmiojakaumaan ja expert elisitointiin
+Omu<-df |> select(contains("Omu")) 
+Osd<-df |> select(contains("Osd"))
+Cmu<-df |> select(contains("Cmu"))
+Csd<-df |> select(contains("Csd"))
+Rmu<-df |> select(contains("Rmu"))
+Rsd<-df |> select(contains("Rsd"))
+LLmu<-df |> select(contains("LLmu"))
+LLsd<-df |> select(contains("LLsd"))
+DNmu<-df |> select(contains("DNmu"))
+DNsd<-df |> select(contains("DNsd"))
+TNmu<-df |> select(contains("TNmu"))
+TNsd<-df |> select(contains("TNsd"))
+SLLDmu<-df |> select(contains("SLLDmu"))
+SLLDsd<-df |> select(contains("SLLDsd"))
+SGNDmu<-df |> select(contains("SGNDmu"))
+SGNDsd<-df |> select(contains("SGNDsd"))
+STNmu<-df |> select(contains("STNmu"))
+STNsd<-df |> select(contains("STNsd"))
+
+Ocv<-Osd/Omu 		#Oconv, unreporting off-shore
+TNcv<-TNsd/TNmu		#Dis_FYK, discarded undersized trapnet
+DNcv<-DNsd/DNmu		#Dis_GND, discarded undersized driftnet
+LLcv<-LLsd/LLmu		#Dis_LLD, discarded undersized longline
+Ccv<-Csd/Cmu		#Cconv, unreporting coast
+Rcv<-Rsd/Rmu		#Rconv, unreporting river
+SLLDcv<-SLLDsd/SLLDmu		#Seal LLD, seal damages longline
+SGNDcv<-SGNDsd/SGNDmu		#Seal GND, seal damages driftnet
+STNcv<-STNsd/STNmu		#Seal TN, seal damages trapnet
+
+Otau<-1/log(Ocv*Ocv+1)
+OM<-log(Omu)-0.5/Otau
+Ctau<-1/log(Ccv*Ccv+1)
+CM<-log(Cmu)-0.5/Ctau
+Rtau<-1/log(Rcv*Rcv+1)
+RM<-log(Rmu)-0.5/Rtau
+LLtau<-1/log(LLcv*LLcv+1)
+LLM<-log(LLmu)-0.5/LLtau
+DNtau<-1/log(DNcv*DNcv+1)
+DNM<-log(DNmu)-0.5/DNtau
+TNtau<-1/log(TNcv*TNcv+1)
+TNM<-log(TNmu)-0.5/TNtau
+SLLDtau<-1/log(SLLDcv*SLLDcv+1)
+SLLDM<-log(SLLDmu)-0.5/SLLDtau
+SGNDtau<-1/log(SGNDcv*SGNDcv+1)
+SGNDM<-log(SGNDmu)-0.5/SGNDtau
+STNtau<-1/log(STNcv*STNcv+1)
+STNM<-log(STNmu)-0.5/STNtau
+
+MLLcv<-0.02822/0.7698
+MLLtau<-1/log(MLLcv*MLLcv+1)
+MLLM<-log(0.7698)-0.5/MLLtau
+MDNcv<-0.03227/0.6535
+MDNtau<-1/log(MDNcv*MDNcv+1)
+MDNM<-log(0.6535)-0.5/MDNtau
+MTNcv<-0.059/0.3832
+MTNtau<-1/log(MTNcv*MTNcv+1)
+MTNM<-log(0.3832)-0.5/MTNtau
+
+
+# Correction factor for Polish seal damages to make the given estimate to apply only in SD26 catch	
+# in other words in years 2013-2015 given estimate applies only for 55% of the Total LLD catch	
+# and in years 2016-2017 applies for 65% of the total LLD catch
+# Eli näillä luvuilla kerrotaan Puolan ilmoittamaa saalista
+# from 2018 onwards seal damage data are given in numbers of fish (see SealLLD variable)
+# ONKO VIRHE ETTÄ PLfactor-muuttujassa on annettu arvo myös vuosille 2018->???
+df2<-read.table("../../WGBAST_shared/submodels/reporting rates/data/PL_Seal_corr_factor.txt", header=T)
+
+# Country list:
+#read.table("../../WGBAST_shared/submodels/reporting rates/data/Country_list_MU2.txt")
+cry=c(1,8,9,2,3,4,5,6,7)
+
+df3<-read.table("../../WGBAST_shared/submodels/reporting rates/data/Seal_Dis_numb_MU1-2_2024.txt", header=T)
+
+# Countries 1=FI, 2=SE, 3=DK, 4=PL, 5=LV, 6=LT, 7=DE, 8=EE and 9=RU																									
+# Management unit 1=SD22-31, 2=SD32																									
+# Seal damage and discard data is availale in MU1 only for FI, SE, DK, PL and in MU2 for FI	
+# Years 1:23 = 2001:2023
+SealGND<-array(NA, dim=c(23,4,2))
+SealGND[,,1]<-as.matrix(df3 |> select(contains("SealGND") & ends_with(".1."))) # 1=SD22-31, FI, SE, DK, PL
+SealGND[,1,2]<-as.matrix(df3 |> select(contains("SealGND") & ends_with(".2."))) # 2=SD32, FI	
+
+SealLLD<-array(NA, dim=c(23,4,2))
+SealLLD[,,1]<-as.matrix(df3 |> select(contains("SealLLD") & ends_with(".1.")))
+SealLLD[,1,2]<-as.matrix(df3 |> select(contains("SealLLD") & ends_with(".2.")))
+
+SealFYK<-array(NA, dim=c(23,4,2))
+SealFYK[,,1]<-as.matrix(df3 |> select(contains("SealFYK") & ends_with(".1.")))
+SealFYK[,1,2]<-as.matrix(df3 |> select(contains("SealFYK") & ends_with(".2.")))
+
+SealMIS<-array(NA, dim=c(23,4,2))
+SealMIS[,,1]<-as.matrix(df3 |> select(contains("SealMIS") & ends_with(".1.")))
+SealMIS[,1,2]<-as.matrix(df3 |> select(contains("SealMIS") & ends_with(".2.")))
+
+Dis<-array(NA, dim=c(23,4,2))
+Dis[,,1]<-as.matrix(df3 |> select(contains("Dis") & ends_with(".1.")))
+Dis[,1,2]<-as.matrix(df3 |> select(contains("Dis") & ends_with(".2.")))
+
+
+
+
+
+
+
+
+
+
+min_year<-2000
+max_year<-2023
+years<-min_year:max_year
+NumYears<-length(years)
+
+pathIn<-pathDataCatchEffort
+
+df_all<-read_xlsx(str_c(pathIn, 
+                        "dat/orig/WGBAST_2024_Catch_final.xlsx"), # Update!
+                  range="A1:Q17736", # Update!
+                  sheet="Catch data", col_names = T, guess_max = 8000, na=c("",".", "NaN", "NA")) |> 
+  # filter(YEAR>2005)%>% # Include results only 2009 onwards, catch DB has only updates from those years 
+  # mutate(NUMB=parse_double(NUMB))%>%
+  select(SPECIES, COUNTRY, YEAR, TIME_PERIOD, TP_TYPE, sub_div2, FISHERY, F_TYPE, GEAR, NUMB, 
+         EFFORT, everything()) |> 
+  mutate(TP_TYPE=ifelse(TP_TYPE=="QRT", "QTR", TP_TYPE)) |> 
+  filter(SPECIES=="SAL", YEAR>2000)
+  
+
+# Countries 1=FI, 2=SE, 3=DK, 4=PL, 5=LV, 6=LT, 7=DE, 8=EE and 9=RU																									
+
+
+df<-df_all |> 
+  mutate(country_nr=ifelse(COUNTRY=="FI",1, 
+                           ifelse(COUNTRY=="SE",2,
+                                  ifelse(COUNTRY=="DK", 3,
+                                         ifelse(COUNTRY=="PL", 4,
+                                                ifelse(COUNTRY=="LV", 5,
+                                                       ifelse(COUNTRY=="LT", 6,
+                                                              ifelse(COUNTRY=="DE", 7,
+                                                                     ifelse(COUNTRY=="EE", 8,
+                                                                            ifelse(COUNTRY=="RU", 9,COUNTRY))))))))))
+                                                                                   
+                                                                            
+                                                                     
+                                                              
+                                                       
+                                         )
+
+tmp<-df |> 
+  group_by(sub_div2,country_nr, YEAR, FISHERY, F_TYPE, GEAR) |> 
+  summarise(NUMB_tot=round(sum(NUMB),0))#, WEIGHT_tot=sum(WEIGHT))
+
+
+tmp
+
+View(tmp)#COUNTRY=="FI",
+
+df <- df |> filter(F_TYPE!="SEAL", F_TYPE!="ALV", F_TYPE!="DISC")
+
+# GND, LLD, FYK & MIS
+tmp3<-df |> filter(country_nr==1, FISHERY!="R")|> 
+  group_by(sub_div2,YEAR,GEAR) |> 
+  summarise(NUMB_tot=round(sum(NUMB, na.rm = T),0))
+piv_numb<-pivot_wider(tmp3, id_cols=c(sub_div2, YEAR), names_from=GEAR, values_from=NUMB_tot)
+View(piv_numb)
+
+# Recr, i.e. estimated offshore trolling catch, all countries
+tmp3<-df |> filter(FISHERY!="R", F_TYPE=="RECR")|> 
+  group_by(sub_div2,YEAR,COUNTRY) |> 
+  summarise(NUMB_tot=round(sum(NUMB, na.rm = T),0))
+piv_numb<-pivot_wider(tmp3, id_cols=c(sub_div2, YEAR), names_from=COUNTRY, values_from=NUMB_tot)
+View(piv_numb)
+
+# River catches
+tmp3<-df |> filter(FISHERY=="R")|> 
+  group_by(sub_div2,COUNTRY,YEAR) |> 
+  summarise(NUMB_tot=round(sum(NUMB, na.rm = T),0))
+piv_numb<-pivot_wider(tmp3, id_cols=c(sub_div2, YEAR), names_from=COUNTRY, values_from=NUMB_tot)
+View(piv_numb)
+
+
+
+
+
+
+tmp<-df |> filter(GEAR=="LLD", country_nr==1)|> 
+  group_by(sub_div2,YEAR) |> 
+  summarise(NUMB_tot=round(sum(NUMB),0))
+head(tmp2, 20)
+
+View(tmp2)
+
+tmp2<-df |> filter(GEAR=="FYK", country_nr==1)|> 
+  group_by(sub_div2,YEAR) |> 
+  summarise(NUMB_tot=round(sum(NUMB),0))
+head(tmp2, 20)
+
+
+tmp2<-df |> filter(GEAR=="MIS", country_nr==1)|> 
+  group_by(sub_div2,YEAR) |> 
+  summarise(NUMB_tot=round(sum(NUMB),0))
+head(tmp2, 20)
+
+
+
+
+datalist<-list(
+  cry=cry,
+  MLLtau=MLLtau, MLLM=MLLM, 
+   MDNtau=MDNtau, MDNM=MDNM, 
+   MTNtau=MTNtau, MTNM=MTNM, 
+   MTNtau=MTNtau, MTNM=MTNM, 
+   OM=OM, Otau=Otau#,
+  # CM=CM, Ctau=Ctau,
+  # RM=RM, Rtau=Rtau,
+  # LLM=LLM, LLtau=LLtau,
+  # DNM=DNM, DNtau=DNtau,
+  # TNM=TNM, TNtau=TNtau,
+  # SLLDM=SLLDM, SLLDtau=SLLDtau,
+  # SGNDM=SGNDM, SGNDtau=SGNDtau,
+  # STNM=STNM, STNtau=as.data.frame(STNtau),
+  # SealGND=SealGND, SealLLD=SealLLD, SealFYK=SealFYK,
+  # SealMIS=SealMIS, Dis=Dis
+  
+)
+
+
+
+parnames<-c("A_TotDis_BS")
+
+
+
+run0 <- run.jags(M1, monitor= parnames,
+                 data=datalist,#inits = initsall,
+                 n.chains = 2, method = 'parallel', thin=1,
+                 burnin =10000, modules = "mix",
+                 sample =10, adapt = 10000,
+                 keep.jags.files=T,
+                 progress.bar=TRUE, jags.refresh=100)
+
+
+M1<-"model{
   
   for (i in 1:17){       # years 2001-2017, see years 2018-2022 further down
     #  Whole Baltic sea
@@ -627,21 +867,12 @@ model{
   
   # longline
   MDisLL~dlnorm(MLLM,MLLtau)I(0.5,1.1)
-  MLLcv<-0.02822/0.7698
-  MLLM<-log(0.7698)-0.5/MLLtau
-  MLLtau<-1/log(MLLcv*MLLcv+1)
   
   #  driftnet
   MDisDN~dlnorm(MDNM,MDNtau)I(0.4,1.1)
-  MDNcv<-0.03227/0.6535
-  MDNM<-log(0.6535)-0.5/MDNtau
-  MDNtau<-1/log(MDNcv*MDNcv+1)
   
   # trapnet
   MDisC~dlnorm(MTNM,MTNtau)I(0.1,1.1)
-  MTNcv<-0.059/0.3832
-  MTNM<-log(0.3832)-0.5/MTNtau
-  MTNtau<-1/log(MTNcv*MTNcv+1)
   
   # Country and year specific Mean and SD values of lognormal disributions (from input file xxxx)
   # same values are used for both management units
@@ -671,43 +902,8 @@ model{
       SealDN[i,j]~dlnorm(SGNDM[i,j],SGNDtau[i,j])I(0,0.2)	# share of seal damages driftne
       SealC[i,j]~dlnorm(STNM[i,j],STNtau[i,j])I(0,0.35)	# share of seal damages trapnet  and other coastal gears
       
-      Ocv[i,j]<-Osd[i,j]/Omu[i,j] 		#Oconv, unreporting off-shore
-      OM[i,j]<-log(Omu[i,j])-0.5/Otau[i,j]
-      Otau[i,j]<-1/log(Ocv[i,j]*Ocv[i,j]+1)
       
-      Ccv[i,j]<-Csd[i,j]/Cmu[i,j]		#Cconv, unreporting coast
-      CM[i,j]<-log(Cmu[i,j])-0.5/Ctau[i,j]
-      Ctau[i,j]<-1/log(Ccv[i,j]*Ccv[i,j]+1)
-      
-      Rcv[i,j]<-Rsd[i,j]/Rmu[i,j]		#Rconv, unreporting river
-      RM[i,j]<-log(Rmu[i,j])-0.5/Rtau[i,j]
-      Rtau[i,j]<-1/log(Rcv[i,j]*Rcv[i,j]+1)
-      
-      LLcv[i,j]<-LLsd[i,j]/LLmu[i,j]		#Dis_LLD, discarded undersized longline
-      LLM[i,j]<-log(LLmu[i,j])-0.5/LLtau[i,j]
-      LLtau[i,j]<-1/log(LLcv[i,j]*LLcv[i,j]+1)
-      
-      DNcv[i,j]<-DNsd[i,j]/DNmu[i,j]		#Dis_GND, discarded undersized driftnet
-      DNM[i,j]<-log(DNmu[i,j])-0.5/DNtau[i,j]
-      DNtau[i,j]<-1/log(DNcv[i,j]*DNcv[i,j]+1)
-      
-      TNcv[i,j]<-TNsd[i,j]/TNmu[i,j]		#Dis_FYK, discarded undersized trapnet
-      TNM[i,j]<-log(TNmu[i,j])-0.5/TNtau[i,j]
-      TNtau[i,j]<-1/log(TNcv[i,j]*TNcv[i,j]+1)
-      
-      SLLDcv[i,j]<-SLLDsd[i,j]/SLLDmu[i,j]		#Seal LLD, seal damages longline
-      SLLDM[i,j]<-log(SLLDmu[i,j])-0.5/SLLDtau[i,j]
-      SLLDtau[i,j]<-1/log(SLLDcv[i,j]*SLLDcv[i,j]+1)
-      
-      SGNDcv[i,j]<-SGNDsd[i,j]/SGNDmu[i,j]		#Seal GND, seal damages driftnet
-      SGNDM[i,j]<-log(SGNDmu[i,j])-0.5/SGNDtau[i,j]
-      SGNDtau[i,j]<-1/log(SGNDcv[i,j]*SGNDcv[i,j]+1)
-      
-      STNcv[i,j]<-STNsd[i,j]/STNmu[i,j]		#Seal TN, seal damages trapnet
-      STNM[i,j]<-log(STNmu[i,j])-0.5/STNtau[i,j]
-      STNtau[i,j]<-1/log(STNcv[i,j]*STNcv[i,j]+1)
     }
   }
-}
-
+}"
 
