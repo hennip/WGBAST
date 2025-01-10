@@ -24,15 +24,152 @@
 #	k=management unit {1,2}; 1=SD22-31(Main Basin and Gulf of Bothnia), 2=SD32 (Gulf of Finland)
 
 
-
-# modelData('C:/Users/03081178/Work Folders/WGBAST/2024 Gävle/Reporting rates/data/Unrep_discard_rates_2024.txt')
-# modelData('C:/Users/03081178/Work Folders/WGBAST/2024 Gävle/Reporting rates/data/PL_Seal_corr_factor.txt')
-# modelData('C:/Users/03081178/Work Folders/WGBAST/2024 Gävle/Reporting rates/data/Country_list_MU2.txt')
 source("../run-this-first-wgbast.R")
 
-#read.table(paste0(pathMain, ))
 
-# Countries 1=FI, 2=SE, 3=DK, 4=PL, 5=LV, 6=LT, 7=DE, 8=EE, 9=RU																																																																																																																																																																		
+# Countries 1=FI, 2=SE, 3=DK, 4=PL, 5=LV, 6=LT, 7=DE, 8=EE, 9=RU	
+
+
+
+# Catch&Effort DB
+
+min_year<-2000
+max_year<-2023
+years<-min_year:max_year
+NumYears<-length(years)
+
+pathIn<-pathDataCatchEffort
+
+df_all<-read_xlsx(str_c(pathIn, 
+                        "dat/orig/WGBAST_2024_Catch_final.xlsx"), # Update!
+                  range="A1:Q17736", # Update!
+                  sheet="Catch data", col_names = T, guess_max = 8000, na=c("",".", "NaN", "NA")) |> 
+  # filter(YEAR>2005)%>% # Include results only 2009 onwards, catch DB has only updates from those years 
+  # mutate(NUMB=parse_double(NUMB))%>%
+  select(SPECIES, COUNTRY, YEAR, TIME_PERIOD, TP_TYPE, sub_div2, FISHERY, F_TYPE, GEAR, NUMB, 
+         EFFORT, everything()) |> 
+  mutate(TP_TYPE=ifelse(TP_TYPE=="QRT", "QTR", TP_TYPE)) |> 
+  filter(SPECIES=="SAL", YEAR>2000)
+
+
+# Countries 1=FI, 2=SE, 3=DK, 4=PL, 5=LV, 6=LT, 7=DE, 8=EE and 9=RU																									
+
+
+df<-df_all |> 
+  mutate(country_nr=ifelse(COUNTRY=="FI",1, 
+                           ifelse(COUNTRY=="SE",2,
+                           ifelse(COUNTRY=="DK", 3,
+                           ifelse(COUNTRY=="PL", 4,
+                           ifelse(COUNTRY=="LV", 5,
+                           ifelse(COUNTRY=="LT", 6,
+                           ifelse(COUNTRY=="DE", 7,
+                           ifelse(COUNTRY=="EE", 8,
+                           ifelse(COUNTRY=="RU", 9,COUNTRY))))))))))
+
+
+
+yrs<-tibble(YEAR=c(2001:2023))
+yrs1<-tibble(YEAR=c(2001:2023), sub_div2="22-31")
+yrs2<-tibble(YEAR=c(2001:2023), sub_div2="32")
+yrs<-full_join(yrs1, yrs2)
+
+df <- df |> filter(F_TYPE!="SEAL", F_TYPE!="ALV", F_TYPE!="DISC")
+
+
+# GND, LLD, FYK & MIS
+###############################################################################
+GND<-array(0, dim=c(23,9,2))
+FYK<-array(0, dim=c(23,9,2))
+LLD<-array(0, dim=c(23,9,2))
+MIS<-array(0, dim=c(23,9,2))
+for(i in 1:9){
+  #  i<-9
+  tmp<-df |> filter(country_nr==i, FISHERY!="R")|> 
+    group_by(sub_div2,YEAR,GEAR) |> 
+    summarise(NUMB_tot=round(sum(NUMB, na.rm = T),0)) #|> 
+  #full_join(yrs)
+  piv_numb<-pivot_wider(tmp, id_cols=c(sub_div2, YEAR), names_from=GEAR, values_from=NUMB_tot) |>  
+     full_join(yrs) 
+                                        
+  GND[,i,1]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="22-31")|>select(GND))
+  GND[,i,2]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="32")|> select(GND))
+  if(i<8){
+    LLD[,i,1]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="22-31")|>select(LLD))
+    LLD[,i,2]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="32")|>select(LLD))
+  }
+  if(i!=3){
+    FYK[,i,1]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="22-31")|> select(FYK))
+    FYK[,i,2]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="32")|> select(FYK))
+  }
+  MIS[,i,1]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="22-31")|>select(MIS))
+  MIS[,i,2]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="32")|> select(MIS))
+  
+}
+
+
+
+# Recr, i.e. estimated offshore trolling catch, all countries
+###############################################################################
+tmp<-df |> filter(FISHERY!="R", F_TYPE=="RECR")|> 
+  group_by(sub_div2,YEAR,country_nr) |> 
+  summarise(NUMB_tot=round(sum(NUMB, na.rm = T),0))|> 
+  full_join(yrs)
+piv_numb<-pivot_wider(tmp, id_cols=c(sub_div2, YEAR), names_from=country_nr, values_from=NUMB_tot)
+#View(piv_numb)
+Recr<-array(0, dim=c(23,9,2))
+Recr[,1:8,1]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="22-31") |>select(order(colnames(piv_numb))) |> 
+                          select(-sub_div2, -YEAR))
+Recr[,1:8,2]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="32") |>select(order(colnames(piv_numb))) |> 
+                          select(-sub_div2, -YEAR))
+
+
+
+
+# River catches
+###############################################################################
+tmp<-df |> filter(FISHERY=="R")|> 
+  group_by(sub_div2,country_nr,YEAR) |> 
+  summarise(NUMB_tot=round(sum(NUMB, na.rm = T),0))|> 
+  full_join(yrs)
+piv_numb<-pivot_wider(tmp, id_cols=c(sub_div2, YEAR), names_from=country_nr, values_from=NUMB_tot)
+#View(piv_numb)
+River<-array(0, dim=c(23,9,2))
+piv_numb2<-piv_numb |> ungroup() |> add_column(`3`=rep(0,46))|> add_column(`7`=rep(0,46))
+
+River[,1:9,1]<-as.matrix(piv_numb2 |> ungroup() |>  filter(sub_div2=="22-31") |> 
+                           select(order(colnames(piv_numb2))) |> 
+                           select(-sub_div2, -YEAR))
+River[,1:9,2]<-as.matrix(piv_numb2 |> ungroup() |>  filter(sub_div2=="32") |> 
+                           select(order(colnames(piv_numb2))) |> 
+                           select(-sub_div2, -YEAR))
+
+# Replace NA's with 0's
+rpl<-function(var){
+  ifelse(is.na(var)==T, 0, var)
+}
+
+for(k in 1:2){
+  for(i in 1:23){
+    for(j in 1:9){
+      River[i,j,k]<-rpl(River[i,j,k])
+      Recr[i,j,k]<-rpl(Recr[i,j,k])
+      GND[i,j,k]<-rpl(GND[i,j,k])
+      LLD[i,j,k]<-rpl(LLD[i,j,k])
+      FYK[i,j,k]<-rpl(FYK[i,j,k])
+      MIS[i,j,k]<-rpl(MIS[i,j,k])
+      
+    }}
+}
+
+
+
+
+
+
+
+
+
+
 
 df<-read.table("../../WGBAST_shared/submodels/reporting rates/data/Unrep_discard_rates_2024.txt", header=T)
 #df<-as_tibble(df)
@@ -139,81 +276,6 @@ Dis[,1,2]<-as.matrix(df3 |> select(contains("Dis") & ends_with(".2.")))
 
 
 
-
-
-
-
-
-min_year<-2000
-max_year<-2023
-years<-min_year:max_year
-NumYears<-length(years)
-
-pathIn<-pathDataCatchEffort
-
-df_all<-read_xlsx(str_c(pathIn, 
-                        "dat/orig/WGBAST_2024_Catch_final.xlsx"), # Update!
-                  range="A1:Q17736", # Update!
-                  sheet="Catch data", col_names = T, guess_max = 8000, na=c("",".", "NaN", "NA")) |> 
-  # filter(YEAR>2005)%>% # Include results only 2009 onwards, catch DB has only updates from those years 
-  # mutate(NUMB=parse_double(NUMB))%>%
-  select(SPECIES, COUNTRY, YEAR, TIME_PERIOD, TP_TYPE, sub_div2, FISHERY, F_TYPE, GEAR, NUMB, 
-         EFFORT, everything()) |> 
-  mutate(TP_TYPE=ifelse(TP_TYPE=="QRT", "QTR", TP_TYPE)) |> 
-  filter(SPECIES=="SAL", YEAR>2000)
-  
-
-# Countries 1=FI, 2=SE, 3=DK, 4=PL, 5=LV, 6=LT, 7=DE, 8=EE and 9=RU																									
-
-
-df<-df_all |> 
-  mutate(country_nr=ifelse(COUNTRY=="FI",1, 
-                           ifelse(COUNTRY=="SE",2,
-                                  ifelse(COUNTRY=="DK", 3,
-                                         ifelse(COUNTRY=="PL", 4,
-                                                ifelse(COUNTRY=="LV", 5,
-                                                       ifelse(COUNTRY=="LT", 6,
-                                                              ifelse(COUNTRY=="DE", 7,
-                                                                     ifelse(COUNTRY=="EE", 8,
-                                                                            ifelse(COUNTRY=="RU", 9,COUNTRY))))))))))
-                                                                                   
-                                                                            
-                                                                     
-                                                              
-                                                       
-                                         )
-
-tmp<-df |> 
-  group_by(sub_div2,country_nr, YEAR, FISHERY, F_TYPE, GEAR) |> 
-  summarise(NUMB_tot=round(sum(NUMB),0))#, WEIGHT_tot=sum(WEIGHT))
-
-
-tmp
-
-View(tmp)#COUNTRY=="FI",
-
-df <- df |> filter(F_TYPE!="SEAL", F_TYPE!="ALV", F_TYPE!="DISC")
-
-# GND, LLD, FYK & MIS
-tmp3<-df |> filter(country_nr==1, FISHERY!="R")|> 
-  group_by(sub_div2,YEAR,GEAR) |> 
-  summarise(NUMB_tot=round(sum(NUMB, na.rm = T),0))
-piv_numb<-pivot_wider(tmp3, id_cols=c(sub_div2, YEAR), names_from=GEAR, values_from=NUMB_tot)
-View(piv_numb)
-
-# Recr, i.e. estimated offshore trolling catch, all countries
-tmp3<-df |> filter(FISHERY!="R", F_TYPE=="RECR")|> 
-  group_by(sub_div2,YEAR,COUNTRY) |> 
-  summarise(NUMB_tot=round(sum(NUMB, na.rm = T),0))
-piv_numb<-pivot_wider(tmp3, id_cols=c(sub_div2, YEAR), names_from=COUNTRY, values_from=NUMB_tot)
-View(piv_numb)
-
-# River catches
-tmp3<-df |> filter(FISHERY=="R")|> 
-  group_by(sub_div2,COUNTRY,YEAR) |> 
-  summarise(NUMB_tot=round(sum(NUMB, na.rm = T),0))
-piv_numb<-pivot_wider(tmp3, id_cols=c(sub_div2, YEAR), names_from=COUNTRY, values_from=NUMB_tot)
-View(piv_numb)
 
 
 
