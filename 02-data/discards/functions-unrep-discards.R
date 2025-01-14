@@ -27,18 +27,26 @@ func_country_catches<-function(df, numb_or_weight){
     piv_catch<-pivot_wider(tmp, id_cols=c(sub_div2, YEAR), names_from=GEAR, values_from=catch_tot) |>  
       full_join(yrs) 
     
-    GND[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|>select(GND))
-    GND[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|> select(GND))
+    GND[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|> 
+                           arrange(YEAR)|>select(GND))
+    GND[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|> 
+                           arrange(YEAR)|> select(GND))
     if(i<8){
-      LLD[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|>select(LLD))
-      LLD[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|>select(LLD))
+      LLD[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|> 
+                             arrange(YEAR)|>select(LLD))
+      LLD[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|> 
+                             arrange(YEAR)|>select(LLD))
     }
     if(i!=3){
-      FYK[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|> select(FYK))
-      FYK[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|> select(FYK))
+      FYK[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|> 
+                             arrange(YEAR)|> select(FYK))
+      FYK[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|> 
+                             arrange(YEAR)|> select(FYK))
     }
-    MIS[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|>select(MIS))
-    MIS[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|> select(MIS))
+    MIS[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|> 
+                           arrange(YEAR)|>select(MIS))
+    MIS[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|> 
+                           arrange(YEAR)|> select(MIS))
     
   }
   
@@ -55,9 +63,11 @@ func_country_catches<-function(df, numb_or_weight){
   piv_catch<-pivot_wider(tmp, id_cols=c(sub_div2, YEAR), names_from=country_nr, values_from=catch_tot)
   #View(piv_catch)
   Recr<-array(0, dim=c(23,9,2))
-  Recr[,1:8,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31") |>select(order(colnames(piv_catch))) |> 
+  Recr[,1:8,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31") |> 
+                            arrange(YEAR)|>select(order(colnames(piv_catch))) |> 
                             select(-sub_div2, -YEAR))
-  Recr[,1:8,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32") |>select(order(colnames(piv_catch))) |> 
+  Recr[,1:8,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32") |> 
+                            arrange(YEAR)|>select(order(colnames(piv_catch))) |> 
                             select(-sub_div2, -YEAR))
   
   
@@ -77,9 +87,11 @@ func_country_catches<-function(df, numb_or_weight){
   piv_catch2<-piv_catch |> ungroup() |> add_column(`3`=rep(0,46))|> add_column(`7`=rep(0,46))
   
   River[,1:9,1]<-as.matrix(piv_catch2 |> ungroup() |>  filter(sub_div2=="22-31") |> 
+                             arrange(YEAR)|> 
                              select(order(colnames(piv_catch2))) |> 
                              select(-sub_div2, -YEAR))
   River[,1:9,2]<-as.matrix(piv_catch2 |> ungroup() |>  filter(sub_div2=="32") |> 
+                             arrange(YEAR)|> 
                              select(order(colnames(piv_catch2))) |> 
                              select(-sub_div2, -YEAR))
   
@@ -125,18 +137,36 @@ func_country_sealdam<-function(dfX, numb_or_weight){
     piv_catch<-pivot_wider(tmp, id_cols=c(sub_div2, YEAR), names_from=GEAR, values_from=catch_tot) |>  
       full_join(yrs) 
     if(i==1){
-    SealGND[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|>select(GND))
-    SealGND[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|> select(GND))
+    SealGND[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|> 
+                               arrange(YEAR)|>select(GND))
+    SealGND[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|> 
+                               arrange(YEAR) |> select(GND))
     }
-    SealLLD[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|>select(LLD))
-    SealLLD[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|>select(LLD))
+    SealLLD[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|> 
+                               arrange(YEAR)|>select(LLD))
+    SealLLD[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|> 
+                               arrange(YEAR)|>select(LLD))
     if(i<3){
-      SealFYK[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|> select(FYK))
-      SealFYK[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|> select(FYK))
+      SealFYK[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|> 
+                                 arrange(YEAR)|> select(FYK))
+      SealFYK[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|> 
+                                 arrange(YEAR)|> select(FYK))
     }
-    SealMIS[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|>select(MIS))
-    SealMIS[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|> select(MIS))
+    SealMIS[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|>
+                               arrange(YEAR) |> select(MIS))
+    SealMIS[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|>
+                               arrange(YEAR) |> select(MIS))
 
+  }
+  for(k in 1:2){
+    for(i in 1:23){
+      for(j in 1:4){
+        SealGND[i,j,k]<-rpl(SealGND[i,j,k])
+        SealLLD[i,j,k]<-rpl(SealLLD[i,j,k])
+        SealFYK[i,j,k]<-rpl(SealFYK[i,j,k])
+        SealMIS[i,j,k]<-rpl(SealMIS[i,j,k])
+        
+      }}
   }
   
   res<-list(SealGND, SealLLD, SealFYK, SealMIS)
@@ -146,31 +176,36 @@ func_country_sealdam<-function(dfX, numb_or_weight){
 
 # calculate other discards per country in number or in weight
 func_country_discards<-function(dfX, numb_or_weight){
-   numb_or_weight<-1
- dfX<-df4
+ #  numb_or_weight<-1
+ #dfX<-df4
   # GND, LLD, FYK & MIS
   ###############################################################################
   Dis<-array(0, dim=c(23,4,2))
   for(i in 1:4){
-     i<-1
+  #   i<-2
+  #   dfX |> group_by(country_nr, GEAR) |> summarise(n=n())
     tmp<-dfX |> filter(country_nr==i)|> 
-      group_by(sub_div2,YEAR,GEAR) |> 
+      group_by(sub_div2,YEAR) |> 
       summarise(catch_tot=ifelse(numb_or_weight==1,
                                  round(sum(NUMB, na.rm = T),0),
                                  round(sum(WEIGHT, na.rm = T),0))
       )
     
-    piv_catch<-pivot_wider(tmp, id_cols=c(sub_div2, YEAR), names_from=GEAR, values_from=catch_tot) |>  
-      full_join(yrs) 
+  piv_catch<-full_join(tmp,yrs) 
     
-    Dis[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|> 
-                           mutate_at(vars(LLD,MIS,GNS), tidyr::replace_na, 0) |> 
-                           mutate(All=LLD+MIS+GNS)|> select(All))
-    Dis[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|> 
-                           mutate_at(vars(LLD,MIS,GNS), tidyr::replace_na, 0) |> 
-                           mutate(All=LLD+MIS+GNS)|> select(All))
-    
+    Dis[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31") |>  
+                           arrange(YEAR) |> select(catch_tot))
+    Dis[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|>  
+                           arrange(YEAR) |> select(catch_tot))
   }
 
+  for(k in 1:2){
+    for(i in 1:23){
+      for(j in 1:4){
+        Dis[i,j,k]<-rpl(Dis[i,j,k])
+      }}
+    }
+  
   return(Dis)
 }
+

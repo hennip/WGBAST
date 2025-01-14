@@ -126,125 +126,35 @@ SealMIS_W<-weight[[4]]
 df4 <- df |> filter(F_TYPE=="DISC")
 
 # Choose numb_or_weight==1 for NUMB and numb_or_weight==2 for weight 
-numb<-func_country_discards(df4,1)
-Dis_N<-numb[[1]]
+Dis_N<-func_country_discards(df4,1)
 
-weight<-func_country_discards(df4,2)
-Dis_W<-weight[[1]]
+Dis_W<-func_country_discards(df4,2)
 
 
+################################################################################
+################################################################################
+# Polish seal damages
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-# calculate catch per country in number or in weight
-func_country_catches<-function(catch){
-# GND, LLD, FYK & MIS
-###############################################################################
-GND<-array(0, dim=c(23,9,2))
-FYK<-array(0, dim=c(23,9,2))
-LLD<-array(0, dim=c(23,9,2))
-MIS<-array(0, dim=c(23,9,2))
-for(i in 1:9){
-  #  i<-9
-  tmp<-df |> filter(country_nr==i, FISHERY!="R")|> 
-    group_by(sub_div2,YEAR,GEAR) |> 
-    summarise(NUMB_tot=round(sum(NUMB, na.rm = T),0)) #|> 
-  #full_join(yrs)
-  piv_numb<-pivot_wider(tmp, id_cols=c(sub_div2, YEAR), names_from=GEAR, values_from=NUMB_tot) |>  
-     full_join(yrs) 
-                                        
-  GND[,i,1]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="22-31")|>select(GND))
-  GND[,i,2]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="32")|> select(GND))
-  if(i<8){
-    LLD[,i,1]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="22-31")|>select(LLD))
-    LLD[,i,2]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="32")|>select(LLD))
-  }
-  if(i!=3){
-    FYK[,i,1]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="22-31")|> select(FYK))
-    FYK[,i,2]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="32")|> select(FYK))
-  }
-  MIS[,i,1]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="22-31")|>select(MIS))
-  MIS[,i,2]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="32")|> select(MIS))
-  
-}
-
-
-
-# Recr, i.e. estimated offshore trolling catch, all countries
-###############################################################################
-tmp<-df |> filter(FISHERY!="R", F_TYPE=="RECR")|> 
-  group_by(sub_div2,YEAR,country_nr) |> 
-  summarise(NUMB_tot=round(sum(NUMB, na.rm = T),0))|> 
-  full_join(yrs)
-piv_numb<-pivot_wider(tmp, id_cols=c(sub_div2, YEAR), names_from=country_nr, values_from=NUMB_tot)
-#View(piv_numb)
-Recr<-array(0, dim=c(23,9,2))
-Recr[,1:8,1]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="22-31") |>select(order(colnames(piv_numb))) |> 
-                          select(-sub_div2, -YEAR))
-Recr[,1:8,2]<-as.matrix(piv_numb |> ungroup() |>  filter(sub_div2=="32") |>select(order(colnames(piv_numb))) |> 
-                          select(-sub_div2, -YEAR))
-
-
-
-
-# River catches
-###############################################################################
-tmp<-df |> filter(FISHERY=="R")|> 
-  group_by(sub_div2,country_nr,YEAR) |> 
-  summarise(NUMB_tot=round(sum(NUMB, na.rm = T),0))|> 
-  full_join(yrs)
-piv_numb<-pivot_wider(tmp, id_cols=c(sub_div2, YEAR), names_from=country_nr, values_from=NUMB_tot)
-#View(piv_numb)
-River<-array(0, dim=c(23,9,2))
-piv_numb2<-piv_numb |> ungroup() |> add_column(`3`=rep(0,46))|> add_column(`7`=rep(0,46))
-
-River[,1:9,1]<-as.matrix(piv_numb2 |> ungroup() |>  filter(sub_div2=="22-31") |> 
-                           select(order(colnames(piv_numb2))) |> 
-                           select(-sub_div2, -YEAR))
-River[,1:9,2]<-as.matrix(piv_numb2 |> ungroup() |>  filter(sub_div2=="32") |> 
-                           select(order(colnames(piv_numb2))) |> 
-                           select(-sub_div2, -YEAR))
-
-# Replace NA's with 0's
-rpl<-function(var){
-  ifelse(is.na(var)==T, 0, var)
-}
-
-for(k in 1:2){
-  for(i in 1:23){
-    for(j in 1:9){
-      River[i,j,k]<-rpl(River[i,j,k])
-      Recr[i,j,k]<-rpl(Recr[i,j,k])
-      GND[i,j,k]<-rpl(GND[i,j,k])
-      LLD[i,j,k]<-rpl(LLD[i,j,k])
-      FYK[i,j,k]<-rpl(FYK[i,j,k])
-      MIS[i,j,k]<-rpl(MIS[i,j,k])
-      
-    }}
-}
+# Correction factor for Polish seal damages to make the given estimate to apply only in SD26 catch	
+# in other words in years 2013-2015 given estimate applies only for 55% of the Total LLD catch	
+# and in years 2016-2017 applies for 65% of the total LLD catch
+# Eli näillä luvuilla kerrotaan Puolan ilmoittamaa saalista
+# from 2018 onwards seal damage data are given in numbers of fish (see SealLLD variable)
+# ONKO VIRHE ETTÄ PLfactor-muuttujassa on annettu arvo myös vuosille 2018->???
+PL_sealfac<-read.table("../../WGBAST_shared/submodels/reporting rates/data/PL_Seal_corr_factor.txt", header=T)
 
 # Use unname if col names are problem
-unname(River)
+# unname(River)
+
+################################################################################
+# Polish misreporting
+
+PL_misrep_N<-read.table("../../WGBAST_shared/submodels/reporting rates/data/PL_Misrep_numb_2024.txt", header=T)
+PL_misrep_W<-read.table("../../WGBAST_shared/submodels/reporting rates/data/PL_Misrep_weight_2024.txt", header=T)
 
 
-
-
-
-
-
-
-
+################################################################################
+# Country specific unreporting and discard rates based on expert elicitation
 
 
 df<-read.table("../../WGBAST_shared/submodels/reporting rates/data/Unrep_discard_rates_2024.txt", header=T)
@@ -310,92 +220,32 @@ MTNtau<-1/log(MTNcv*MTNcv+1)
 MTNM<-log(0.3832)-0.5/MTNtau
 
 
-# Correction factor for Polish seal damages to make the given estimate to apply only in SD26 catch	
-# in other words in years 2013-2015 given estimate applies only for 55% of the Total LLD catch	
-# and in years 2016-2017 applies for 65% of the total LLD catch
-# Eli näillä luvuilla kerrotaan Puolan ilmoittamaa saalista
-# from 2018 onwards seal damage data are given in numbers of fish (see SealLLD variable)
-# ONKO VIRHE ETTÄ PLfactor-muuttujassa on annettu arvo myös vuosille 2018->???
-df2<-read.table("../../WGBAST_shared/submodels/reporting rates/data/PL_Seal_corr_factor.txt", header=T)
-
 # Country list:
 #read.table("../../WGBAST_shared/submodels/reporting rates/data/Country_list_MU2.txt")
 cry=c(1,8,9,2,3,4,5,6,7)
-
-df3<-read.table("../../WGBAST_shared/submodels/reporting rates/data/Seal_Dis_numb_MU1-2_2024.txt", header=T)
-
-# Countries 1=FI, 2=SE, 3=DK, 4=PL, 5=LV, 6=LT, 7=DE, 8=EE and 9=RU																									
-# Management unit 1=SD22-31, 2=SD32																									
-# Seal damage and discard data is availale in MU1 only for FI, SE, DK, PL and in MU2 for FI	
-# Years 1:23 = 2001:2023
-SealGND<-array(NA, dim=c(23,4,2))
-SealGND[,,1]<-as.matrix(df3 |> select(contains("SealGND") & ends_with(".1."))) # 1=SD22-31, FI, SE, DK, PL
-SealGND[,1,2]<-as.matrix(df3 |> select(contains("SealGND") & ends_with(".2."))) # 2=SD32, FI	
-
-SealLLD<-array(NA, dim=c(23,4,2))
-SealLLD[,,1]<-as.matrix(df3 |> select(contains("SealLLD") & ends_with(".1.")))
-SealLLD[,1,2]<-as.matrix(df3 |> select(contains("SealLLD") & ends_with(".2.")))
-
-SealFYK<-array(NA, dim=c(23,4,2))
-SealFYK[,,1]<-as.matrix(df3 |> select(contains("SealFYK") & ends_with(".1.")))
-SealFYK[,1,2]<-as.matrix(df3 |> select(contains("SealFYK") & ends_with(".2.")))
-
-SealMIS<-array(NA, dim=c(23,4,2))
-SealMIS[,,1]<-as.matrix(df3 |> select(contains("SealMIS") & ends_with(".1.")))
-SealMIS[,1,2]<-as.matrix(df3 |> select(contains("SealMIS") & ends_with(".2.")))
-
-Dis<-array(NA, dim=c(23,4,2))
-Dis[,,1]<-as.matrix(df3 |> select(contains("Dis") & ends_with(".1.")))
-Dis[,1,2]<-as.matrix(df3 |> select(contains("Dis") & ends_with(".2.")))
-
-
-
-
-
-
-
-
-
-
-
-tmp<-df |> filter(GEAR=="LLD", country_nr==1)|> 
-  group_by(sub_div2,YEAR) |> 
-  summarise(NUMB_tot=round(sum(NUMB),0))
-head(tmp2, 20)
-
-View(tmp2)
-
-tmp2<-df |> filter(GEAR=="FYK", country_nr==1)|> 
-  group_by(sub_div2,YEAR) |> 
-  summarise(NUMB_tot=round(sum(NUMB),0))
-head(tmp2, 20)
-
-
-tmp2<-df |> filter(GEAR=="MIS", country_nr==1)|> 
-  group_by(sub_div2,YEAR) |> 
-  summarise(NUMB_tot=round(sum(NUMB),0))
-head(tmp2, 20)
 
 
 
 
 datalist<-list(
   cry=cry,
-  MLLtau=MLLtau, MLLM=MLLM, 
-   MDNtau=MDNtau, MDNM=MDNM, 
-   MTNtau=MTNtau, MTNM=MTNM, 
-   MTNtau=MTNtau, MTNM=MTNM, 
-   OM=OM, Otau=Otau#,
-  # CM=CM, Ctau=Ctau,
-  # RM=RM, Rtau=Rtau,
-  # LLM=LLM, LLtau=LLtau,
-  # DNM=DNM, DNtau=DNtau,
-  # TNM=TNM, TNtau=TNtau,
-  # SLLDM=SLLDM, SLLDtau=SLLDtau,
-  # SGNDM=SGNDM, SGNDtau=SGNDtau,
-  # STNM=STNM, STNtau=as.data.frame(STNtau),
-  # SealGND=SealGND, SealLLD=SealLLD, SealFYK=SealFYK,
-  # SealMIS=SealMIS, Dis=Dis
+  MLLtau=as.matrix(unname(MLLtau)), MLLM=as.matrix(unname(MLLM)), 
+  MDNtau=as.matrix(unname(MDNtau)), MDNM=as.matrix(unname(MDNM)), 
+  MTNtau=as.matrix(unname(MTNtau)), MTNM=as.matrix(unname(MTNM)), 
+  OM=as.matrix(unname(OM)), Otau=as.matrix(unname(Otau)),
+  CM=as.matrix(unname(CM)), Ctau=as.matrix(unname(Ctau)),
+  RM=as.matrix(unname(RM)), Rtau=as.matrix(unname(Rtau)),
+  
+  LLM=as.matrix(unname(LLM)), LLtau=as.matrix(unname(LLtau)),
+  DNM=as.matrix(unname(DNM)), DNtau=as.matrix(unname(DNtau)),
+  TNM=as.matrix(unname(TNM)), TNtau=as.matrix(unname(TNtau)),
+  SLLDM=as.matrix(unname(SLLDM)), SLLDtau=as.matrix(unname(SLLDtau)),
+  SGNDM=as.matrix(unname(SGNDM)), SGNDtau=as.matrix(unname(SGNDtau)),
+  STNM=as.matrix(unname(STNM)), STNtau=as.matrix(unname(STNtau)),
+  LLD=LLD_N, FYK=FYK_N, GND=GND_N,
+  Recr=Recr_N, River=River_N,
+  SealGND=SealGND_N, SealLLD=SealLLD_N, SealFYK=SealFYK_N, SealMIS=SealMIS_N,
+  Dis=Dis_N
   
 )
 
