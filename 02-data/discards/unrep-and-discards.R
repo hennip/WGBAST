@@ -52,7 +52,7 @@ df_all<-read_xlsx(str_c(pathIn,
   filter(SPECIES=="SAL", YEAR>2000)
 
 
-# Countries 1=FI, 2=SE, 3=DK, 4=PL, 5=LV, 6=LT, 7=DE, 8=EE and 9=RU																									
+# Countries 1=FI, 2=SE, 3=DK, 4=PL, 5=LV, 6=LT, 7=DE, 8=EE and 9=RU																			  						
 
 
 df<-df_all |> 
@@ -73,9 +73,51 @@ yrs1<-tibble(YEAR=c(2001:2023), sub_div2="22-31")
 yrs2<-tibble(YEAR=c(2001:2023), sub_div2="32")
 yrs<-full_join(yrs1, yrs2)
 
-df <- df |> filter(F_TYPE!="SEAL", F_TYPE!="ALV", F_TYPE!="DISC")
+df2 <- df |> filter(F_TYPE!="SEAL", F_TYPE!="ALV", F_TYPE!="DISC")
 
 
+# Choose numb_or_weight==1 for NUMB and numb_or_weight==2 for weight 
+numb<-func_country_catches(df2,1)
+
+River_N<-numb[[1]]
+Recr_N<-numb[[2]]
+GND_N<-numb[[3]]
+LLD_N<-numb[[4]]
+FYK_N<-numb[[5]]
+MIS_N<-numb[[6]]
+
+weight<-func_country_catches(df2,2)
+River_W<-weight[[1]]
+Recr_W<-weight[[2]]
+GND_W<-weight[[3]]
+LLD_W<-weight[[4]]
+FYK_W<-weight[[5]]
+MIS_W<-weight[[6]]
+
+
+# Choose numb_or_weight==1 for NUMB and numb_or_weight==2 for weight 
+numb<-func_country_sealdam(df2,1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# calculate catch per country in number or in weight
+func_country_catches<-function(catch){
 # GND, LLD, FYK & MIS
 ###############################################################################
 GND<-array(0, dim=c(23,9,2))
