@@ -242,7 +242,7 @@ datalist<-list(
   SLLDM=as.matrix(unname(SLLDM)), SLLDtau=as.matrix(unname(SLLDtau)),
   SGNDM=as.matrix(unname(SGNDM)), SGNDtau=as.matrix(unname(SGNDtau)),
   STNM=as.matrix(unname(STNM)), STNtau=as.matrix(unname(STNtau)),
-  LLD=LLD_N, FYK=FYK_N, GND=GND_N,
+  LLD=LLD_N, FYK=FYK_N, GND=GND_N, MIS=MIS_N,
   Recr=Recr_N, River=River_N,
   SealGND=SealGND_N, SealLLD=SealLLD_N, SealFYK=SealFYK_N, SealMIS=SealMIS_N,
   Dis=Dis_N
