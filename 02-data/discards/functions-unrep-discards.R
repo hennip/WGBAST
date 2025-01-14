@@ -6,7 +6,7 @@ rpl<-function(var){
 
 
 
-# calculate catch per country in CATCHer or in weight
+# calculate catch per country in number or in weight
 func_country_catches<-function(df, numb_or_weight){
   #numb_or_weight<-2
     # GND, LLD, FYK & MIS
@@ -101,3 +101,76 @@ func_country_catches<-function(df, numb_or_weight){
 return(res)
  }
   
+
+
+# calculate seal damages and other discards per country in number or in weight
+func_country_sealdam<-function(dfX, numb_or_weight){
+ # numb_or_weight<-1
+ # dfX<-df3
+  # GND, LLD, FYK & MIS
+  ###############################################################################
+  SealGND<-array(0, dim=c(23,4,2))
+  SealFYK<-array(0, dim=c(23,4,2))
+  SealLLD<-array(0, dim=c(23,4,2))
+  SealMIS<-array(0, dim=c(23,4,2))
+  for(i in 1:4){
+         # i<-4
+    tmp<-dfX |> filter(country_nr==i)|> 
+      group_by(sub_div2,YEAR,GEAR) |> 
+      summarise(catch_tot=ifelse(numb_or_weight==1,
+                                 round(sum(NUMB, na.rm = T),0),
+                                 round(sum(WEIGHT, na.rm = T),0))
+      )
+    
+    piv_catch<-pivot_wider(tmp, id_cols=c(sub_div2, YEAR), names_from=GEAR, values_from=catch_tot) |>  
+      full_join(yrs) 
+    if(i==1){
+    SealGND[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|>select(GND))
+    SealGND[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|> select(GND))
+    }
+    SealLLD[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|>select(LLD))
+    SealLLD[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|>select(LLD))
+    if(i<3){
+      SealFYK[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|> select(FYK))
+      SealFYK[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|> select(FYK))
+    }
+    SealMIS[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|>select(MIS))
+    SealMIS[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|> select(MIS))
+
+  }
+  
+  res<-list(SealGND, SealLLD, SealFYK, SealMIS)
+  return(res)
+}
+
+
+# calculate other discards per country in number or in weight
+func_country_discards<-function(dfX, numb_or_weight){
+   numb_or_weight<-1
+ dfX<-df4
+  # GND, LLD, FYK & MIS
+  ###############################################################################
+  Dis<-array(0, dim=c(23,4,2))
+  for(i in 1:4){
+     i<-1
+    tmp<-dfX |> filter(country_nr==i)|> 
+      group_by(sub_div2,YEAR,GEAR) |> 
+      summarise(catch_tot=ifelse(numb_or_weight==1,
+                                 round(sum(NUMB, na.rm = T),0),
+                                 round(sum(WEIGHT, na.rm = T),0))
+      )
+    
+    piv_catch<-pivot_wider(tmp, id_cols=c(sub_div2, YEAR), names_from=GEAR, values_from=catch_tot) |>  
+      full_join(yrs) 
+    
+    Dis[,i,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31")|> 
+                           mutate_at(vars(LLD,MIS,GNS), tidyr::replace_na, 0) |> 
+                           mutate(All=LLD+MIS+GNS)|> select(All))
+    Dis[,i,2]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="32")|> 
+                           mutate_at(vars(LLD,MIS,GNS), tidyr::replace_na, 0) |> 
+                           mutate(All=LLD+MIS+GNS)|> select(All))
+    
+  }
+
+  return(Dis)
+}

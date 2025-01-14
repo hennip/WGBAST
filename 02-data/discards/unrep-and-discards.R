@@ -49,7 +49,10 @@ df_all<-read_xlsx(str_c(pathIn,
   select(SPECIES, COUNTRY, YEAR, TIME_PERIOD, TP_TYPE, sub_div2, FISHERY, F_TYPE, GEAR, NUMB, 
          EFFORT, everything()) |> 
   mutate(TP_TYPE=ifelse(TP_TYPE=="QRT", "QTR", TP_TYPE)) |> 
-  filter(SPECIES=="SAL", YEAR>2000)
+  filter(SPECIES=="SAL", YEAR>2000)|> 
+  filter(SPECIES!="ALV")
+# NOTE: Alive discards are not taken into account. A way to include them should
+# be figured out at some point.
 
 
 # Countries 1=FI, 2=SE, 3=DK, 4=PL, 5=LV, 6=LT, 7=DE, 8=EE and 9=RU																			  						
@@ -73,7 +76,11 @@ yrs1<-tibble(YEAR=c(2001:2023), sub_div2="22-31")
 yrs2<-tibble(YEAR=c(2001:2023), sub_div2="32")
 yrs<-full_join(yrs1, yrs2)
 
-df2 <- df |> filter(F_TYPE!="SEAL", F_TYPE!="ALV", F_TYPE!="DISC")
+################################################################################
+# Landed catches in number and in weight
+
+# Dataset for 
+df2 <- df |> filter(F_TYPE!="SEAL", F_TYPE!="DISC")
 
 
 # Choose numb_or_weight==1 for NUMB and numb_or_weight==2 for weight 
@@ -94,12 +101,36 @@ LLD_W<-weight[[4]]
 FYK_W<-weight[[5]]
 MIS_W<-weight[[6]]
 
+################################################################################
+# Seal damaged in number and in weight per country
+
+df3 <- df |> filter(F_TYPE=="SEAL")
 
 # Choose numb_or_weight==1 for NUMB and numb_or_weight==2 for weight 
-numb<-func_country_sealdam(df2,1)
+numb<-func_country_sealdam(df3,1)
+SealGND_N<-numb[[1]]
+SealLLD_N<-numb[[2]]
+SealFYK_N<-numb[[3]]
+SealMIS_N<-numb[[4]]
+
+weight<-func_country_sealdam(df3,2)
+SealGND_W<-weight[[1]]
+SealLLD_W<-weight[[2]]
+SealFYK_W<-weight[[3]]
+SealMIS_W<-weight[[4]]
 
 
+################################################################################
+# Other discards in number and in weight per country
 
+df4 <- df |> filter(F_TYPE=="DISC")
+
+# Choose numb_or_weight==1 for NUMB and numb_or_weight==2 for weight 
+numb<-func_country_discards(df4,1)
+Dis_N<-numb[[1]]
+
+weight<-func_country_discards(df4,2)
+Dis_W<-weight[[1]]
 
 
 
