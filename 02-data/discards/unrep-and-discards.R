@@ -242,6 +242,9 @@ datalist<-list(
   SLLDM=as.matrix(unname(SLLDM)), SLLDtau=as.matrix(unname(SLLDtau)),
   SGNDM=as.matrix(unname(SGNDM)), SGNDtau=as.matrix(unname(SGNDtau)),
   STNM=as.matrix(unname(STNM)), STNtau=as.matrix(unname(STNtau)),
+  
+  PLfactor=as.vector(unname(PL_sealfac))[[1]],
+  PLMisr=as.vector(unname(PL_misrep_N))[[1]],
   LLD=LLD_N, FYK=FYK_N, GND=GND_N, MIS=MIS_N,
   Recr=Recr_N, River=River_N,
   SealGND=SealGND_N, SealLLD=SealLLD_N, SealFYK=SealFYK_N, SealMIS=SealMIS_N,
@@ -260,7 +263,7 @@ run0 <- run.jags(M1, monitor= parnames,
                  n.chains = 2, method = 'parallel', thin=1,
                  burnin =10000, modules = "mix",
                  sample =10, adapt = 10000,
-                 keep.jags.files=T,
+                 keep.jags.files=F,
                  progress.bar=TRUE, jags.refresh=100)
 
 
