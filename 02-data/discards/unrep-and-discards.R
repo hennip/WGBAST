@@ -26,16 +26,17 @@
 
 source("../run-this-first-wgbast.R")
 source("02-data/discards/functions-unrep-discards.R")
-
-# Countries 1=FI, 2=SE, 3=DK, 4=PL, 5=LV, 6=LT, 7=DE, 8=EE, 9=RU	
-
-
+source("02-data/discards/dat-unrep-discards.R")
+source("02-data/discards/model-unrep-discards.R")
 
 
+# Decide if you wish to run the model for numb or weight
+
+numb<-T # catch in number
+numb<-F # catch in weight
 
 
-
-datalist<-list(
+l1<-list(
   cry=cry,
   MLLtau=as.matrix(unname(MLLtau)), MLLM=as.matrix(unname(MLLM)), 
   MDNtau=as.matrix(unname(MDNtau)), MDNM=as.matrix(unname(MDNM)), 
@@ -49,17 +50,27 @@ datalist<-list(
   TNM=as.matrix(unname(TNM)), TNtau=as.matrix(unname(TNtau)),
   SLLDM=as.matrix(unname(SLLDM)), SLLDtau=as.matrix(unname(SLLDtau)),
   SGNDM=as.matrix(unname(SGNDM)), SGNDtau=as.matrix(unname(SGNDtau)),
-  STNM=as.matrix(unname(STNM)), STNtau=as.matrix(unname(STNtau)),
-  
-  PLfactor=as.vector(unname(PL_sealfac))[[1]],
-  PLMisr=as.vector(unname(PL_misrep_N))[[1]],
-  LLD=LLD_N, FYK=FYK_N, GND=GND_N, MIS=MIS_N,
-  Recr=Recr_N, River=River_N,
-  SealGND=SealGND_N, SealLLD=SealLLD_N, SealFYK=SealFYK_N, SealMIS=SealMIS_N,
-  Dis=Dis_N
-  
-)
+  STNM=as.matrix(unname(STNM)), STNtau=as.matrix(unname(STNtau)))
 
+
+
+if(numb==T){
+  l2<-list(PLfactor=as.vector(unname(PL_sealfac))[[1]],
+           PLMisr=as.vector(unname(PL_misrep_N))[[1]],
+           LLD=LLD_N, FYK=FYK_N, GND=GND_N, MIS=MIS_N,
+           Recr=Recr_N, River=River_N,
+           SealGND=SealGND_N, SealLLD=SealLLD_N, SealFYK=SealFYK_N, SealMIS=SealMIS_N,
+           Dis=Dis_N)
+}
+if(numb==F){
+  l2<-list(PLfactor=as.vector(unname(PL_sealfac))[[1]],
+           PLMisr=as.vector(unname(PL_misrep_W))[[1]],
+           LLD=LLD_W, FYK=FYK_W, GND=GND_W, MIS=MIS_W,
+           Recr=Recr_W, River=River_W,
+           SealGND=SealGND_W, SealLLD=SealLLD_W, SealFYK=SealFYK_W, SealMIS=SealMIS_W,
+           Dis=Dis_W)
+}
+datalist<-list(l1,l2)
 
 
 parnames<-c("A_TotUnrep_BS", # for T2.2.1 and T2.2.2
@@ -98,7 +109,7 @@ parnames<-c("A_TotUnrep_BS", # for T2.2.1 and T2.2.2
             "Tdis_alive",		# Alive discards
             "Tdis",					# Dead discards
             "Tseal","TMisr","Runrep","Sunrep",
-            "Tunrep_T2", #=misrep+runrep+sunrep
+            "Tunrep_T2" #=misrep+runrep+sunrep
 )
 
 # **************************************************************
@@ -120,10 +131,10 @@ parnames<-c("A_TotUnrep_BS", # for T2.2.1 and T2.2.2
 
 run0 <- run.jags(M1, monitor= parnames,
                  data=datalist,#inits = initsall,
-                 n.chains = 2, method = 'parallel', thin=1,
+                 n.chains = 2, method = 'parallel', thin=100,
                  burnin =10000, modules = "mix",
-                 sample =10, adapt = 10000,
+                 sample =1000, adapt = 10000,
                  keep.jags.files=F,
-                 progress.bar=TRUE, jags.refresh=10000)
+                 progress.bar=TRUE, jags.refresh=100)
 
-
+summary(run0)

@@ -1,4 +1,4 @@
-# Catch&Effort DB
+# Catch&Effort DB - Country specific landings per gear
 ################################################################################
 
 min_year<-2000
