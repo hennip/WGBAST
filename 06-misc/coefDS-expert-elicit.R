@@ -160,3 +160,40 @@ plot(run0)
 
 
 
+
+
+################################################################################
+# Koska hierarkkiset priorit vaikuttavat aiheuttavan numeerisia ongelmia 
+# (kEdc kaataa mallin extend-jagsilla alkuarvoistaessa)
+# tehdään kompromissina yksi coef-priori jolla mennään v 25 assessmentti
+# Kokeillaan hierarkkisten priorien palauttamista kun ollaan siirrytty Nimbleen
+
+# Tavoite tyyliin (X yo hierarkkisen perusteella)
+#jos kaikki yhdisteään, tulevan lognormaalin mu =1.205355 ja cv = 0.2229662
+
+M3<-"model{
+
+  X<-x+1
+  x~dlnorm(-2.029014,1.1211) # CoefDS
+  # x~dlnorm(log(1.205355-1)-0.5/Tmu,Tmu)
+  # Tmu<-1/log(1.2*1.2+1)
+
+}"
+
+var_names=c(#"E1", "E2", "E3", 
+  "X",
+  "x")
+#inits=list(p=array(0.01,dim=c(1754,2)))
+
+run0 <- run.jags(M3,
+                 monitor= var_names,#data=data, #inits = inits,
+                 n.chains = 2, method = 'parallel', thin=10, burnin =10000,
+                 modules = "mix",keep.jags.files=F,sample =1000, adapt = 1000,
+                 progress.bar=TRUE)
+chains<-as.mcmc(run0)
+summary(run0)
+summary(chains, quantiles=c(0.05, 0.5, 0.95))
+
+
+plot(run0)
+
