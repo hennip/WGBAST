@@ -799,9 +799,11 @@ for (i in 6:(m-1)){
     
     NrW_msw_Simo[i]<-round((NrW_msw[i,2]+NrRsp_msw[i,2])*1000)+1   
     #muDS[i]<-log(NrWtot[i,2]/coefDS[i])-0.5*(1/tauDS)
-    muDS[i]<-log(NrW_msw_Simo[i]/coefDS[i])-0.5*(1/tauDS)
-    coefDS[i]<-coefDS_tmp[i]+1   # To ensure Simo count is always overestimation  
-    coefDS_tmp[i]~dlnorm(log(mu_coefDS)-0.5/T_coefDS,T_coefDS)
+   # muDS[i]<-log(NrW_msw_Simo[i]/coefDS[i])-0.5*(1/tauDS) # If hierarchical priors
+    muDS[i]<-log(NrW_msw_Simo[i]/coefDS)-0.5*(1/tauDS) # Without hierarchy
+   
+    #coefDS[i]<-coefDS_tmp[i]+1   # To ensure Simo count is always overestimation  
+    #coefDS_tmp[i]~dlnorm(log(mu_coefDS)-0.5/T_coefDS,T_coefDS)
 
 	
    
@@ -1580,18 +1582,20 @@ for(s in 1:stocks){
 tauDS<-1/(log(cvDS*cvDS+1))
 cvDS~dlnorm(-2.37,8)
 
+coefDS<-coefDS_tmp+1   # To ensure Simo count is always overestimation  
+coefDS_tmp~dlnorm(-2.029014,1.1211)
 
 #coefDS<-1.05 # assume that Simojoki Didson count is underestimate 
 #coefDS~dlnorm(0.04,45) # assume that Simojoki Didson count is underestimate 
-#   hierarchical structure for coefDS
-T_coefDS<-1/log(cv_coefDS*cv_coefDS+1)
-#mu_coefDS~dlnorm(0.04,200)
-#cv_coefDS~dunif(0.01,0.25)
-
-mu_coefDS~dlnorm(log(1.205355-1)-0.5/Tmu,Tmu)
-Tmu<-1/log(0.4*0.4+1)
-cv_coefDS~dunif(0.01,5)
-
+# #   hierarchical structure for coefDS
+# T_coefDS<-1/log(cv_coefDS*cv_coefDS+1)
+# #mu_coefDS~dlnorm(0.04,200)
+# #cv_coefDS~dunif(0.01,0.25)
+# 
+# mu_coefDS~dlnorm(log(1.205355-1)-0.5/Tmu,Tmu)
+# Tmu<-1/log(0.4*0.4+1)
+# cv_coefDS~dunif(0.01,5)
+# 
 
  
 for(rs in 1:rstocks){
