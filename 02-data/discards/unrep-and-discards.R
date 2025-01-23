@@ -45,117 +45,126 @@ source("02-data/discards/model-unrep-discards.R") # Original structure
 #numb<-F # catch in weight
 
 
-l1<-list(
-  cry=cry,
-  MLLtau=as.matrix(unname(MLLtau)), MLLM=as.matrix(unname(MLLM)), 
-  MDNtau=as.matrix(unname(MDNtau)), MDNM=as.matrix(unname(MDNM)), 
-  MTNtau=as.matrix(unname(MTNtau)), MTNM=as.matrix(unname(MTNM)), 
-  OM=as.matrix(unname(OM)), Otau=as.matrix(unname(Otau)),
-  CM=as.matrix(unname(CM)), Ctau=as.matrix(unname(Ctau)),
-  RM=as.matrix(unname(RM)), Rtau=as.matrix(unname(Rtau)),
-  
-  LLM=as.matrix(unname(LLM)), LLtau=as.matrix(unname(LLtau)),
-  DNM=as.matrix(unname(DNM)), DNtau=as.matrix(unname(DNtau)),
-  TNM=as.matrix(unname(TNM)), TNtau=as.matrix(unname(TNtau)),
-  SLLDM=as.matrix(unname(SLLDM)), SLLDtau=as.matrix(unname(SLLDtau)),
-  SGNDM=as.matrix(unname(SGNDM)), SGNDtau=as.matrix(unname(SGNDtau)),
-  STNM=as.matrix(unname(STNM)), STNtau=as.matrix(unname(STNtau)),
-
-PLfactor=as.vector(unname(PL_sealfac))[[1]],
-
-PLMisr=as.vector(unname(PL_misrep_N))[[1]],
-LLD=LLD_N, FYK=FYK_N, GND=GND_N, MIS=MIS_N,
-Recr=Recr_N, River=River_N,
-SealGND=SealGND_N, SealLLD=SealLLD_N, SealFYK=SealFYK_N, SealMIS=SealMIS_N,
-Dis=Dis_N
-
-# PLMisr=as.vector(unname(PL_misrep_W))[[1]],
-# LLD=LLD_W, FYK=FYK_W, GND=GND_W, MIS=MIS_W,
-# Recr=Recr_W, River=River_W,
-# SealGND=SealGND_W, SealLLD=SealLLD_W, SealFYK=SealFYK_W, SealMIS=SealMIS_W,
-# Dis=Dis_W
-)
-
-datalist<-l1
-
-
-parnames<-c(
-  
-  "epsilon", "MDisLL", "MDisDN", "MDisC", 
-  "Oconv", "Cconv", "Rconv", 
-  "DisLL", "DisDN", "DisC", 
-  "SealLL", "SealDN", "SealC")
-
-  
+# l1<-list(
+#   cry=cry,
+#   MLLtau=as.matrix(unname(MLLtau)), MLLM=as.matrix(unname(MLLM)), 
+#   MDNtau=as.matrix(unname(MDNtau)), MDNM=as.matrix(unname(MDNM)), 
+#   MTNtau=as.matrix(unname(MTNtau)), MTNM=as.matrix(unname(MTNM)), 
+#   OM=as.matrix(unname(OM)), Otau=as.matrix(unname(Otau)),
+#   CM=as.matrix(unname(CM)), Ctau=as.matrix(unname(Ctau)),
+#   RM=as.matrix(unname(RM)), Rtau=as.matrix(unname(Rtau)),
 #   
-parnames<-c(
-
-  "A_TotUnrep_BS", # for T2.2.1 and T2.2.2
-            "A_TotDis_BS","A_TotCatch_BS","A_TotSeal_BS",
-
-            # Just in case
-            "B_TotUnrep_MU","B_TotCatch_MU",
-
-            # for F4.3.2.9
-            "B_TotDisSeal_MU","B_TotRiver",
-            "B_TotRecr_sea","B_TotMisr_sea",
-
-            "B_TotUnrep_sea", # for F2.2.3
-            "B_TotUnrep_river", # for T2.3.4
-            "B_TotRepCom_sea", # reported comm catch for F2.2.3
-            "B_TotCatchCom_sea", # sum of all components of COMM dead catch
-            "B_TotCatch_sea", # for F2.2.3
-            "B_TotUnrepDis_sea", # Estimate of the total unrep, misrep and disdards for F2.2.3 so far only this is used in the Henni's R-model apart from catch data from T2.6.1 and T2.7.1
-
-            # dead discard components by MU for T2.3.2
-            "B_TotDis_GND","B_TotDis_LLD",
-            "B_TotDis_FYK","B_TotDis_MIS","B_TotDis_dead",
-
-            "B_TotSeal_GND","B_TotSeal_LLD",
-            "B_TotSeal_FYK","B_TotSeal_MIS","B_TotSeal",
-
-            # alive discards bu MU
-            "B_TotDis_GND_alive","B_TotDis_LLD_alive",
-            "B_TotDis_FYK_alive","B_TotDis_alive",
-
-            # by country and MU
-            "TcatchCom",		# COMM at sea
-            "TRecrSea",					# RECR at sea
-            "TRiver",					# River catch
-            "Tcatch",				# Total catch
-            "Tdis_alive",		# Alive discards
-            "Tdis",					# Dead discards
-            "Tseal","TMisr","Runrep","Sunrep",
-            "Tunrep_T2" #=misrep+runrep+sunrep
-)
-
-# **************************************************************
-#   # the following is only for the checking purposes - ignore in regular runs
-#   **************************************************************
-#   # 
-# "DNdis","LLdis",
-# "TNdis","OTdis",
-# "DNseal", "LLseal",
-# "OTseal","TNseal",
-# "Tseal", "Tdis",
+#   LLM=as.matrix(unname(LLM)), LLtau=as.matrix(unname(LLtau)),
+#   DNM=as.matrix(unname(DNM)), DNtau=as.matrix(unname(DNtau)),
+#   TNM=as.matrix(unname(TNM)), TNtau=as.matrix(unname(TNtau)),
+#   SLLDM=as.matrix(unname(SLLDM)), SLLDtau=as.matrix(unname(SLLDtau)),
+#   SGNDM=as.matrix(unname(SGNDM)), SGNDtau=as.matrix(unname(SGNDtau)),
+#   STNM=as.matrix(unname(STNM)), STNtau=as.matrix(unname(STNtau)),
 # 
-# "Oconv", "Cconv",
-# "Rconv", "DisLL",
-# "DisDN", "DisC",
+# PLfactor=as.vector(unname(PL_sealfac))[[1]],
 # 
-# "SealLL", "SealDN", "SealC",
+# PLMisr=as.vector(unname(PL_misrep_N))[[1]],
+# LLD=LLD_N, FYK=FYK_N, GND=GND_N, MIS=MIS_N,
+# Recr=Recr_N, River=River_N,
+# SealGND=SealGND_N, SealLLD=SealLLD_N, SealFYK=SealFYK_N, SealMIS=SealMIS_N,
+# Dis=Dis_N
+# 
+# # PLMisr=as.vector(unname(PL_misrep_W))[[1]],
+# # LLD=LLD_W, FYK=FYK_W, GND=GND_W, MIS=MIS_W,
+# # Recr=Recr_W, River=River_W,
+# # SealGND=SealGND_W, SealLLD=SealLLD_W, SealFYK=SealFYK_W, SealMIS=SealMIS_W,
+# # Dis=Dis_W
+# )
+# 
+# datalist<-l1
+# 
+# 
+# parnames<-c(
+#   
+#   "epsilon", "MDisLL", "MDisDN", "MDisC", 
+#   "Oconv", "Cconv", "Rconv", 
+#   "DisLL", "DisDN", "DisC", 
+#   "SealLL", "SealDN", "SealC")
+# 
+#   
+# #   
+# parnames<-c(
+# 
+#   "A_TotUnrep_BS", # for T2.2.1 and T2.2.2
+#             "A_TotDis_BS","A_TotCatch_BS","A_TotSeal_BS",
+# 
+#             # Just in case
+#             "B_TotUnrep_MU","B_TotCatch_MU",
+# 
+#             # for F4.3.2.9
+#             "B_TotDisSeal_MU","B_TotRiver",
+#             "B_TotRecr_sea","B_TotMisr_sea",
+# 
+#             "B_TotUnrep_sea", # for F2.2.3
+#             "B_TotUnrep_river", # for T2.3.4
+#             "B_TotRepCom_sea", # reported comm catch for F2.2.3
+#             "B_TotCatchCom_sea", # sum of all components of COMM dead catch
+#             "B_TotCatch_sea", # for F2.2.3
+#             "B_TotUnrepDis_sea", # Estimate of the total unrep, misrep and disdards for F2.2.3 so far only this is used in the Henni's R-model apart from catch data from T2.6.1 and T2.7.1
+# 
+#             # dead discard components by MU for T2.3.2
+#             "B_TotDis_GND","B_TotDis_LLD",
+#             "B_TotDis_FYK","B_TotDis_MIS","B_TotDis_dead",
+# 
+#             "B_TotSeal_GND","B_TotSeal_LLD",
+#             "B_TotSeal_FYK","B_TotSeal_MIS","B_TotSeal",
+# 
+#             # alive discards bu MU
+#             "B_TotDis_GND_alive","B_TotDis_LLD_alive",
+#             "B_TotDis_FYK_alive","B_TotDis_alive",
+# 
+#             # by country and MU
+#             "TcatchCom",		# COMM at sea
+#             "TRecrSea",					# RECR at sea
+#             "TRiver",					# River catch
+#             "Tcatch",				# Total catch
+#             "Tdis_alive",		# Alive discards
+#             "Tdis",					# Dead discards
+#             "Tseal","TMisr","Runrep","Sunrep",
+#             "Tunrep_T2" #=misrep+runrep+sunrep
+# )
+# 
+# # **************************************************************
+# #   # the following is only for the checking purposes - ignore in regular runs
+# #   **************************************************************
+# #   # 
+# # "DNdis","LLdis",
+# # "TNdis","OTdis",
+# # "DNseal", "LLseal",
+# # "OTseal","TNseal",
+# # "Tseal", "Tdis",
+# # 
+# # "Oconv", "Cconv",
+# # "Rconv", "DisLL",
+# # "DisDN", "DisC",
+# # 
+# # "SealLL", "SealDN", "SealC",
+# 
+# 
+# run0 <- run.jags(M1, monitor= parnames,
+#                  data=datalist,#inits = initsall,
+#                  n.chains = 2, method = 'parallel', thin=100,
+#                  burnin =10000, modules = "mix",
+#                  sample =1000, adapt = 10000,
+#                  keep.jags.files=F,
+#                  progress.bar=TRUE, jags.refresh=100)
+# 
+# summary(run0)
+# chains<-as.mcmc(run0)
+# 
+# 
+# 
+# 
 
 
-run0 <- run.jags(M1, monitor= parnames,
-                 data=datalist,#inits = initsall,
-                 n.chains = 2, method = 'parallel', thin=100,
-                 burnin =10000, modules = "mix",
-                 sample =1000, adapt = 10000,
-                 keep.jags.files=F,
-                 progress.bar=TRUE, jags.refresh=100)
 
-summary(run0)
-chains<-as.mcmc(run0)
+
+
 
 
 
@@ -256,20 +265,20 @@ Recr<-Recr_N
 
 dim(Oconv)
 
-Tseal<-Seal_MIS<-Seal_FYK<-Seal_LLD<-Seal_GND<-array(NA, dim=c(Ni, Ncry, 2, Nsim))
-Tdis<-TMisr<-array(NA, dim=c(Ni, Ncry, 2, Nsim))
+Tseal<-Seal_MIS<-Seal_FYK<-Seal_LLD<-Seal_GND<-array(0, dim=c(Ni, Ncry, 2, Nsim))
+Tdis<-TMisr<-array(0, dim=c(Ni, Ncry, 2, Nsim))
 
-Ounrep<-Cunrep<-Runrep<-Sunrep<-array(NA, dim=c(Ni, Ncry,2, Nsim))
-Tcatch<-Tunrep_F2<-Tunrep_F4<-Tunrep_T2<-array(NA, dim=c(Ni, Ncry,2, Nsim))
-TcatchCom<-TRiver<-TRecrSea<-array(NA, dim=c(Ni, Ncry,2))
+Ounrep<-Cunrep<-Runrep<-Sunrep<-array(0, dim=c(Ni, Ncry,2, Nsim))
+Tcatch<-Tunrep_F2<-Tunrep_F4<-Tunrep_T2<-array(0, dim=c(Ni, Ncry,2, Nsim))
+TcatchCom<-TRiver<-TRecrSea<-array(0, dim=c(Ni, Ncry,2))
 
-Dis_MIS_dead<-Dis_FYK_dead<-Dis_LLD_dead<-Dis_GND_dead<-array(NA, dim=c(Ni, Ncry, 2, Nsim))
-Dis_FYK_alive<-Dis_LLD_alive<-Dis_GND_alive<-Tdis_alive<-array(NA, dim=c(Ni, Ncry,2, Nsim))
+Dis_MIS_dead<-Dis_FYK_dead<-Dis_LLD_dead<-Dis_GND_dead<-array(0, dim=c(Ni, Ncry, 2, Nsim))
+Dis_FYK_alive<-Dis_LLD_alive<-Dis_GND_alive<-Tdis_alive<-array(0, dim=c(Ni, Ncry,2, Nsim))
 
 
 # Muunnokset raportoimattomuuskertoimille. Mikä näiden tulkinta on?
 # 
-Oconv_trans<-Cconv_trans<-Rconv_trans<-array(NA, dim=c(Ni, Ncry, Nsim))
+Oconv_trans<-Cconv_trans<-Rconv_trans<-array(0, dim=c(Ni, Ncry, Nsim))
 for(i in 1:Ni){
   for(j in 1:Ncry){
     Oconv_trans[i,j,]<-(1+Oconv[i,j,s]/(1-Oconv[i,j,s]))
@@ -280,11 +289,14 @@ for(i in 1:Ni){
 
 
 # PL
+PL_factor<-c()
 for(i in 1:Ni){ 
   for(k in 1:2){
     for(s in 1:Nsim){
       TMisr[i,4,1,s]<-as.vector(unname(PL_misrep_N))[[1]][i]#*epsilon
-}}}
+    }}
+  PL_factor[i]<-as.vector(unname(PL_sealfac))[[1]][i]#*epsilon
+}
 #PLfactor=as.vector(unname(PL_sealfac))[[1]],
 
 
@@ -376,28 +388,46 @@ for(k in 1:2){
 for(k in 1:2){
   for(i in 1:Ni){
     
-    Seal_FYK[i,4,k]<- FYK[i,4,k]*(1+Cconv[i,4,]/(1-Cconv[i,4,])) * SealC[i,4,]/(1-SealC[i,4,]) 	# catches are corrected with relevant unreporting; no no reported Seal_FYK
-    Seal_GND[i,4,k]<- GND[i,4,k]*(1+Oconv[i,j]/(1-Oconv[i,4,])) * SealDN[i,4,]/(1-SealDN[i,4,])	# Seal damage DNS fishery; stopped in 2007
-    Dis_FYK[i,4,k]<- FYK[i,4,k]*(1+Cconv[i,4,]/(1-Cconv[i,4,])) * DisC[i,4,]/(1-DisC[i,4,])*MDisC	# dead discards of TN fishery; catches are corrected with relevant unreporting
-    Tseal[i,4,k]<- Seal_LLD[i,4,k] + Seal_GND[i,4,k] + Seal_FYK[i,4,k] + Seal_MIS[i,4,k] 	#Total seal damages by year
+    Seal_FYK[i,4,k,]<- FYK[i,4,k]*Cconv_trans[i,4,] * SealC[i,4,]/(1-SealC[i,4,]) 	# catches are corrected with relevant unreporting; no no reported Seal_FYK
+    Seal_GND[i,4,k,]<- GND[i,4,k]*Oconv_trans[i,4,] * SealDN[i,4,]/(1-SealDN[i,4,])	# Seal damage DNS fishery; stopped in 2007
+    Dis_FYK[i,4,k,]<- FYK[i,4,k]*Cconv_trans[i,4,] * DisC[i,4,]/(1-DisC[i,4,])*MDisC	# dead discards of TN fishery; catches are corrected with relevant unreporting
+    Tseal[i,4,k,]<- Seal_LLD[i,4,k] + Seal_GND[i,4,k] + Seal_FYK[i,4,k] + Seal_MIS[i,4,k] 	#Total seal damages by year
     
     # all fish die; no reported Dis_MIS
-    Dis_MIS[i,4,k]<- MIS[i,4,k]*(1+Cconv[i,4,]/(1-Cconv[i,4,])) * DisC[i,4,]/(1-DisC[i,4,]) 
-    Tdis[i,4,k]<-  Dis_LLD[i,4,k] + Dis_GND[i,4,k] + Dis_FYK[i,4,k] + Dis_MIS[i,4,k]   	#Total discards by year 
+    Dis_MIS[i,4,k,]<- MIS[i,4,k]*Cconv_trans[i,4,] * DisC[i,4,]/(1-DisC[i,4,]) 
+    Tdis[i,4,k,]<-  Dis_LLD[i,4,k] + Dis_GND[i,4,k] + Dis_FYK[i,4,k] + Dis_MIS[i,4,k]   	#Total discards by year 
     
   }
   for(i in 1:17){
-    Seal_LLD[i,4,k]<- (LLD[i,4,k] + PLMisr[i])*(1+Oconv[i,4,]/(1-Oconv[i,4,])) *PLfactor[i]* SealLL[i,4,]/(1-SealLL[i,4,])		# Seal damages LLD+Misreporting  # no reported Seal_LLD until 2018
-    Seal_MIS[i,4,k]<- MIS[i,4,k]*(1+Cconv[i,4,]/(1-Cconv[i,4,])) * SealC[i,4,]/(1-SealC[i,4,])
+    #Seal_LLD[i,4,k,]<- (LLD[i,4,k] + PLMisr[i])*Oconv_trans[i,4,] *PLfactor[i]* SealLL[i,4,]/(1-SealLL[i,4,])		# Seal damages LLD+Misreporting  # no reported Seal_LLD until 2018
+    Seal_LLD[i,4,k,]<- (LLD[i,4,k] + TrMisr[i,4,k])*Oconv_trans[i,4,] *PLfactor[i]* SealLL[i,4,]/(1-SealLL[i,4,])		# Seal damages LLD+Misreporting  # no reported Seal_LLD until 2018
+    Seal_MIS[i,4,k,]<- MIS[i,4,k]*Cconv_trans[i,4,] * SealC[i,4,]/(1-SealC[i,4,])
     # no reported Seal_MIS until 2018 
   }
-  for(i in 18:Ni){# country 4=PL reported Sea_LLD and Seal_MIS from 2018 onwards
-    Seal_LLD[i,4,k]<- SealLLD[i,4,k]*(1+Oconv[i,4,]/(1-Oconv[i,4,]))
-    Seal_MIS[i,4,k]<- SealMIS[i,4,k]*(1+Cconv[i,4,]/(1-Cconv[i,4,]))
-  
-  }
+  # for(i in 18:Ni){# country 4=PL reported Sea_LLD and Seal_MIS from 2018 onwards
+  #   Seal_LLD[i,4,k,]<- SealLLD[i,4,k]*Oconv_trans[i,4,]
+  #   Seal_MIS[i,4,k,]<- SealMIS[i,4,k]*Cconv_trans[i,4,]
+  # 
+  # }
 }
 
+# 5=LV, 6=LT, 7=DE, 8=EE, 9=RU no reported seal damages or discards
+for(k in 1:2){
+  for(i in 1:Ni){
+    for(j in 5:9){         
+      Seal_LLD[i,j,k]<- (LLD[i,j,k] + TMisr[i,j,k])*Oconv_trans[i,j,] * SealLL[i,j]/(1-SealLL[i,j])		# Seal damages LLD+Misreporting
+      Seal_GND[i,j,k]<- GND[i,j,k]*Oconv_trans[i,j,] * SealDN[i,j]/(1-SealDN[i,j])	# Seal damage DNS fishery; stopped in 2007
+      Seal_FYK[i,j,k]<- FYK[i,j,k]*Cconv_trans[i,j,] * SealC[i,j]/(1-SealC[i,j]) 	# catches are corrected with relevant unreporting
+      Seal_MIS[i,j,k]<- MIS[i,j,k]*Cconv_trans[i,j,] * SealC[i,j]/(1-SealC[i,j])
+      # Seal damage coastal fishery; mainly TN but all coastal caches included
+     
+      Tseal[i,j,k]<- Seal_LLD[i,j,k] + Seal_GND[i,j,k] + Seal_FYK[i,j,k] + Seal_MIS[i,j,k] 	#Total seal damages by year
+      
+      Tdis[i,j,k]<-  Dis_LLD[i,j,k] + Dis_GND[i,j,k] + Dis_FYK[i,j,k] + Dis_MIS[i,j,k]   	#Total discards by year 		
+      Dis_FYK[i,j,k]<- FYK[i,j,k]*Cconv_trans[i,j,] * DisC[i,j]/(1-DisC[i,j])*MDisC	# dead discards of TN fishery; catches are corrected with relevant unreporting
+      Dis_MIS[i,j,k]<- MIS[i,j,k]*Cconv_trans[i,j,] * DisC[i,j]/(1-DisC[i,j]) 
+      # all fish die; no reported Dis_MIS
+}}}
 
 
 #   countries EE and RU has no estimates for seal damages and other discards
@@ -466,7 +496,7 @@ for(i in 1:Ni){
       
     }}}
 
-B_TotRepCom_sea<-B_TotRecr_sea<-  array(NA, dim=c(Ni, 2))
+B_TotRepCom_sea<-B_TotRecr_sea<-  array(0, dim=c(Ni, 2))
   
   B_TotMisr_sea<-B_TotUnrep_sea<-
 B_TotUnrep_river<-B_TotDisSeal_MU<-B_TotUnrep_MU<-B_TotCatch_MU<-
@@ -475,7 +505,7 @@ B_TotDis_FYK<-B_TotDis_MIS<-B_TotSeal_GND<-B_TotSeal_LLD<-
 B_TotSeal_FYK<-B_TotSeal_MIS<-B_TotDis_alive<-B_TotDis_GND_alive<-
 B_TotDis_LLD_alive<-B_TotDis_FYK_alive<-
 B_TotRiver<-B_TotCatchCom_sea<-B_TotCatch_sea<-B_TotUnrepDis_sea<-
-  array(NA, dim=c(Ni, 2, Nsim))
+  array(0, dim=c(Ni, 2, Nsim))
 
 for(i in 1:Ni){
   for(k in 2:2){		# management unit 2, SD32 only FI, EE and RU operate here
@@ -515,7 +545,7 @@ for(i in 1:Ni){
 }
 }}
 
-A_TotDis_BS<-A_TotUnrep_BS<-A_TotCatch_BS<-A_TotSeal_BS<-array(NA, dim=c(Ni, Nsim))
+A_TotDis_BS<-A_TotUnrep_BS<-A_TotCatch_BS<-A_TotSeal_BS<-array(0, dim=c(Ni, Nsim))
 for(i in 1:Ni){  
   for(s in 1:Nsim){  
     #  Whole Baltic sea

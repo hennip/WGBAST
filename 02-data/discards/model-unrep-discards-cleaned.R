@@ -1,7 +1,7 @@
 
   
 M1<-"model{
-  epsilon~dnorm(1,10000)I(0,)	# a super narrow pd just to deal with discrete attributes
+  #epsilon~dnorm(1,10000)I(0,)	# a super narrow pd just to deal with discrete attributes
   
   # Mortalities of discarded undersized salmon
   # These are considered to be same for all coutries and years in the whole Baltic Sea
