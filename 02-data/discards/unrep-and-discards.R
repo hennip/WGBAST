@@ -323,9 +323,7 @@ for(k in 1:2){
   }}
 
 # SE# country 2=SE, seal damages in LLD and FYK are given in data
-
 for(k in 1:2){
-  for(i in 1:17){ 
     for(i in 1:17){ 
       Seal_MIS[i,2,k,]<- MIS[i,2,k]*Cconv_trans[i,2,] * SealC[i,2,]/(1-SealC[i,2,])
       # no data from MIS until 2018
@@ -339,7 +337,7 @@ for(k in 1:2){
     Seal_FYK[i,2,k,]<- SealFYK[i,2,k]*Cconv_trans[i,2,]
     Seal_MIS[i,2,k,]<- SealMIS[i,2,k]*Cconv_trans[i,2,]     # seal damages by year, Seal MIS reported from 2018 onwards  
       
-    Tseal[i,2,k,]<- Seal_GND[i,2,k,] + Seal_LLD[i,2,k] + Seal_FYK[i,2,k] + Seal_MIS[i,2,k]       # Total seal damages by year
+    Tseal[i,2,k,]<- Seal_GND[i,2,k,] + Seal_LLD[i,2,k,] + Seal_FYK[i,2,k,] + Seal_MIS[i,2,k,]       # Total seal damages by year
     
     Tdis[i,2,k,]<-  Dis_LLD[i,2,k,] + Dis_GND[i,2,k,] + Dis_FYK[i,2,k,] + Dis_MIS[i,2,k,]	#Total discards by year
     Dis_FYK[i,2,k,]<- FYK[i,2,k]*Cconv_trans[i,2,] * DisC[i,2,]/(1-DisC[i,2,])*MDisC	# no reported Dis until 2018
@@ -347,7 +345,60 @@ for(k in 1:2){
     Dis_MIS[i,2,k,]<- MIS[i,2,k]*Cconv_trans[i,2,] * DisC[i,2,]/(1-DisC[i,2,]) 
     # disgards coastal fishery; same proportion of undersized as in TN fishery; all fish assumed to die
     # TMisr[i,j,k]<-0.0001*epsilon
-}}
+  }
+
+# DK country 3=DK reported Sea_LLD,  Seal_MIS and Dis_MIS from 2018 onwards
+for(k in 1:2){
+  for(i in 1:17){  # no reported Seal_MIS until 2018 
+    Seal_LLD[i,3,k,]<- (LLD[i,3,k] + TMisr[i,3,k,])*Oconv_trans[i,3,] * SealLL[i,3,]/(1-SealLL[i,3,])		# Seal damages LLD+Misreporting  # no reported Seal_LLD until 2018
+    Seal_MIS[i,3,k,]<- MIS[i,3,k]*Cconv_trans[i,3,] * SealC[i,3,]/(1-SealC[i,3,])
+    Dis_MIS[i,3,k,]<- MIS[i,3,k]*Cconv_trans[i,3,] * DisC[i,3,]/(1-DisC[i,3,]) 
+    # all fish die; no reported Dis_MIS until 2018
+    #Dis_MIS[i,3,k]<- Dis[i,3,k]*Oconv_trans[i,3,] 	# all reported disgards allocated to MIS, from year 2018 onwards
+  }
+  for(i in 18:Ni){ 
+    Seal_LLD[i,3,k,]<- SealLLD[i,3,k]*Oconv_trans[i,3,]
+    Seal_MIS[i,3,k,]<- SealMIS[i,3,k]*Cconv_trans[i,3,]
+    Dis_MIS[i,3,k,]<- Dis[i,3,k]*Oconv_trans[i,3,] 	# all reported disgards allocated to MIS, from year 2018 onwards
+  }
+  for(i in 1:Ni){
+    Dis_FYK[i,3,k,]<- FYK[i,3,k]*Cconv_trans[i,3,] * DisC[i,3,]/(1-DisC[i,3,])*MDisC	# dead discards of TN fishery; catches are corrected with relevant unreporting
+    Seal_GND[i,3,k,]<- GND[i,3,k]*Oconv_trans[i,3,] * SealDN[i,3,]/(1-SealDN[i,3,])	# Seal damage DNS fishery; stopped in 2007
+    Seal_FYK[i,3,k,]<- FYK[i,3,k]*Cconv_trans[i,3,] * SealC[i,3,]/(1-SealC[i,3,]) 	# catches are corrected with relevant unreporting; no no reported Seal_FYK
+    Tseal[i,3,k,]<- Seal_LLD[i,3,k,] + Seal_GND[i,3,k,] + Seal_FYK[i,3,k,] + Seal_MIS[i,3,k,] 	#Total seal damages by year
+    Tdis[i,3,k,]<-  Dis_LLD[i,3,k,] + Dis_GND[i,3,k,] + Dis_FYK[i,3,k,] + Dis_MIS[i,3,k,]   	#Total discards by year 
+  }
+
+}
+
+
+# country 4=PL no reported Sea_LLD and Seal_MIS until 2018
+for(k in 1:2){
+  for(i in 1:Ni){
+    
+    Seal_FYK[i,4,k]<- FYK[i,4,k]*(1+Cconv[i,4,]/(1-Cconv[i,4,])) * SealC[i,4,]/(1-SealC[i,4,]) 	# catches are corrected with relevant unreporting; no no reported Seal_FYK
+    Seal_GND[i,4,k]<- GND[i,4,k]*(1+Oconv[i,j]/(1-Oconv[i,4,])) * SealDN[i,4,]/(1-SealDN[i,4,])	# Seal damage DNS fishery; stopped in 2007
+    Dis_FYK[i,4,k]<- FYK[i,4,k]*(1+Cconv[i,4,]/(1-Cconv[i,4,])) * DisC[i,4,]/(1-DisC[i,4,])*MDisC	# dead discards of TN fishery; catches are corrected with relevant unreporting
+    Tseal[i,4,k]<- Seal_LLD[i,4,k] + Seal_GND[i,4,k] + Seal_FYK[i,4,k] + Seal_MIS[i,4,k] 	#Total seal damages by year
+    
+    # all fish die; no reported Dis_MIS
+    Dis_MIS[i,4,k]<- MIS[i,4,k]*(1+Cconv[i,4,]/(1-Cconv[i,4,])) * DisC[i,4,]/(1-DisC[i,4,]) 
+    Tdis[i,4,k]<-  Dis_LLD[i,4,k] + Dis_GND[i,4,k] + Dis_FYK[i,4,k] + Dis_MIS[i,4,k]   	#Total discards by year 
+    
+  }
+  for(i in 1:17){
+    Seal_LLD[i,4,k]<- (LLD[i,4,k] + PLMisr[i])*(1+Oconv[i,4,]/(1-Oconv[i,4,])) *PLfactor[i]* SealLL[i,4,]/(1-SealLL[i,4,])		# Seal damages LLD+Misreporting  # no reported Seal_LLD until 2018
+    Seal_MIS[i,4,k]<- MIS[i,4,k]*(1+Cconv[i,4,]/(1-Cconv[i,4,])) * SealC[i,4,]/(1-SealC[i,4,])
+    # no reported Seal_MIS until 2018 
+  }
+  for(i in 18:Ni){# country 4=PL reported Sea_LLD and Seal_MIS from 2018 onwards
+    Seal_LLD[i,4,k]<- SealLLD[i,4,k]*(1+Oconv[i,4,]/(1-Oconv[i,4,]))
+    Seal_MIS[i,4,k]<- SealMIS[i,4,k]*(1+Cconv[i,4,]/(1-Cconv[i,4,]))
+  
+  }
+}
+
+
 
 #   countries EE and RU has no estimates for seal damages and other discards
 for(i in 1:Ni){ 
