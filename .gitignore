@@ -4,6 +4,7 @@
 run-this-first.R
 run-this-first-wgbast.R
 
+*.rds
 
 *.html
 .here
