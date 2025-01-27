@@ -38,14 +38,6 @@ source("02-data/discards/dat-unrep-discards.R")
 
 
 
-
-# Decide if you wish to run the model for numb or weight
-
-#numb<-T # catch in number
-#numb<-F # catch in weight
-
-
-
 ###############################################################################
 # try running only stochastic variables in JAGS and calculating the rest in R
 
@@ -79,18 +71,26 @@ parnames<-c(
   "SealLL", "SealDN", "SealC")
 
 
-run00 <- run.jags(M1, monitor= parnames,
-                 data=datalist,#inits = initsall,
-                 n.chains = 2, method = 'parallel', thin=100,
-                 burnin =10000, modules = "mix",
-                 sample =1000, adapt = 10000,
-                 keep.jags.files=F,
-                 progress.bar=TRUE, jags.refresh=100)
+# run00 <- run.jags(M1, monitor= parnames,
+#                  data=datalist,#inits = initsall,
+#                  n.chains = 2, method = 'parallel', thin=100,
+#                  burnin =10000, modules = "mix",
+#                  sample =1000, adapt = 10000,
+#                  keep.jags.files=F,
+#                  progress.bar=TRUE, jags.refresh=100)
+# 
+# summary(run00)
+# chains<-as.mcmc.list(run00)
+# saveRDS(chains, file="02-data/discards/chains_unrep_discards_cleaned.rds")
+chains<-readRDS("02-data/discards/chains_unrep_discards_cleaned.rds")
 
-summary(run00)
-chains<-as.mcmc.list(run00)
-saveRDS(chains, file="02-data/discards/chains_unrep_discards_cleaned.rds")
-#chains<-readRDS("02-data/discards/chains_unrep_discards_cleaned.rds")
+
+
+################################################################################
+# Decide if you wish to get calculations for catch in number or in weight
+
+number_or_weight<-"N" # catch in number
+number_or_weight<-"W" # catch in weight
 
 # Tässä kaikki stokastiset muuttujat poimittuna ajotiedostosta (poislukien epsilon, joka on vain tekninen)
 # Kaikki loput pitäisi pystyä laskemaan näiden ja datan pohjalta deterministisesti.
@@ -120,6 +120,8 @@ MDisLL<-chains[,"MDisLL"][[1]]
 MDisDN<-chains[,"MDisDN"][[1]]
 MDisC<-chains[,"MDisC"][[1]]
 
+if(number_or_weight=="N"){
+  
 SealGND<-SealGND_N
 SealLLD<-SealLLD_N
 SealFYK<-SealFYK_N
@@ -133,7 +135,25 @@ MIS<-MIS_N
 
 River<-River_N
 Recr<-Recr_N
+}
 
+
+if(number_or_weight=="W"){
+  
+  SealGND<-SealGND_W
+  SealLLD<-SealLLD_W
+  SealFYK<-SealFYK_W
+  SealMIS<-SealMIS_W
+  
+  LLD<-LLD_W
+  GND<-GND_W
+  FYK<-FYK_W
+  Dis<-Dis_W
+  MIS<-MIS_W
+  
+  River<-River_W
+  Recr<-Recr_W
+}
 
 #dim(Oconv)
 
@@ -386,7 +406,7 @@ B_TotRiver<-B_TotCatchCom_sea<-B_TotCatch_sea<-B_TotUnrepDis_sea<-
   array(0, dim=c(Ni, 2, Nsim))
 
 for(i in 1:Ni){
-  for(k in 2:2){		# management unit 2, SD32 only FI, EE and RU operate here
+  for(k in 1:2){		# management unit 2, SD32 only FI, EE and RU operate here
     B_TotRepCom_sea[i,k]<-sum(TcatchCom[i,1:9,k])  # reported catch for F2.2.3 & F4.3.2.9
     B_TotRecr_sea[i,k]<-sum(TRecrSea[i,1:9,k]) 	# Recr catch in the sea for F4.3.2.9 and F2.2.3
     B_TotMisr_sea[i,k]<-sum(TMisr[i,1:9,k])			# F4.3.2.9
