@@ -614,7 +614,6 @@ M1<-"model{
       
       Oconv[i,j]~dlnorm(OM[i,j],Otau[i,j])I(0,0.6)	# unreporting all fisheries off-shore
       Cconv[i,j]~dlnorm(CM[i,j],Ctau[i,j])I(0,0.7)	# unreporting all fisheries coast
-      Rconv[i,j]~dlnorm(RM[i,j],Rtau[i,j])I(0,0.7)	# unreporting all fisheries river
       
       DisLL[i,j]~dlnorm(LLM[i,j],LLtau[i,j])I(0,0.3)	# share of discarded undersized longline
       DisDN[i,j]~dlnorm(DNM[i,j],DNtau[i,j])I(0,0.2)	# share if discarded undersized driftnet
