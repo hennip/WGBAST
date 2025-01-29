@@ -90,7 +90,7 @@ chains<-readRDS("02-data/discards/chains_unrep_discards_cleaned.rds")
 # Decide if you wish to get calculations for catch in number or in weight
 
 number_or_weight<-"N" # catch in number
-number_or_weight<-"W" # catch in weight
+#number_or_weight<-"W" # catch in weight
 
 # Tässä kaikki stokastiset muuttujat poimittuna ajotiedostosta (poislukien epsilon, joka on vain tekninen)
 # Kaikki loput pitäisi pystyä laskemaan näiden ja datan pohjalta deterministisesti.
@@ -451,9 +451,4 @@ for(i in 1:Ni){
   A_TotCatch_BS[i,s]<-sum(Tcatch[i,1:9,1:2,s]) # for T2.2.1 and T2.2.2
   A_TotSeal_BS[i,s]<-sum(Tseal[i,1:9,1:2,s]) 
 }}
-  
-  
-  
-  
-  
-  
+
