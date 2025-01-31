@@ -121,11 +121,11 @@ func_country_sealdam<-function(dfX, numb_or_weight){
  # dfX<-df3
   # GND, LLD, FYK & MIS
   ###############################################################################
-  SealGND<-array(0, dim=c(23,4,2))
-  SealFYK<-array(0, dim=c(23,4,2))
-  SealLLD<-array(0, dim=c(23,4,2))
-  SealMIS<-array(0, dim=c(23,4,2))
-  for(i in 1:4){
+  SealGND<-array(0, dim=c(23,9,2))
+  SealFYK<-array(0, dim=c(23,9,2))
+  SealLLD<-array(0, dim=c(23,9,2))
+  SealMIS<-array(0, dim=c(23,9,2))
+  for(i in 1:9){
          # i<-4
     tmp<-dfX |> filter(country_nr==i)|> 
       group_by(sub_div2,YEAR,GEAR) |> 
@@ -160,7 +160,7 @@ func_country_sealdam<-function(dfX, numb_or_weight){
   }
   for(k in 1:2){
     for(i in 1:23){
-      for(j in 1:4){
+      for(j in 1:9){
         SealGND[i,j,k]<-rpl(SealGND[i,j,k])
         SealLLD[i,j,k]<-rpl(SealLLD[i,j,k])
         SealFYK[i,j,k]<-rpl(SealFYK[i,j,k])
@@ -181,7 +181,7 @@ func_country_discards<-function(dfX, numb_or_weight){
   # GND, LLD, FYK & MIS
   ###############################################################################
   Dis<-array(0, dim=c(23,4,2))
-  for(i in 1:4){
+  for(i in 1:9){
   #   i<-2
   #   dfX |> group_by(country_nr, GEAR) |> summarise(n=n())
     tmp<-dfX |> filter(country_nr==i)|> 
@@ -201,7 +201,7 @@ func_country_discards<-function(dfX, numb_or_weight){
 
   for(k in 1:2){
     for(i in 1:23){
-      for(j in 1:4){
+      for(j in 1:9){
         Dis[i,j,k]<-rpl(Dis[i,j,k])
       }}
     }

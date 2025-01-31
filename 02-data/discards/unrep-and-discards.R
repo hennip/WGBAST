@@ -80,6 +80,7 @@ parnames<-c(
 #                  progress.bar=TRUE, jags.refresh=100)
 # 
 # summary(run00)
+# summary(run00, var="DisLL")
 # chains<-as.mcmc.list(run00)
 # saveRDS(chains, file="02-data/discards/chains_unrep_discards_cleaned.rds")
 chains<-readRDS("02-data/discards/chains_unrep_discards_cleaned.rds")
@@ -107,12 +108,12 @@ for(i in 1:Ni){
     Cconv[i,j,]<-chains[,paste0("Cconv[",i,",",j,"]")][[1]]
     Rconv[i,j,]<-chains[,paste0("Rconv[",i,",",j,"]")][[1]]
    
-    DisLL[i,j,]<-chains[,paste0("DisC[",i,",",j,"]")][[1]]
-    DisDN[i,j,]<-chains[,paste0("DisC[",i,",",j,"]")][[1]]
+    DisLL[i,j,]<-chains[,paste0("DisLL[",i,",",j,"]")][[1]]
+    DisDN[i,j,]<-chains[,paste0("DisDN[",i,",",j,"]")][[1]]
     DisC[i,j,]<-chains[,paste0("DisC[",i,",",j,"]")][[1]]
   
-    SealLL[i,j,]<-chains[,paste0("SealC[",i,",",j,"]")][[1]]
-    SealDN[i,j,]<-chains[,paste0("SealC[",i,",",j,"]")][[1]]
+    SealLL[i,j,]<-chains[,paste0("SealLL[",i,",",j,"]")][[1]]
+    SealDN[i,j,]<-chains[,paste0("SealDN[",i,",",j,"]")][[1]]
     SealC[i,j,]<-chains[,paste0("SealC[",i,",",j,"]")][[1]]
   }}
 
@@ -200,25 +201,26 @@ for(i in 1:Ni){
 #PLfactor=as.vector(unname(PL_sealfac))[[1]],
 
 
+################################################################################
+# Calculations
 
-# Kaikki maat
+# All countries
 # Dead discards
 for(i in 1:Ni){ 
   for(j in 1:Ncry){ 
     for(k in 1:2){
     # dead discards of LLD+Misreporting
     Dis_LLD_dead[i,j,k,]<- (LLD[i,j,k] + TMisr[i,j,k])*Oconv_trans[i,j,]*
-                        DisLL[i,j,]/(1-DisLL[i,j,])*MDisLL
+                        DisLL[i,j,]/(1-DisLL[i,j,])*MDisLL #MDisLL:mortality
     # dead discards of DNS fishery; stopped in 2007
     Dis_GND_dead[i,j,k,]<- GND[i,j,k]*Oconv_trans[i,j,] * DisDN[i,j,]/(1-DisDN[i,j,])*MDisDN	
+    
 }}}
 
 
 # FI  # country FI seal damages and other discards are given
 for(k in 1:2){
   for(i in 1:Ni){ 
-    # Mitä tämä tekee? Lisää raportoimattomuuden?
-    # Mistä nimi tulee, miksi ei ole esim. unrep?
     Seal_GND[i,1,k,]<- SealGND[i,1,k]*Oconv_trans[i,1,]
     Seal_LLD[i,1,k,]<- SealLLD[i,1,k]*Oconv_trans[i,1,]
     Seal_FYK[i,1,k,]<- SealFYK[i,1,k]*Cconv_trans[i,1,]
@@ -242,7 +244,10 @@ for(k in 1:2){
     for(i in 18:Ni){ 
       Seal_MIS[i,2,k,]<- SealMIS[i,2,k]*Cconv_trans[i,2,] 
     }  
-    # Reported gearspecific seal damages are corrected with fishery specific unreporting
+    
+  for(i in 1:Ni){ 
+    
+  # Reported gearspecific seal damages are corrected with fishery specific unreporting
     Seal_GND[i,2,k,]<- GND[i,2,k]*Oconv_trans[i,2,] * SealDN[i,2,]/(1-SealDN[i,2,])	# Seal damage in GND; stopped in 2007
     Seal_LLD[i,2,k,]<- SealLLD[i,2,k]*Oconv_trans[i,2,]
     Seal_FYK[i,2,k,]<- SealFYK[i,2,k]*Cconv_trans[i,2,]
@@ -257,7 +262,7 @@ for(k in 1:2){
     # disgards coastal fishery; same proportion of undersized as in TN fishery; all fish assumed to die
     # TMisr[i,j,k]<-0.0001*epsilon
   }
-
+}
 # DK country 3=DK reported Sea_LLD,  Seal_MIS and Dis_MIS_dead from 2018 onwards
 for(k in 1:2){
   for(i in 1:17){  # no reported Seal_MIS until 2018 
@@ -311,9 +316,9 @@ for(k in 1:2){
 }
 
 # 5=LV, 6=LT, 7=DE, 8=EE, 9=RU no reported seal damages or discards
-for(k in 1:2){
-  for(i in 1:Ni){
-    for(j in 5:9){         
+for(j in 5:9){         
+  for(k in 1:2){
+   for(i in 1:Ni){
       Seal_LLD[i,j,k,]<- (LLD[i,j,k] + TMisr[i,j,k])*Oconv_trans[i,j,] * SealLL[i,j,]/(1-SealLL[i,j,])		# Seal damages LLD+Misreporting
       Seal_GND[i,j,k,]<- GND[i,j,k]*Oconv_trans[i,j,] * SealDN[i,j,]/(1-SealDN[i,j,])	# Seal damage DNS fishery; stopped in 2007
       Seal_FYK[i,j,k,]<- FYK[i,j,k]*Cconv_trans[i,j,] * SealC[i,j,]/(1-SealC[i,j,]) 	# catches are corrected with relevant unreporting
@@ -350,26 +355,24 @@ for(i in 1:Ni){
     }}}
 
 
-#  countries FI, EE and RU
-# NOTE! Use cry-parameter here to pick up countries 1, 8 and 9
+# All countries! 
 for(i in 1:Ni){ 
-  for (j in 1:3){         #   countries EE and RU has no estimates for seal damages and other discards
+  for (j in 1:9){       
     for(k in 1:2){
       
       # Huomaa että tässä Oconv:n muunnoksessa ei ole mukana 1-
       # tämä siksi että kyse on pelkästä raportoimatta jääneestä
-      Ounrep[i,cry[j],k,]<- (GND[i,cry[j],k]+LLD[i,cry[j],k])* Oconv[i,cry[j],]/(1-Oconv[i,cry[j],])	
+      Ounrep[i,j,k,]<- (GND[i,j,k]+LLD[i,j,k])* Oconv[i,j,]/(1-Oconv[i,j,])	
       # unreported catch in off-shore fisheries
-      Cunrep[i,cry[j],k,]<- (FYK[i,cry[j],k]+MIS[i,cry[j],k]) * Cconv[i,cry[j],]/(1-Cconv[i,cry[j],])	 # coast
-      Runrep[i,cry[j],k,]<- River[i,cry[j],k] * Rconv[i,cry[j],] /(1-Rconv[i,cry[j],])	 # river
-      Sunrep[i,cry[j],k,]<- Ounrep[i,cry[j],k,] + Cunrep[i,cry[j],k,] # total unreporting in sea
-  
-      Tunrep_F2[i,cry[j],k,]<- Ounrep[i,cry[j],k,] + Cunrep[i,cry[j],k,] + TMisr[i,cry[j],k] # unreporting in river excluded from unreporting in F2.2.3
-      Tunrep_F4[i,cry[j],k,]<- Ounrep[i,cry[j],k,] + Cunrep[i,cry[j],k,]  # misreporting and unreporting in river ARE NOT included in the total  unreporting in F4.3.2.9
-      Tunrep_T2[i,cry[j],k,]<- Ounrep[i,cry[j],k,] + Cunrep[i,cry[j],k,] + Runrep[i,cry[j],k,]  # misreporting IS NOT included to the total unreporting in T2.2.1 and T2.2.2
-      TRiver[i,cry[j],k]<- River[i,cry[j],k]
-      TRecrSea[i,cry[j],k]<- Recr[i,cry[j],k]
- 
+      Cunrep[i,j,k,]<- (FYK[i,j,k]+MIS[i,j,k]) * Cconv[i,j,]/(1-Cconv[i,j,])	 # coast
+      Runrep[i,j,k,]<- River[i,j,k] * Rconv[i,j,] /(1-Rconv[i,j,])	 # river
+      Sunrep[i,j,k,]<- Ounrep[i,j,k,] + Cunrep[i,j,k,] # total unreporting in sea
+      
+      Tunrep_F2[i,j,k,]<- Ounrep[i,j,k,] + Cunrep[i,j,k,] + TMisr[i,j,k] # unreporting in river excluded from unreporting in F2.2.3
+      Tunrep_F4[i,j,k,]<- Ounrep[i,j,k,] + Cunrep[i,j,k,]  # misreporting and unreporting in river ARE NOT included in the total  unreporting in F4.3.2.9
+      Tunrep_T2[i,j,k,]<- Ounrep[i,j,k,] + Cunrep[i,j,k,] + Runrep[i,j,k,]  # misreporting IS NOT included to the total unreporting in T2.2.1 and T2.2.2
+      TRiver[i,j,k]<- River[i,j,k]
+      TRecrSea[i,j,k]<- Recr[i,j,k] 
       #    TMisr[i,cry[j],k]<- 0.0001*epsilon
       # Total unreported by year, country and management unit
       # input values for catches ( from file xxxx)
@@ -380,21 +383,25 @@ for(i in 1:Ni){
       # Dis[,,] reported discards
       
       # Dead discards
-      Dis_LLD_dead[i,cry[j],k,]<- LLD[i,cry[j],k]*Oconv_trans[i,j,]* DisLL[i,cry[j],]/(1-DisLL[i,cry[j],])*MDisLL	# dead discards of LLD+Misreporting
-      Dis_GND_dead[i,cry[j],k,]<- GND[i,cry[j],k]*Oconv_trans[i,j,] * DisDN[i,cry[j],]/(1-DisDN[i,cry[j],])*MDisDN	# dead discards of DNS fishery; stopped in 2007
+      Dis_LLD_dead[i,j,k,]<- LLD[i,j,k]*Oconv_trans[i,j,]* DisLL[i,j,]/(1-DisLL[i,j,])*MDisLL	# dead discards of LLD+Misreporting
+      Dis_GND_dead[i,j,k,]<- GND[i,j,k]*Oconv_trans[i,j,] * DisDN[i,j,]/(1-DisDN[i,j,])*MDisDN	# dead discards of DNS fishery; stopped in 2007
       
       # Alive discards; not added to the total catch
-      Dis_LLD_alive[i,cry[j],k,]<- LLD[i,cry[j],k]*Oconv_trans[i,j,]*DisLL[i,cry[j],]/(1-DisLL[i,cry[j],])*(1-MDisLL)	# Alive discards of LLD+Misreporting
-      Dis_GND_alive[i,cry[j],k,]<- GND[i,cry[j],k]*Oconv_trans[i,j,]*DisDN[i,cry[j],]/(1-DisDN[i,cry[j],])*(1-MDisDN)	# alive discards of DNS fishery; stopped in 2007
-      Dis_FYK_alive[i,cry[j],k,]<- FYK[i,cry[j],k]*Cconv_trans[i,j,]*DisC[i,cry[j],]/(1-DisC[i,cry[j],])*(1-MDisC)	# alive discards of TN fishery; catches are corrected with relevant unreporting		
-      Tdis_alive[i,cry[j],k,]<-  Dis_LLD_alive[i,cry[j],k,] + Dis_GND_alive[i,cry[j],k,] + Dis_FYK_alive[i,cry[j],k,]   	#Total alive discards by year, MU and country	
+      Dis_LLD_alive[i,j,k,]<- LLD[i,j,k]*Oconv_trans[i,j,]*DisLL[i,j,]/(1-DisLL[i,j,])*(1-MDisLL)	# Alive discards of LLD+Misreporting
+      Dis_GND_alive[i,j,k,]<- GND[i,j,k]*Oconv_trans[i,j,]*DisDN[i,j,]/(1-DisDN[i,j,])*(1-MDisDN)	# alive discards of DNS fishery; stopped in 2007
+      Dis_FYK_alive[i,j,k,]<- FYK[i,j,k]*Cconv_trans[i,j,]*DisC[i,j,]/(1-DisC[i,j,])*(1-MDisC)	# alive discards of TN fishery; catches are corrected with relevant unreporting		
+      Tdis_alive[i,j,k,]<-  Dis_LLD_alive[i,j,k,] + Dis_GND_alive[i,j,k,] + Dis_FYK_alive[i,j,k,]   	#Total alive discards by year, MU and country	
       
-      Tcatch[i,cry[j],k,]<- GND[i,cry[j],k] + LLD[i,cry[j],k] + FYK[i,cry[j],k] + MIS[i,cry[j],k] + 
-                          Recr[i,cry[j],k] + River[i,cry[j],k]  + Tunrep_T2[i,cry[j],k,] + Tdis[i,cry[j],k,]
-      TcatchCom[i,cry[j],k]<- (GND[i,cry[j],k] + LLD[i,cry[j],k] + FYK[i,cry[j],k] + MIS[i,cry[j],k])					
+      Tcatch[i,j,k,]<- GND[i,j,k] + LLD[i,j,k] + FYK[i,j,k] + MIS[i,j,k] + 
+                          Recr[i,j,k] + River[i,j,k]  + Tunrep_T2[i,j,k,] + Tdis[i,j,k,]
+      TcatchCom[i,j,k]<- (GND[i,j,k] + LLD[i,j,k] + FYK[i,j,k] + MIS[i,j,k])					
       # Total catch by year, country and management unit
       
     }}}
+
+
+# Summation
+################################################################################
 
 B_TotMisr_sea<-B_TotRepCom_sea<-B_TotRecr_sea<-  array(0, dim=c(Ni, 2))
 B_TotUnrep_sea<-B_TotUnrep_river<-B_TotDisSeal_MU<-B_TotUnrep_MU<-B_TotCatch_MU<-
