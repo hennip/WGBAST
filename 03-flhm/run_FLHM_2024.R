@@ -65,7 +65,7 @@ trolling<-1
 modelName<-"FLHM_JAGS_2024_CR_river_catch1_coefDSEE" 
 
 CR<-ifelse(grepl("CR",modelName),T,F) #boolean to read correct version of catch data file
-SimoMSW<-ifelse(grepl("coefDShierEE",modelName),T,F) #boolean to read correct version of catch data file
+SimoMSW<-ifelse(grepl("coefDSEE",modelName),T,F) #boolean to read correct version of catch data file
 
 #source(paste0(PathFunctions,"plotfunctions.r")) # Called in run-this-first.r
 source(paste0(PathModel_FLHM,"make_JAGS_data_",assessment_year,".R"))
