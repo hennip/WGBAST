@@ -99,12 +99,12 @@ SealMIS_W<-weight[[4]]
 df4 <- df |> filter(F_TYPE=="DISC")
 
 # Choose numb_or_weight==1 for NUMB and numb_or_weight==2 for weight 
-if(number_or_weight=="N"){
+#if(number_or_weight=="N"){
   Dis_N<-func_country_discards(df4,1)
-}
-if(number_or_weight=="W"){
+#}
+#if(number_or_weight=="W"){
   Dis_W<-func_country_discards(df4,2)
-}
+#}
 ################################################################################
 ################################################################################
 # Polish seal damages

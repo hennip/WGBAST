@@ -31,6 +31,38 @@ source("05-results/flhm-compare/models-select.r")
 `r Mname2`
 
 
+# Number of smolts
+
+```{r cache=F, include=F, eval=T}
+knitr::read_chunk("05-results/flhm-compare/compare-smolts.r")
+
+```
+
+```{r load-smolts, include=F}
+
+```
+
+```{r graphs-smolts, echo=F, warning=F}
+
+```
+
+
+
+# Number of spawners
+```{r cache=F, include=F}
+knitr::read_chunk("05-results/flhm-compare/compare-Nsp.r")
+
+```
+
+```{r load-nsp, include=F}
+
+```
+
+```{r graphs-nsp, echo=F, warning=F}
+
+```
+
+
 # Mps
 
 ```{r cache=F, include=F}
@@ -190,33 +222,3 @@ knitr::read_chunk("05-results/flhm-compare/compare-HR.r")
 
 
 
-# Number of smolts
-
-```{r cache=F, include=F, eval=T}
-knitr::read_chunk("05-results/flhm-compare/compare-smolts.r")
-
-```
-
-```{r load-smolts, include=F}
-
-```
-
-```{r graphs-smolts, echo=F, warning=F}
-
-```
-
-
-
-# Number of spawners
-```{r cache=F, include=F}
-knitr::read_chunk("05-results/flhm-compare/compare-Nsp.r")
-
-```
-
-```{r load-nsp, include=F}
-
-```
-
-```{r graphs-nsp, echo=F, warning=F}
-
-```

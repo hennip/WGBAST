@@ -25,6 +25,8 @@
 #folder<-paste0(PathData,"data_",assessment_year,"/")  
 folder<-PathData_FLHM
 
+
+
 # Packages are called in run-this-first.r (calls packages.r) 
 #library(reshape)
 #library(abind)
@@ -56,13 +58,13 @@ pi90<-array(0,dim=c(17,3))
 pmodes<-numeric(17)
 xsum<-numeric(1000000)
 for(i in au4_stocks){
-x<-rlnorm(1000000,M_K[i],sqrt(1/tau_K[i]))
-xsum<-xsum+x
-cv<-sd(x)/mean(x)
-pmodes[i]<-quantile(x,0.50)/(cv*cv+1)
-pi90[i,1]<-quantile(x,0.05)
-pi90[i,2]<-quantile(x,0.50)
-pi90[i,3]<-quantile(x,0.95)
+  x<-rlnorm(1000000,M_K[i],sqrt(1/tau_K[i]))
+  xsum<-xsum+x
+  cv<-sd(x)/mean(x)
+  pmodes[i]<-quantile(x,0.50)/(cv*cv+1)
+  pi90[i,1]<-quantile(x,0.05)
+  pi90[i,2]<-quantile(x,0.50)
+  pi90[i,3]<-quantile(x,0.95)
 }
 
 cv<-sd(xsum)/mean(xsum)
@@ -77,8 +79,8 @@ M74_alpha<-M74[ ,iinds]
 M74_beta<-M74[ ,(iinds+1)]
 
 if(proj_years>=1){
-M74_alpha<-rbind(M74_alpha, t(replicate(proj_years,M74_alpha[years,])))
-M74_beta<-rbind(M74_beta, t(replicate(proj_years,M74_beta[years,])))
+  M74_alpha<-rbind(M74_alpha, t(replicate(proj_years,M74_alpha[years,])))
+  M74_beta<-rbind(M74_beta, t(replicate(proj_years,M74_beta[years,])))
 }
 
 #mean_alpha<-apply(M74_alpha[1:30, ], 2, mean)
@@ -137,9 +139,9 @@ rel_R1<-array(0,dim=c(dim(rel_R)[1],dim(rel_R)[2]))
 rel_Rsp1<-array(0,dim=c(dim(rel_Rsp)[1],dim(rel_Rsp)[2]))
 
 for(k in 1:dim(rel_W)[1]){
-      rel_W1[k,(1:dim(rel_W)[2])]<-temp[(k-1)*dim(rel_W)[2]+1:dim(rel_W)[2],3]
-      rel_R1[k,(1:dim(rel_R)[2])]<-temp1[(k-1)*dim(rel_R)[2]+1:dim(rel_R)[2],3]  
-      rel_Rsp1[k,(1:dim(rel_Rsp)[2])]<-temp2[(k-1)*dim(rel_Rsp)[2]+1:dim(rel_Rsp)[2],3]    
+  rel_W1[k,(1:dim(rel_W)[2])]<-temp[(k-1)*dim(rel_W)[2]+1:dim(rel_W)[2],3]
+  rel_R1[k,(1:dim(rel_R)[2])]<-temp1[(k-1)*dim(rel_R)[2]+1:dim(rel_R)[2],3]  
+  rel_Rsp1[k,(1:dim(rel_Rsp)[2])]<-temp2[(k-1)*dim(rel_Rsp)[2]+1:dim(rel_Rsp)[2],3]    
 }
 
 rel_W1<-cbind(rel_W1,rep(0,times=years))
@@ -165,7 +167,7 @@ cc_ObsR[1:years,1:maxage,2]<-cc_OR[1:years,(maxage+1):(2*maxage)]
 cc_ObsR[1:years,1:maxage,3]<-cc_OR[1:years,(2*maxage+1):(3*maxage)]
 
 #Effort
-       Effort1<-as.matrix(read.table(paste0(folder,"Effort1_withoutTrolling.txt"),header=T))
+Effort1<-as.matrix(read.table(paste0(folder,"Effort1_withoutTrolling.txt"),header=T))
 #       Effort1<-as.matrix(read.table(paste0(folder,"Effort1.txt"),header=T)))
 
 Effort2<-as.matrix(read.table(paste0(folder,"Effort2.txt"),header=T))
@@ -212,9 +214,9 @@ Ecgn<-abind(Ecgn,Ecgn0, along=1)
 #coastal catch up to current year-1, NA thereafter
 #offshore catch up to current year-2, NA thereafter
 if(CR){
-cat<-as.matrix(read.table(paste0(folder,"Catch_TrollingSeparated_CR.txt"),header=T))
+  cat<-as.matrix(read.table(paste0(folder,"Catch_TrollingSeparated_CR_riv_reared.txt"),header=T))
 }else{
-cat<-as.matrix(read.table(paste0(folder,"Catch_TrollingSeparated.txt"),header=T))
+  cat<-as.matrix(read.table(paste0(folder,"Catch_TrollingSeparated_riv_reared.txt"),header=T))
 }
 
 cat_r<-cat[,1]
@@ -291,8 +293,8 @@ beta_ladder[,10]<-Ume_probs[,2]
 alpha_ladder[,17]<-1
 beta_ladder[,17]<-1		
 if(proj_years>=1){
-alpha_ladder<-rbind(alpha_ladder, t(replicate(proj_years,alpha_ladder[years,])))
-beta_ladder<-rbind(beta_ladder, t(replicate(proj_years,beta_ladder[years,])))
+  alpha_ladder<-rbind(alpha_ladder, t(replicate(proj_years,alpha_ladder[years,])))
+  beta_ladder<-rbind(beta_ladder, t(replicate(proj_years,beta_ladder[years,])))
 }
 
 #survcalc<-(sp_count/1000)/exp(mu_SmoltW[1:years,])
@@ -401,17 +403,17 @@ temps<-melt(seals$sealMort)
 sealM<-array(0,dim=c(dim(sMort)[1],dim(sMort)[2]))
 
 for(k in 1:dim(sMort)[1]){
-      sealM[k,(1:dim(sMort)[2])]<-temps[(k-1)*dim(sMort)[2]+1:dim(sMort)[2],3]         
+  sealM[k,(1:dim(sMort)[2])]<-temps[(k-1)*dim(sMort)[2]+1:dim(sMort)[2],3]         
 }
 if(proj_years>=1){
-sealM<-rbind(sealM, t(replicate(proj_years,sealM[years,])))
+  sealM<-rbind(sealM, t(replicate(proj_years,sealM[years,])))
 }
 
 sealMort<-array(1,dim=c(dim(sealM)[1],dim(sealM)[2],AUS))
 for(k in avail_seal){
-
-sealMort[,,k]<-sealM
-
+  
+  sealMort[,,k]<-sealM
+  
 }
 
 
@@ -425,10 +427,10 @@ tmp<-melt(repo)
 reportcAdj<-array(0,dim=c(dim(repo)[1],dim(repo)[2]))
 
 for(k in 1:dim(repo)[1]){
-      reportcAdj[k,(1:dim(repo)[2])]<-tmp[(k-1)*dim(repo)[2]+1:dim(repo)[2],3]         
+  reportcAdj[k,(1:dim(repo)[2])]<-tmp[(k-1)*dim(repo)[2]+1:dim(repo)[2],3]         
 }
 if(proj_years>=1){
-reportcAdj<-rbind(reportcAdj, t(replicate(proj_years,reportcAdj[years,])))
+  reportcAdj<-rbind(reportcAdj, t(replicate(proj_years,reportcAdj[years,])))
 }
 
 unrep<-read.table(paste0(folder,"unrep_coefs.txt"),header=T)
@@ -437,14 +439,14 @@ Ume_prop_fem<-as.matrix(read.table(paste0(folder,"MSW_prop_fem_Ume_Vindel.txt"),
 prop_fem<-array(0,dim<-c(years,5,allstocks))
 prop_fem[,,1]<-rep(c(0.06,0.73,0.73,0.89,0.89),each=years)
 for(s in 2:9){
-   prop_fem[,,s]<-prop_fem[,,1]
+  prop_fem[,,s]<-prop_fem[,,1]
 }
 prop_fem[ ,1,10]<-0.06
 for(i in 1:years){
-prop_fem[i,2:5,10]<-Ume_prop_fem[i]
+  prop_fem[i,2:5,10]<-Ume_prop_fem[i]
 }
 for(s in 11:allstocks){
-   prop_fem[,,s]<-prop_fem[,,1]
+  prop_fem[,,s]<-prop_fem[,,1]
 }
 
 #2019 read in prior parameters for reduced survival after counting for Ume/Vindel, now defined for all years
@@ -473,6 +475,10 @@ colnames(addna)<-c("alpha_rel","beta_rel")
 tmort<-rbind(tmort[2:dim(tmort)[1],],addna)
 alpha_rel<-as.numeric(tmort$alpha_rel)
 beta_rel<-as.numeric(tmort$beta_rel)
+
+rivcat<-as.matrix(read.table(paste0(folder,"river_catches.txt"),header=F))
+ncrW_ObsTot<-rivcat
+
 
 
 
