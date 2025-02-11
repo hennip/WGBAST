@@ -84,7 +84,7 @@ write_xlsx(as.data.frame(res),path=paste0(PathOut_Scen,"migratingAU13_simo.xlsx"
   
   mu<-sd<-q5<-q50<-q95<-c()
   for(i in 2:Nyears){
-    tmp<-summary(as.mcmc(Migr_Torne[i,]), quantiles=c(0.05,0.5,0.95))
+    tmp<-summary(as.mcmc(Migr_Tornio[i,]), quantiles=c(0.05,0.5,0.95))
     mu[i]<-tmp$statistics[1]
     sd[i]<-tmp$statistics[2]
     q5[i]<-tmp$quantiles[1]
@@ -107,10 +107,12 @@ MigrRAU13_Age<-array(NA, dim=c(6,Nyears,1000))
 for(a in 1:6){
   for(y in 1:Nyears){
   for(i in 1:1000){
-    MigrRAU13_Age[a,y,i]<-  sum(MigrR[a,y,1:3,1,i], na.rm=T)
+    #MigrRAU13_Age[a,y,i]<-  sum(MigrR[a,y,1:3,1,i], na.rm=T)
+    MigrRAU13_Age[a,y,i]<-  sum(MatR_1[a,y,1:3,i], na.rm=T)
   }
 }
 }
+  
 GrilseProp<-array(NA, dim=c(Nyears, 1000))
 for(y in 1:Nyears){
   for(i in 1:1000){
@@ -128,7 +130,7 @@ for(y in 2:Nyears){
   Q95[y]<-tmp$quantiles[3]
   }
 
-res<-cbind(c(1992:(1992+Nyears-1)),Q5, Q50, Q95)
+res<-cbind(c(1992:(1992+Nyears-1)),Q5, Q50, Q95) %>% as.data.frame
 write_xlsx(res,paste0(PathOut_Scen,"migratingAU13R_GrilseProp.xlsx"))
 
 
