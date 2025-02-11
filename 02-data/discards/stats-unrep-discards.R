@@ -3,13 +3,17 @@
 
 
 Tseal_res<-median_y_c_k(Tseal)
-Tdis_res<-median_y_c_k(Tdis)
+Tdis_res<-median_y_c_k(Tdis);Tdis_res
 
 
-Dis_LLD_dead_res<-median_y_c_k(Dis_LLD_dead)
-Dis_GND_dead_res<-median_y_c_k(Dis_GND_dead)
+Dis_LLD_dead_res<-median_y_c_k(Dis_LLD_dead);Dis_LLD_dead_res
+Dis_GND_dead_res<-median_y_c_k(Dis_GND_dead);Dis_GND_dead_res
+Dis_FYK_dead_res<-median_y_c_k(Dis_FYK_dead);Dis_FYK_dead_res
 
-Seal_LLD_res<-median_y_c_k(Seal_LLD)
+# Dis_LLD_dead ok
+#Tdis[i,j,k,]<-  Dis_LLD_dead[i,j,k,] + Dis_GND_dead[i,j,k,] + Dis_FYK_dead[i,j,k,] + Dis_MIS_dead[i,j,k,]   	#Total discards by year 		
+
+Seal_LLD_res<-median_y_c_k(Seal_LLD);Seal_LLD_res
 Seal_FYK_res<-median_y_c_k(Seal_FYK)
 
 DisLL_res<-median_y_c(DisLL)
@@ -29,8 +33,9 @@ dim(A_TotCatch_BS)
 dim(A_TotDis_BS)
 dim(A_TotUnrep_BS)
 dim(A_TotSeal_BS)
+A_TotDis_BS_res<-stats_y(A_TotDis_BS);round(A_TotDis_BS_res,0)
+
 A_TotCatch_BS_res<-stats_y(A_TotCatch_BS)
-A_TotDis_BS_res<-stats_y(A_TotDis_BS)
 A_TotUnrep_BS_res<-stats_y(A_TotUnrep_BS)
 A_TotSeal_BS_res<-stats_y(A_TotSeal_BS)
 A_TotCatch_BS_res
@@ -39,7 +44,6 @@ A_TotUnrep_BS_res
 A_TotSeal_BS_res
 
 round(A_TotUnrep_BS_res,0)
-round(A_TotDis_BS_res,0)
 round(A_TotCatch_BS_res,0)
 
 
