@@ -59,7 +59,8 @@ trolling<-1
 
 #modelName<-"FLHM_JAGS_2024_orig" # Same model structure as in 2023 assessment
 #modelName<-"FLHM_JAGS_2024_CR"   #variant with trolling C&R 
-modelName<-"FLHM_JAGS_2024_CR_coefDShierEE"   #variant with trolling C&R 
+#modelName<-"FLHM_JAGS_2024_CR_coefDShierEE"   #variant with trolling C&R 
+modelName<-"FLHM_JAGS_2024_CR_coefDSEE"   #variant with trolling C&R 
 
 CR<-ifelse(grepl("CR",modelName),T,F) #boolean to read correct version of catch data file
 SimoMSW<-ifelse(grepl("coefDShierEE",modelName),T,F) #boolean to read correct version of catch data file
@@ -149,7 +150,7 @@ list(fec=c(exp(8),exp(9),exp(9.5),exp(9.5),exp(9.7)),
 
 
 
-parnames<-c("coefDS", "mu_coefDS", "cv_coefDS",
+parnames<-c("coefDS",# "mu_coefDS", "cv_coefDS",
   "tau_MpsW","MpsW","MpsR","mu_MpsW","NspWtot","SmoltR",
             "SmoltW","EPR","EPR_M74","alphaSR","betaSR","tau_SR","z","K","R0",
             "nco_ObsTotX","ncr_ObsTotX","ncc_ObsTotX",
