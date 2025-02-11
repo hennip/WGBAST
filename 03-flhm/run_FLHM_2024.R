@@ -62,7 +62,7 @@ trolling<-1
 #modelName<-"FLHM_JAGS_2024_orig" # Same model structure as in 2023 assessment
 #modelName<-"FLHM_JAGS_2024_CR"   #variant with trolling C&R 
 #modelName<-"FLHM_JAGS_2024_CR_coefDSEE"   #variant with a prior for CoefDS
-modelName<-"FLHM_JAGS_2024_CR_river_catch1_coefDSEE" 
+modelName<-"FLHM_JAGS_2025_CR_river_catch1_coefDSEE" 
 
 CR<-ifelse(grepl("CR",modelName),T,F) #boolean to read correct version of catch data file
 SimoMSW<-ifelse(grepl("coefDSEE",modelName),T,F) #boolean to read correct version of catch data file
