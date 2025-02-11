@@ -52,6 +52,7 @@ df2 <- df |> filter(F_TYPE!="SEAL", F_TYPE!="DISC")
 
 
 # Choose numb_or_weight==1 for NUMB and numb_or_weight==2 for weight 
+#if(number_or_weight=="N"){
 numb<-func_country_catches(df2,1)
 
 River_N<-numb[[1]]
@@ -60,33 +61,37 @@ GND_N<-numb[[3]]
 LLD_N<-numb[[4]]
 FYK_N<-numb[[5]]
 MIS_N<-numb[[6]]
+#}
 
-weight<-func_country_catches(df2,2)
+#if(number_or_weight=="W"){
+  weight<-func_country_catches(df2,2)
 River_W<-weight[[1]]
 Recr_W<-weight[[2]]
 GND_W<-weight[[3]]
 LLD_W<-weight[[4]]
 FYK_W<-weight[[5]]
 MIS_W<-weight[[6]]
-
+#}
 ################################################################################
 # Seal damaged in number and in weight per country
 
 df3 <- df |> filter(F_TYPE=="SEAL")
 
 # Choose numb_or_weight==1 for NUMB and numb_or_weight==2 for weight 
-numb<-func_country_sealdam(df3,1)
+#if(number_or_weight=="N"){
+  numb<-func_country_sealdam(df3,1)
 SealGND_N<-numb[[1]]
 SealLLD_N<-numb[[2]]
 SealFYK_N<-numb[[3]]
 SealMIS_N<-numb[[4]]
-
-weight<-func_country_sealdam(df3,2)
+#}
+#if(number_or_weight=="W"){
+  weight<-func_country_sealdam(df3,2)
 SealGND_W<-weight[[1]]
 SealLLD_W<-weight[[2]]
 SealFYK_W<-weight[[3]]
 SealMIS_W<-weight[[4]]
-
+#}
 
 ################################################################################
 # Other discards in number and in weight per country
@@ -94,11 +99,12 @@ SealMIS_W<-weight[[4]]
 df4 <- df |> filter(F_TYPE=="DISC")
 
 # Choose numb_or_weight==1 for NUMB and numb_or_weight==2 for weight 
-Dis_N<-func_country_discards(df4,1)
-
-Dis_W<-func_country_discards(df4,2)
-
-
+#if(number_or_weight=="N"){
+  Dis_N<-func_country_discards(df4,1)
+#}
+#if(number_or_weight=="W"){
+  Dis_W<-func_country_discards(df4,2)
+#}
 ################################################################################
 ################################################################################
 # Polish seal damages
@@ -191,3 +197,4 @@ MTNM<-log(0.3832)-0.5/MTNtau
 # Country list:
 #read.table("../../WGBAST_shared/submodels/reporting rates/data/Country_list_MU2.txt")
 cry=c(1,8,9,2,3,4,5,6,7)
+
