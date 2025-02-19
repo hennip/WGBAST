@@ -1,10 +1,19 @@
 
+dim(Rconv)
+Rconv_res<-median_y_c(Rconv);Rconv_res
 
 
+Cunrep_res<-median_y_c_k(Cunrep);Cunrep_res
+Ounrep_res<-median_y_c_k(Ounrep);Ounrep_res
+Runrep_res<-median_y_c_k(Runrep);Runrep_res
 
+Tcatch_res<-median_y_c_k(Tcatch); Tcatch_res
 Tseal_res<-median_y_c_k(Tseal); Tseal_res
 Tdis_res<-median_y_c_k(Tdis);Tdis_res
 Tdis_alive_res<-median_y_c_k(Tdis_alive);Tdis_alive_res
+
+dim(Tunrep_T2)
+Tunrep_T2_res<-median_y_c_k(Tunrep_T2); Tunrep_T2_res
 
 dim(Dis_LLD_alive)
 Dis_LLD_alive_res<-median_y_c_k(Dis_LLD_alive);Dis_LLD_alive_res
@@ -39,9 +48,11 @@ dim(A_TotCatch_BS)
 dim(A_TotDis_BS)
 dim(A_TotUnrep_BS)
 dim(A_TotSeal_BS)
-A_TotUnrep_BS_res<-stats_y(A_TotUnrep_BS);A_TotUnrep_BS_res
+A_TotUnrep_BS_res<-stats_y(A_TotUnrep_BS);round(A_TotUnrep_BS_res,0)
 A_TotDis_BS_res<-stats_y(A_TotDis_BS);round(A_TotDis_BS_res,0)
 A_TotCatch_BS_res<-stats_y(A_TotCatch_BS);round(A_TotCatch_BS_res,0)
+
+B_TotMisr_sea
 
 A_TotSeal_BS_res<-stats_y(A_TotSeal_BS)
 A_TotCatch_BS_res

@@ -18,7 +18,7 @@ df_all<-read_xlsx(str_c(pathIn,
          EFFORT, everything()) |> 
   mutate(TP_TYPE=ifelse(TP_TYPE=="QRT", "QTR", TP_TYPE)) |> 
   filter(SPECIES=="SAL", YEAR>2000)|> 
-  filter(SPECIES!="ALV")
+  filter(F_TYPE!="ALV")
 # NOTE: Alive discards are not taken into account. A way to include them should
 # be figured out at some point.
 

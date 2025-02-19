@@ -71,13 +71,13 @@ parnames<-c(
   "SealLL", "SealDN", "SealC")
 
 # 
-run00 <- run.jags(M1, monitor= parnames,
-                 data=datalist,#inits = initsall,
-                 n.chains = 2, method = 'parallel', thin=100,
-                 burnin =10000, modules = "mix",
-                 sample =1000, adapt = 10000,
-                 keep.jags.files=F,
-                 progress.bar=TRUE, jags.refresh=100)
+# run00 <- run.jags(M1, monitor= parnames,
+#                  data=datalist,#inits = initsall,
+#                  n.chains = 2, method = 'parallel', thin=100,
+#                  burnin =10000, modules = "mix",
+#                  sample =1000, adapt = 10000,
+#                  keep.jags.files=F,
+#                  progress.bar=TRUE, jags.refresh=100)
 
 # summary(run00)
 # summary(run00, var="DisLL")
@@ -86,9 +86,9 @@ run00 <- run.jags(M1, monitor= parnames,
 # summary(run00, var="DisC[20,2]")
 # 
 # summary(chains[,"DisC[20,2]"])
- chains<-as.mcmc.list(run00)
- saveRDS(chains, file="02-data/discards/chains_unrep_discards_cleaned.rds")
-#chains<-readRDS("02-data/discards/chains_unrep_discards_cleaned.rds")
+# chains<-as.mcmc.list(run00)
+# saveRDS(chains, file="02-data/discards/chains_unrep_discards_cleaned.rds")
+chains<-readRDS("02-data/discards/chains_unrep_discards_cleaned.rds")
 
 
 
