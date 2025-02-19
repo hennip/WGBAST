@@ -2,8 +2,14 @@
 
 
 
-Tseal_res<-median_y_c_k(Tseal)
+Tseal_res<-median_y_c_k(Tseal); Tseal_res
 Tdis_res<-median_y_c_k(Tdis);Tdis_res
+Tdis_alive_res<-median_y_c_k(Tdis_alive);Tdis_alive_res
+
+dim(Dis_LLD_alive)
+Dis_LLD_alive_res<-median_y_c_k(Dis_LLD_alive);Dis_LLD_alive_res
+Dis_GND_alive_res<-median_y_c_k(Dis_GND_alive);Dis_GND_alive_res
+Dis_FYK_alive_res<-median_y_c_k(Dis_FYK_alive);Dis_FYK_alive_res
 
 
 Dis_LLD_dead_res<-median_y_c_k(Dis_LLD_dead);Dis_LLD_dead_res

@@ -70,20 +70,25 @@ parnames<-c(
   "DisLL", "DisDN", "DisC", 
   "SealLL", "SealDN", "SealC")
 
-
-# run00 <- run.jags(M1, monitor= parnames,
-#                  data=datalist,#inits = initsall,
-#                  n.chains = 2, method = 'parallel', thin=100,
-#                  burnin =10000, modules = "mix",
-#                  sample =1000, adapt = 10000,
-#                  keep.jags.files=F,
-#                  progress.bar=TRUE, jags.refresh=100)
 # 
+run00 <- run.jags(M1, monitor= parnames,
+                 data=datalist,#inits = initsall,
+                 n.chains = 2, method = 'parallel', thin=100,
+                 burnin =10000, modules = "mix",
+                 sample =1000, adapt = 10000,
+                 keep.jags.files=F,
+                 progress.bar=TRUE, jags.refresh=100)
+
 # summary(run00)
 # summary(run00, var="DisLL")
-# chains<-as.mcmc.list(run00)
-# saveRDS(chains, file="02-data/discards/chains_unrep_discards_cleaned.rds")
-chains<-readRDS("02-data/discards/chains_unrep_discards_cleaned.rds")
+# summary(run00, var="DisC")
+# 
+# summary(run00, var="DisC[20,2]")
+# 
+# summary(chains[,"DisC[20,2]"])
+ chains<-as.mcmc.list(run00)
+ saveRDS(chains, file="02-data/discards/chains_unrep_discards_cleaned.rds")
+#chains<-readRDS("02-data/discards/chains_unrep_discards_cleaned.rds")
 
 
 
@@ -395,9 +400,10 @@ for(i in 1:Ni){
       
       
       # Alive discards; not added to the total catch
-      Dis_LLD_alive[i,j,k,]<- LLD[i,j,k]*Oconv_trans[i,j,]*(DisLL[i,j,]/(1-DisLL[i,j,]))*(1-MDisLL)	# Alive discards of LLD+Misreporting
+      Dis_LLD_alive[i,j,k,]<- (LLD[i,j,k]+TMisr[i,j,k])*Oconv_trans[i,j,]*(DisLL[i,j,]/(1-DisLL[i,j,]))*(1-MDisLL)	# Alive discards of LLD+Misreporting
       Dis_GND_alive[i,j,k,]<- GND[i,j,k]*Oconv_trans[i,j,]*(DisDN[i,j,]/(1-DisDN[i,j,]))*(1-MDisDN)	# alive discards of DNS fishery; stopped in 2007
       Dis_FYK_alive[i,j,k,]<- FYK[i,j,k]*Cconv_trans[i,j,]*(DisC[i,j,]/(1-DisC[i,j,]))*(1-MDisC)	# alive discards of TN fishery; catches are corrected with relevant unreporting		
+      
       Tdis_alive[i,j,k,]<-  Dis_LLD_alive[i,j,k,] + Dis_GND_alive[i,j,k,] + Dis_FYK_alive[i,j,k,]   	#Total alive discards by year, MU and country	
       
       Tcatch[i,j,k,]<- GND[i,j,k] + LLD[i,j,k] + FYK[i,j,k] + MIS[i,j,k] + 
