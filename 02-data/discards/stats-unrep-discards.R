@@ -39,10 +39,10 @@ dim(A_TotCatch_BS)
 dim(A_TotDis_BS)
 dim(A_TotUnrep_BS)
 dim(A_TotSeal_BS)
+A_TotUnrep_BS_res<-stats_y(A_TotUnrep_BS);A_TotUnrep_BS_res
 A_TotDis_BS_res<-stats_y(A_TotDis_BS);round(A_TotDis_BS_res,0)
+A_TotCatch_BS_res<-stats_y(A_TotCatch_BS);round(A_TotCatch_BS_res,0)
 
-A_TotCatch_BS_res<-stats_y(A_TotCatch_BS)
-A_TotUnrep_BS_res<-stats_y(A_TotUnrep_BS)
 A_TotSeal_BS_res<-stats_y(A_TotSeal_BS)
 A_TotCatch_BS_res
 A_TotDis_BS_res

@@ -407,7 +407,7 @@ for(i in 1:Ni){
       Tdis_alive[i,j,k,]<-  Dis_LLD_alive[i,j,k,] + Dis_GND_alive[i,j,k,] + Dis_FYK_alive[i,j,k,]   	#Total alive discards by year, MU and country	
       
       Tcatch[i,j,k,]<- GND[i,j,k] + LLD[i,j,k] + FYK[i,j,k] + MIS[i,j,k] + 
-                          Recr[i,j,k] + River[i,j,k]  + Tunrep_T2[i,j,k,] + Tdis[i,j,k,]
+                          Recr[i,j,k] + River[i,j,k]  + Tunrep_T2[i,j,k,] + Tdis[i,j,k,]+TMisr[i,j,k]
       TcatchCom[i,j,k]<- (GND[i,j,k] + LLD[i,j,k] + FYK[i,j,k] + MIS[i,j,k])					
       # Total catch by year, country and management unit
       
