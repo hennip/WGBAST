@@ -18,7 +18,7 @@ df_all<-read_xlsx(str_c(pathIn,
          EFFORT, everything()) |> 
   mutate(TP_TYPE=ifelse(TP_TYPE=="QRT", "QTR", TP_TYPE)) |> 
   filter(SPECIES=="SAL", YEAR>2000)|> 
-  filter(SPECIES!="ALV")
+  filter(F_TYPE!="ALV")
 # NOTE: Alive discards are not taken into account. A way to include them should
 # be figured out at some point.
 
@@ -135,24 +135,24 @@ df<-read.table("../../WGBAST_shared/submodels/reporting rates/data/Unrep_discard
 #df<-as_tibble(df)
 
 # Kuinka suuri osuus saaliista on alamittaisia, perustuu kolmiojakaumaan ja expert elisitointiin
-Omu<-df |> select(contains("Omu")) 
-Osd<-df |> select(contains("Osd"))
-Cmu<-df |> select(contains("Cmu"))
-Csd<-df |> select(contains("Csd"))
-Rmu<-df |> select(contains("Rmu"))
-Rsd<-df |> select(contains("Rsd"))
-LLmu<-df |> select(contains("LLmu"))
-LLsd<-df |> select(contains("LLsd"))
-DNmu<-df |> select(contains("DNmu"))
-DNsd<-df |> select(contains("DNsd"))
-TNmu<-df |> select(contains("TNmu"))
-TNsd<-df |> select(contains("TNsd"))
-SLLDmu<-df |> select(contains("SLLDmu"))
-SLLDsd<-df |> select(contains("SLLDsd"))
-SGNDmu<-df |> select(contains("SGNDmu"))
-SGNDsd<-df |> select(contains("SGNDsd"))
-STNmu<-df |> select(contains("STNmu"))
-STNsd<-df |> select(contains("STNsd"))
+Omu<-df |> select(starts_with("Omu")) 
+Osd<-df |> select(starts_with("Osd"))
+Cmu<-df |> select(starts_with("Cmu"))
+Csd<-df |> select(starts_with("Csd"))
+Rmu<-df |> select(starts_with("Rmu"))
+Rsd<-df |> select(starts_with("Rsd"))
+LLmu<-df |> select(starts_with("LLmu"))
+LLsd<-df |> select(starts_with("LLsd"))
+DNmu<-df |> select(starts_with("DNmu"))
+DNsd<-df |> select(starts_with("DNsd"))
+TNmu<-df |> select(starts_with("TNmu"))
+TNsd<-df |> select(starts_with("TNsd"))
+SLLDmu<-df |> select(starts_with("SLLDmu"))
+SLLDsd<-df |> select(starts_with("SLLDsd"))
+SGNDmu<-df |> select(starts_with("SGNDmu"))
+SGNDsd<-df |> select(starts_with("SGNDsd"))
+STNmu<-df |> select(starts_with("STNmu"))
+STNsd<-df |> select(starts_with("STNsd"))
 
 Ocv<-Osd/Omu 		#Oconv, unreporting off-shore
 TNcv<-TNsd/TNmu		#Dis_FYK, discarded undersized trapnet
