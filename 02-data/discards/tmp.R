@@ -25,13 +25,17 @@ LLtau12 #Ok
 
 
 MX<-"model{
-      DisLL11~dlnorm(-3.540506,13.7821)I(0,0.3)	# share of discarded undersized longline
-      DisLL12~dlnorm(-3.930959,24.46852)I(0,0.3)	# share of discarded undersized longline
+  DisC12~dlnorm(-2.432467,23.60443)I(0,0.2)	# share if discarded undersized trapnet and other coastal gears
+      
+  
+  #    DisLL11~dlnorm(-3.540506,13.7821)I(0,0.3)	# share of discarded undersized longline
+  #    DisLL12~dlnorm(-3.930959,24.46852)I(0,0.3)	# share of discarded undersized longline
 }"
 
 
 
-runX <- run.jags(MX, monitor= c("DisLL11", "DisLL12"),
+runX <- run.jags(MX, monitor= c("DisC12"),
+  #"DisLL11", "DisLL12"),
                   #data=datalist,#inits = initsall,
                   n.chains = 2, method = 'parallel', thin=100,
                   burnin =10000, modules = "mix",
