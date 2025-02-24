@@ -7,9 +7,9 @@
 
 
 #Run first CatchEffort.r
-source("02-catch-effort/CatchEffort.r")
+source("02-data/catch-effort/CatchEffort.r")
 
-yearX<-2022 # Assessment year -1
+yearX<-2024 # Assessment year -1
 
 # =======================================================================
 # Longlining:
