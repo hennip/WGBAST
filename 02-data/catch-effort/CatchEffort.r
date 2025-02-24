@@ -8,18 +8,18 @@
 
 
 min_year<-2000
-max_year<-2022
+max_year<-2024
 years<-min_year:max_year
 NumYears<-length(years)
 
-source("run-this-first.R")
+source("../run-this-first-wgbast.R")
 #source("00-basics/packages.R")
 pathIn<-pathDataCatchEffort
 
 df_all<-read_xlsx(str_c(pathIn, 
-              "dat/orig/WGBAST_2023_Catch_21-02-2023_Hennille.xlsx"), # Update!
-range="A1:Q16948", # Update!
-              sheet="Catch data", col_names = T, guess_max = 8000, na=c("",".", "NaN", "NA"))%>%
+              "dat/orig/WGBAST_2025_Catch_20.02.2025_Hennille.xlsx"), # Update!
+range="A1:Q18586", # Update!
+              sheet="Catch data", col_names = T, guess_max = 10000, na=c("",".", "NaN", "NA"))%>%
  # filter(YEAR>2005)%>% # Include results only 2009 onwards, catch DB has only updates from those years 
  # mutate(NUMB=parse_double(NUMB))%>%
   select(SPECIES, COUNTRY, YEAR, TIME_PERIOD, TP_TYPE, sub_div2, FISHERY, F_TYPE, GEAR, NUMB, EFFORT, everything())%>%
@@ -73,14 +73,14 @@ salmonALV<-df2%>%filter(SPECIES=="SAL")
 salmon<-df2%>%filter(SPECIES=="SAL", F_TYPE!="ALV")
 #4183
 
-source("02-catch-effort/WGBAST_DB_Lithuania.r")
-source("02-catch-effort/WGBAST_DB_Germany.r")
-source("02-catch-effort/WGBAST_DB_Denmark.r")
-source("02-catch-effort/WGBAST_DB_Finland.r")
-source("02-catch-effort/WGBAST_DB_Sweden.r")
+source("02-data/catch-effort/WGBAST_DB_Lithuania.r")
+source("02-data/catch-effort/WGBAST_DB_Germany.r")
+source("02-data/catch-effort/WGBAST_DB_Denmark.r")
+source("02-data/catch-effort/WGBAST_DB_Finland.r")
+source("02-data/catch-effort/WGBAST_DB_Sweden.r")
 
-source("02-catch-effort/WGBAST_DB_CPUEoffshore.r")
-source("02-catch-effort/WGBAST_DB_Latvia.r")
+source("02-data/catch-effort/WGBAST_DB_CPUEoffshore.r")
+source("02-data/catch-effort/WGBAST_DB_Latvia.r")
 
 # Choose method to calculate PL catch!
 # ===================
@@ -95,7 +95,7 @@ source("02-catch-effort/WGBAST_DB_Latvia.r")
 # ===================
 #pl<-2;Feff<-1 
 
-source("02-catch-effort/WGBAST_DB_Poland.r")
+source("02-data/catch-effort/WGBAST_DB_Poland.r")
 
 # ==============================================================================
 
@@ -172,6 +172,8 @@ OLL%>%filter(is.na(Catch==T))
 # RECR Trolling catch (ALSO MISC GEAR CATCH!!!!)
 #########################
 
+sum(salmon$NUMB[salmon$GEAR=="AN" & salmon$F_TYPE %in% c("RECR")],na.rm=T)
+sum(salmon$NUMB[salmon$GEAR=="AN" & salmon$F_TYPE %in% c("RECR","ALV")],na.rm=T)
 # Main basin
 Catch_tr<-salmon%>%
   filter(YEAR>2015, 
@@ -192,20 +194,73 @@ Dead_discards<-salmonALV%>%
   group_by(YEAR)%>%
   summarise(Dead=sum(NUMB)*0.25)
 
-(TR_Catch_O<-left_join(Catch_tr, Dead_discards)%>%
+# Released alive (all) 2024
+Release_tr<-salmonALV%>%
+  filter(YEAR>2015, 
+         SUB_DIV==200 |(SUB_DIV<29 & SUB_DIV>21),
+         F_TYPE=="ALV", GEAR=="AN",
+         FISHERY=="O" |FISHERY=="C",
+  )%>%
   group_by(YEAR)%>%
-  summarise(N=Catch+Dead)%>%
+  summarise(Released=sum(NUMB))
+
+#(TR_Catch_O<-left_join(Catch_tr, Dead_discards)%>%
+#  group_by(YEAR)%>%
+#  summarise(N=Catch+Dead)%>%
+#    mutate(YEAR=YEAR-1))
+
+#2024 model try model version that takes care of released fish that die in the model
+(TR_Catch_O<-left_join(Catch_tr, Release_tr)%>%  
+    group_by(YEAR)%>%
+    summarise(N=Catch+Released)%>%
     mutate(YEAR=YEAR-1))
 
 
 # GoB 
 (TR_Catch_C<-salmon%>%
-  filter(YEAR>2015,
-         SUB_DIV==300 |(SUB_DIV>28 & SUB_DIV<32),
-         F_TYPE=="RECR", GEAR=="AN" | GEAR=="MIS",
-         FISHERY=="O" |FISHERY=="C")%>%
-  group_by(YEAR)%>%
-  summarise(Catch=sum(NUMB)))
+    filter(YEAR>2015,
+           SUB_DIV==300 |(SUB_DIV>28 & SUB_DIV<32),
+           F_TYPE=="RECR", GEAR=="AN" | GEAR=="MIS",
+           FISHERY=="O" |FISHERY=="C")%>%
+    group_by(YEAR)%>%
+    summarise(Catch=sum(NUMB)))
+
+# 
+# 
+# # Main basin
+# Catch_tr<-salmon%>%
+#   filter(YEAR>2015, 
+#          SUB_DIV==200 |(SUB_DIV<29 & SUB_DIV>21),
+#          F_TYPE=="RECR", GEAR=="AN",
+#          FISHERY=="O" |FISHERY=="C",
+#   )%>%
+#   group_by(YEAR)%>%
+#   summarise(Catch=sum(NUMB))
+# 
+# # Discarded alive that die
+# Dead_discards<-salmonALV%>%
+#   filter(YEAR>2015, 
+#          SUB_DIV==200 |(SUB_DIV<29 & SUB_DIV>21),
+#          F_TYPE=="ALV", GEAR=="AN",
+#          FISHERY=="O" |FISHERY=="C",
+#   )%>%
+#   group_by(YEAR)%>%
+#   summarise(Dead=sum(NUMB)*0.25)
+# 
+# (TR_Catch_O<-left_join(Catch_tr, Dead_discards)%>%
+#   group_by(YEAR)%>%
+#   summarise(N=Catch+Dead)%>%
+#     mutate(YEAR=YEAR-1))
+# 
+# 
+# # GoB 
+# (TR_Catch_C<-salmon%>%
+#   filter(YEAR>2015,
+#          SUB_DIV==300 |(SUB_DIV>28 & SUB_DIV<32),
+#          F_TYPE=="RECR", GEAR=="AN" | GEAR=="MIS",
+#          FISHERY=="O" |FISHERY=="C")%>%
+#   group_by(YEAR)%>%
+#   summarise(Catch=sum(NUMB)))
 
 ##################################
 # Seal damaged 
@@ -217,7 +272,7 @@ Dead_discards<-salmonALV%>%
   group_by(YEAR)%>%
   summarise(DAM=sum(NUMB))%>%
   mutate(Myear=YEAR-1))
-
+#View(Sealdam_MB)
 
 # GoB
 (Sealdam_GoB<-df_all%>%
@@ -226,6 +281,7 @@ Dead_discards<-salmonALV%>%
          SUB_DIV==300 |(SUB_DIV>28 & SUB_DIV<32))%>%
   group_by(YEAR)%>%
   summarise(DAM=sum(NUMB)))
+#View(Sealdam_GoB)
 
 
 #View(salmon%>%
@@ -324,7 +380,8 @@ OLL<-full_join(Ger_OLL, Den_OLL)%>%
 
 ##################
 # CTN effort
-##################
+################## 
+# Note that Fin SD 30 contains also effort from SD 29
 
 FinE30_CTN<-select(Fin_CTN30, YEAR, HYR, Effort)%>%
   summarise(Effort=sum(Effort))
@@ -360,6 +417,7 @@ cbind(yearx,CTN_AU1, CTN_AU2, CTN_AU3)
 ##################
 # COT effort
 ##################
+# Note that Fin SD 30 contains also effort from SD 29
 
 FinE30_COT<-select(Fin_COT30, YEAR, HYR, Effort)%>%
   summarise(Effort=sum(Effort))
