@@ -17,17 +17,16 @@ Rivername_long<-read.table(str_c(PathData_FLHM, "rivernames.txt"))[,1]
 # =================
 
 #Cleaned version 2024 (no stucked chains)
-#load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/CR_2024_selected_chain.RData")); trolling1<-T;Mname1<-"2024 base model, cleaned"
+load(file=paste0(PathOut_FLHM,"CR_2024_selected_chain.RData")); trolling1<-T;Mname1<-"2024 base model, cleaned"
 #load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2024_CR_spcount_data2024.RData")); trolling1<-T;Mname1<-"2024 Simo didson count removed";chains<-as.mcmc.list(run)
-
-load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2024_CR_coefDSEE_data2024.RData")); trolling1<-T;Mname1<-"2024 Simo didson new expert priors, no hierarchy";chains<-as.mcmc.list(run)
+#load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2024_CR_coefDSEE_data2024.RData")); trolling1<-T;Mname1<-"2024 Simo didson new expert priors, no hierarchy";chains<-as.mcmc.list(run)
 
 
 chains1<-chains
 
 summary(chains1[,"MW"])
 
-nchains1<-2
+nchains1<-1
 nsims1<-ifelse(nchains1==1,
                length(chains1[,"MW"]),
                length(chains1[,"MW"][[1]])*2)
@@ -47,7 +46,8 @@ Years2B<-c(1992:2023)
 #load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_ar_data2024.RData")); trolling2<-T;Mname2<-"2024, AR model for Mps"
 #load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2024_CR_coefDS_data2024.RData")); trolling2<-T;Mname2<-"2024, prior given to CoefDS"
 
-load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2024_CR_coefDShierEE_data2024.RData")); trolling2<-T;Mname2<-"2024 Simo didson new expert priors with hierarchy"
+#load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2024_CR_coefDShierEE_data2024.RData")); trolling2<-T;Mname2<-"2024 Simo didson new expert priors with hierarchy"
+load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_CR_river_catch1_coefDSEE_data2024.RData")); trolling2<-T;Mname2<-"2024 Simo CoefDS prior + river specific HR"
 
 selCH=T
 

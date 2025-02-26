@@ -147,20 +147,20 @@ knitr::read_chunk("05-results/flhm-compare/compare-wprop.r")
 
 
 
-# Catches
+<!-- # Catches -->
 
-```{r cache=F, include=F}
-knitr::read_chunk("05-results/flhm-compare/compare-catches.r")
+<!-- ```{r cache=F, include=F} -->
+<!-- knitr::read_chunk("05-results/flhm-compare/compare-catches.r") -->
 
-```
+<!-- ``` -->
 
-```{r load-catches, include=F}
+<!-- ```{r load-catches, include=F} -->
 
-```
+<!-- ``` -->
 
-```{r graphs-catches, echo=F, warning=F}
+<!-- ```{r graphs-catches, echo=F, warning=F} -->
 
-```
+<!-- ``` -->
 
 
 # Catchabilities
@@ -183,41 +183,41 @@ knitr::read_chunk("05-results/flhm-compare/compare-q.r")
 
 
 
-# Harvest rates
-```{r cache=F, include=F}
-knitr::read_chunk("05-results/flhm-compare/compare-HR.r")
+<!-- # Harvest rates -->
+<!-- ```{r cache=F, include=F} -->
+<!-- knitr::read_chunk("05-results/flhm-compare/compare-HR.r") -->
 
-```
+<!-- ``` -->
 
-```{r load-HR, include=F}
+<!-- ```{r load-HR, include=F} -->
 
-```
+<!-- ``` -->
 
 
 
-```{r graphs-Hr, echo=F, warning=F}
+<!-- ```{r graphs-Hr, echo=F, warning=F} -->
 
-```
+<!-- ``` -->
 
-```{r graphs-Hc, echo=F, warning=F}
+<!-- ```{r graphs-Hc, echo=F, warning=F} -->
 
-```
+<!-- ``` -->
 
-```{r graphs-Hdc, echo=F, warning=F}
+<!-- ```{r graphs-Hdc, echo=F, warning=F} -->
 
-```
+<!-- ``` -->
 
-```{r graphs-Hdo, echo=F, warning=F}
+<!-- ```{r graphs-Hdo, echo=F, warning=F} -->
 
-```
+<!-- ``` -->
 
-```{r graphs-Hl, echo=F, warning=F}
+<!-- ```{r graphs-Hl, echo=F, warning=F} -->
 
-```
+<!-- ``` -->
 
-```{r graphs-Ht, echo=F, warning=F}
+<!-- ```{r graphs-Ht, echo=F, warning=F} -->
 
-```
+<!-- ``` -->
 
 
 
