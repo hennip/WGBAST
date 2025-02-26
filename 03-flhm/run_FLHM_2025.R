@@ -10,17 +10,9 @@
 
 #flexible indexing not complete!!
 
-# Packages are called in run-this-first.r (calls packages.r) 
-#library(R2jags)
-# library(runjags)
-# library(rjags) 
-
-# load.module("mix")
-# load.module("glm")
 source("../run-this-first-wgbast.R")
 
-
-assessment_year<-2024
+assessment_year<-2025
 years<-length(seq(1987:assessment_year))
 
 proj_years<-0
@@ -54,27 +46,11 @@ trolling<-1
 #16 "Kagealven"
 #17 "Testeboan"
 
-#source("/home/henni/WGBAST/03-histmodel/paths_FLHM.R") #AMD
-#source("03-histmodel/paths_FLHM.R") #windows
-#setwd("C:/WGBAST15/WGBAST_2024")
-#source("flhm/paths_FLHM.R") #windows
+modelName<-"FLHM_JAGS_2025_base" 
 
-#modelName<-"FLHM_JAGS_2024_orig" # Same model structure as in 2023 assessment
-#modelName<-"FLHM_JAGS_2024_CR"   #variant with trolling C&R 
-#modelName<-"FLHM_JAGS_2024_CR_coefDSEE"   #variant with a prior for CoefDS
-modelName<-"FLHM_JAGS_2025_CR_river_catch1_coefDSEE" 
-
-CR<-ifelse(grepl("CR",modelName),T,F) #boolean to read correct version of catch data file
-SimoMSW<-ifelse(grepl("coefDSEE",modelName),T,F) #boolean to read correct version of catch data file
-
-#source(paste0(PathFunctions,"plotfunctions.r")) # Called in run-this-first.r
 source(paste0(PathModel_FLHM,"make_JAGS_data_",assessment_year,".R"))
 
-
-
 source(paste0(PathModel_FLHM,modelName,".R"))
-#runName<-paste0(modelName,"_",startyear,"-",endyear)
-
 
 runName<-modelName
 print(runName)
