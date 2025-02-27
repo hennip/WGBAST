@@ -213,11 +213,11 @@ Ecgn<-abind(Ecgn,Ecgn0, along=1)
 #river catch up to current year-1, NA thereafter
 #coastal catch up to current year-1, NA thereafter
 #offshore catch up to current year-2, NA thereafter
-#if(CR){
+if(RiverCatch1==T){
+  cat<-as.matrix(read.table(paste0(folder,"Catch_TrollingSeparated_riv_reared.txt"),header=T))
+}else{
   cat<-as.matrix(read.table(paste0(folder,"Catch_TrollingSeparated_CR.txt"),header=T))
-#}else{
-#  cat<-as.matrix(read.table(paste0(folder,"Catch_TrollingSeparated.txt"),header=T))
-#}
+}
 
 cat_r<-cat[,1]
 cat_c<-cat[,2]
@@ -467,7 +467,6 @@ beta_migr[1:(years-1),10]<-Ume_migr[,2]
 
 alpha_migr[30:34,13]<-1.75  #Ljungan 2016-2020 prop that dies~Beta(2.75,1.75)
 beta_migr[30:34,13]<-2.75
-
 
 rivHR<-as.matrix(read.table(paste0(folder,"rivHR.txt"),header=T,row.names=1))
 colnames(rivHR)<-NULL      
