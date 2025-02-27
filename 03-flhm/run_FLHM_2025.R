@@ -47,7 +47,7 @@ trolling<-1
 #17 "Testeboan"
 
 modelName<-"FLHM_JAGS_2025_base" 
-rivHR<-F # T if stock specific river HR is included
+RiverCatch1<-F # T if stock specific river catches are included
 
 source(paste0(PathModel_FLHM,"make_JAGS_data_",assessment_year,".R"))
 
@@ -56,70 +56,12 @@ source(paste0(PathModel_FLHM,modelName,".R"))
 runName<-modelName
 print(runName)
 
-# data
-if(rivHR==1){source("03/flhm/datalist_FLHM_2025_rivHR.R")}else{
-source("03-flhm/datalist_FLHM_2025_base.R")}
-
-
-
-alpha_detect<-c(18,18,rep(10,times=15))
-beta_detect<-c(2,2,rep(10,times=15))
-
-iql<-rep(0.001,years+proj_years+4)
-iqd<-array(c(rep(NA,(years+proj_years+5)),rep(0.01,(years+proj_years+5)*2)), dim=c((years+proj_years+5),3))
-
-iqcW<-array(rep(array(c(rep(NA,(years+proj_years+3)),rep(0.01,(years+proj_years+3)*3)),dim=c(years+proj_years+3,4)),1),
-            dim=c(years+proj_years+3,4,1))
-iqcR<-array(rep(array(c(rep(NA,(years+proj_years+3)),rep(0.01,(years+proj_years+3)*3)),dim=c(years+proj_years+3,4)),3),
-            dim=c(years+proj_years+3,4,3))
-
-inits.fn<-function() {
-  list(fec=c(exp(8),exp(9),exp(9.5),exp(9.5),exp(9.7)),
-       K=rlnorm(length(stock_indices),M_K[stock_indices]*1.1,0.50),
-       p.detect=array(rbeta((years+proj_years+5)*length(stock_indices),rep(alpha_detect[stock_indices],each=years+proj_years+5),rep(beta_detect[stock_indices],each=years+proj_years+5)),dim=c(years+proj_years+5,stocks)),
-       MpsW=rlnorm(years+proj_years,-1.2,0.3),
-       logit_qlW=log(iql/(1-iql)),     
-       logit_qdW=log(iqd/(1-iqd)),     
-       MW=rlnorm(1,-2.3,0.15),MR=rlnorm(1,-2,0.15),
-       early_MpsW=rlnorm(1,0.23,0.15),cv_SR=rlnorm(1,-1.61,0.10),
-       CV_MpsW=rbeta(1,30,70),Reff_mu=rbeta(1,15,35),Reff_eta=rbeta(1,10,10)*0.5,SCRW=rbeta(1,3,17),
-       CV_HrW=runif(1,0.01,0.99),logit_deltaHRW=rnorm(1,0.85,0.5),mu_HrW=rnorm(stocks,-1.3862944 ,0.5), 
-       HrW_autoc=runif(stocks, 0.1,0.99)) 																									 
-  
-}
-
-
-
-
-parnames<-c(
-  "ncrR_ObsTotX","ncrW_ObsTotX", 
-  "coefDS", #"mu_coefDS", "cv_coefDS",
-            "tau_MpsW","MpsW","MpsR","mu_MpsW","NspWtot","SmoltR",
-            "SmoltW","EPR","EPR_M74","alphaSR","betaSR","tau_SR","z","K","R0",
-            "nco_ObsTotX","ncr_ObsTotX","ncc_ObsTotX",
-            "sp_countX","LW","LR","M74",
-            "Eggstot","Eggstot_M74","IBSFC","MW","MR","fec","NccW","NccR","probMSW",
-            "NladderW_tot", "Usmolt","pTrap","NrRtot","delta","bL","tauL",
-            "LReffect","cL","mucL","taucL","Wprop","tauCR","tauCC","tauCO",
-            "p.ladder","p.detect","Ra","Rb",
-            "HrW","HrR","HdoW","HdoR","HdcW","HdcR","HlW","HlR","HcW","HcR",
-            
-            "HtW", "HtR","phi_tr","mean_trW","mean_trR", "nct_ObsTotX", "sd_tr", # Params of trolling
-            "phi_ql", "mean_qlW","mean_qlR","sd_ql", # AR(1) params of ql
-            "phi_qd", "mean_qdW","mean_qdR","sd_qd", "eff_qdW", "eff_qdR", #AR(1) params of qd
-            "mean_qctnW", "mean_qctnR", "phi_qctn", "sd_qctn", "eff_qctn",
-            "mean_qcgnW", "mean_qcgnR", "phi_qcgn", "sd_qcgn", "eff_qcgn",
-            
-            "NrAll_tot","NspWtot","Tretain","muCC",
-            "muCO","muCR","nc_oll_Tot","nc_odn_Tot",
-            "qcgnR","qcgnW","qctnR","qctnW","qdR","qdW","qrR","qrW","qlR","qlW",
-            "reportc","reportd","reportl","reportrR","reportrW","rrR",
-            "surv_migr","p.mort","p.rel","nctW_rel","nctW_Tot")
-
-
+# data, initial values, parameters to monitor
+if(RiverCatch1==T){
+  source("03/flhm/setup_FLHM_2025_RiverCatch1.R")}else{
+    source("03-flhm/setup_FLHM_2025_base.R")}
 
 initsall<-list(inits.fn(),inits.fn())
-
 
 print(paste0(runName,"_data", assessment_year))
 
