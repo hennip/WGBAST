@@ -15,7 +15,8 @@ datalist<-list(
   muTemp=muTemp,tauTemp=tauTemp,mon_Ec=c(6,2,2,2,2,2),
   mon_Edc=rep(1,times=6),
   mon_E=array(c(1,rep(2,times=5),rep(2,times=6),rep(8,times=6),rep(1,times=6),1,rep(2,times=5),rep(1,times=6)),dim=c(6,6)), 
-  avail_r=which(stock_indices %in% avail_r),avail_dc=which(stock_indices %in% avail_dc),
+ # avail_r=which(stock_indices %in% avail_r),
+ avail_dc=which(stock_indices %in% avail_dc),
   ureport_r=unrep$coef_r,ureport_c=unrep$coef_c,ureport_o=unrep$coef_o,
   PropCR=cat_ratio[,1],PropCW=cat_ratio[,2],
   SmoltWobs=as.matrix(exp(mu_SmoltW[,stock_indices])),
@@ -48,9 +49,9 @@ datalist<-list(
   #au4_stocks=au4_stocks,
   prop_fem=prop_fem,alpha_migr=alpha_migr,
   beta_migr=beta_migr,smolt_year=smolt_year,e_delay=e_delay,
-  rivHR=as.matrix(rivHR[,stock_indices]),
-  alpha_rel=alpha_rel,beta_rel=beta_rel#,
-#  au1_stocks=au1_stocks,au2_stocks=au2_stocks,au3_stocks=au3_stocks,au4_stocks=au4_stocks
+  #rivHR=as.matrix(rivHR[,stock_indices]),
+  alpha_rel=alpha_rel,beta_rel=beta_rel,
+  au1_stocks=au1_stocks,au2_stocks=au2_stocks,au3_stocks=au3_stocks,au4_stocks=au4_stocks
 )  
 
 # Initial values
