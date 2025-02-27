@@ -214,7 +214,7 @@ Ecgn<-abind(Ecgn,Ecgn0, along=1)
 #coastal catch up to current year-1, NA thereafter
 #offshore catch up to current year-2, NA thereafter
 if(RiverCatch1==T){
-  cat<-as.matrix(read.table(paste0(folder,"Catch_TrollingSeparated_riv_reared.txt"),header=T))
+  cat<-as.matrix(read.table(paste0(folder,"Catch_TrollingSeparated_CR_riv_reared.txt"),header=T))
 }else{
   cat<-as.matrix(read.table(paste0(folder,"Catch_TrollingSeparated_CR.txt"),header=T))
 }

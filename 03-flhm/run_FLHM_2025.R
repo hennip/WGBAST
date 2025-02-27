@@ -47,7 +47,8 @@ trolling<-1
 #17 "Testeboan"
 
 modelName<-"FLHM_JAGS_2025_base" 
-RiverCatch1<-F # T if stock specific river catches are included
+RiverCatch1<-T # T if stock specific river catches are included
+if(RiverCatch1==T){modelName<-"FLHM_JAGS_2025_RiverCatch1"}
 
 source(paste0(PathModel_FLHM,"make_JAGS_data_",assessment_year,".R"))
 
@@ -58,7 +59,7 @@ print(runName)
 
 # data, initial values, parameters to monitor
 if(RiverCatch1==T){
-  source("03/flhm/setup_FLHM_2025_RiverCatch1.R")}else{
+  source("03-flhm/setup_FLHM_2025_RiverCatch1.R")}else{
     source("03-flhm/setup_FLHM_2025_base.R")}
 
 initsall<-list(inits.fn(),inits.fn())
