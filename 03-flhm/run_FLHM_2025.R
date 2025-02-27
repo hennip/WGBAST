@@ -46,7 +46,7 @@ trolling<-1
 #16 "Kagealven"
 #17 "Testeboan"
 
-RiverCatch1<-T # T if stock specific river catches are included
+RiverCatch1<-F # T if stock specific river catches are included
 RaneCount<-F # T if Råne count data is included. This affects the data, but not the model 
 if(RiverCatch1==F){modelName<-"FLHM_JAGS_2025_base"} 
 if(RiverCatch1==T){modelName<-"FLHM_JAGS_2025_RiverCatch1"}
