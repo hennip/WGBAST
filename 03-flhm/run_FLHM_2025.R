@@ -46,8 +46,9 @@ trolling<-1
 #16 "Kagealven"
 #17 "Testeboan"
 
-modelName<-"FLHM_JAGS_2025_base" 
 RiverCatch1<-T # T if stock specific river catches are included
+RaneCount<-F # T if Råne count data is included. This affects the data, but not the model 
+if(RiverCatch1==F){modelName<-"FLHM_JAGS_2025_base"} 
 if(RiverCatch1==T){modelName<-"FLHM_JAGS_2025_RiverCatch1"}
 
 source(paste0(PathModel_FLHM,"make_JAGS_data_",assessment_year,".R"))
@@ -55,6 +56,7 @@ source(paste0(PathModel_FLHM,"make_JAGS_data_",assessment_year,".R"))
 source(paste0(PathModel_FLHM,modelName,".R"))
 
 runName<-modelName
+if(RaneCount==F){runName<-str_c(modelName, "_withoutRane")}
 print(runName)
 
 # data, initial values, parameters to monitor

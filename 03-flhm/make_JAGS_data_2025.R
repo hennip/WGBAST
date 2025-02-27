@@ -242,11 +242,11 @@ WpropObs[,2]<-Scale[1:years,3]
 sd_wr[,2]<-Scale[1:years,4]
 
 #Note Testebo?n data to be added to spawner counts in 2020.  It is an index river
-#if(SimoMSW){
+if(RaneCount==T){
   spawner_counts<-as.matrix(read.table(paste0(folder,"spawner_counts_SimoMSW.txt"),header=T, encoding="UTF-8"))
-#}else{
-#  spawner_counts<-as.matrix(read.table(paste0(folder,"spawner_counts.txt"),header=T, encoding="UTF-8"))
-#}
+}else{
+  spawner_counts<-as.matrix(read.table(paste0(folder,"spawner_counts_SimoMSW_withoutRane.txt"),header=T, encoding="UTF-8"))
+}
 
 MSWladder<-as.matrix(read.table(paste0(folder,"Fishladder.txt"),header=T))
 sp_count<-array(NA,dim=c(years,allstocks))
