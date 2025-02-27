@@ -468,10 +468,11 @@ beta_migr[1:(years-1),10]<-Ume_migr[,2]
 alpha_migr[30:34,13]<-1.75  #Ljungan 2016-2020 prop that dies~Beta(2.75,1.75)
 beta_migr[30:34,13]<-2.75
 
-
+if(rivHR==T){
 rivHR<-as.matrix(read.table(paste0(folder,"rivHR.txt"),header=T,row.names=1))
 colnames(rivHR)<-NULL      
 rownames(rivHR)<-NULL 
+}
 
 tmort<-read.table(paste0(folder,"Trolling_p.release.txt"),sep="\t",header=T)
 #calendar year 2022 is model year 2021!
