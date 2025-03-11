@@ -17,10 +17,7 @@ Rivername_long<-read.table(str_c(PathData_FLHM, "rivernames.txt"))[,1]
 # =================
 
 #Cleaned version 2024 (no stucked chains)
-load(file=paste0(PathOut_FLHM,"CR_2024_selected_chain.RData")); trolling1<-T;Mname1<-"2024 base model, cleaned"
-#load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2024_CR_spcount_data2024.RData")); trolling1<-T;Mname1<-"2024 Simo didson count removed";chains<-as.mcmc.list(run)
-#load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2024_CR_coefDSEE_data2024.RData")); trolling1<-T;Mname1<-"2024 Simo didson new expert priors, no hierarchy";chains<-as.mcmc.list(run)
-
+load(file=paste0("../../WGBAST_shared/flhm/2024/output/CR_2024_selected_chain.RData")); trolling1<-T;Mname1<-"2024 base model, cleaned"
 
 chains1<-chains
 
@@ -42,14 +39,12 @@ Years2B<-c(1992:2023)
 # Model 2:
 # =================
 
-#load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_coefDSHIER_data2024.RData")); trolling2<-T;Mname2<-"2024, Hierarchical priors over years for CoefDS"
-#load(file=paste0(pathMain,"WGBAST_shared/flhm/2024/output/FLHM_JAGS_2024_CR_ar_data2024.RData")); trolling2<-T;Mname2<-"2024, AR model for Mps"
-#load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2024_CR_coefDS_data2024.RData")); trolling2<-T;Mname2<-"2024, prior given to CoefDS"
+#load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_base_withoutRane_data2025.RData")); trolling2<-T;Mname2<-"2025 base model without Råne sp data"
+load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_RiverCatch1_data2025.RData")); trolling2<-T;Mname2<-"2025 RiverCatch1"
 
-#load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2024_CR_coefDShierEE_data2024.RData")); trolling2<-T;Mname2<-"2024 Simo didson new expert priors with hierarchy"
-load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_CR_river_catch1_coefDSEE_data2024.RData")); trolling2<-T;Mname2<-"2024 Simo CoefDS prior + river specific HR"
+Rane_sp<-F
 
-selCH=T
+selCH=F
 
 if(selCH==F){
   chainsGR<-as.mcmc.list(run)
@@ -57,7 +52,7 @@ if(selCH==F){
 }
  #chains<-chainsGR<-window(chains, thin=700) #700=350*2
 chains<-chainsGR<-as.mcmc.list(run)
-chains<-chainsGR<-window(chains, start=100000) #700=350*2
+chains<-chainsGR<-window(chains, start=130000) #700=350*2
 
    
 
@@ -74,13 +69,13 @@ fix2<-0
   
 # Is comparison for run from the same year? T if yes, F if no
 # Note that older version should be set as Model 1
-sameYear<-T
+sameYear<-F
 if(sameYear==T){
   Years<-YearsB
   Years2<-Years2B
 }else{
-  Years<-c(1987:2023)
-  Years2<-c(1992:2024)
+  Years<-c(1987:2024)
+  Years2<-c(1992:2025)
 }
 
 
