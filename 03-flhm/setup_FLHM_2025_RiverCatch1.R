@@ -61,10 +61,6 @@ beta_detect<-c(2,2,rep(10,times=15))
 iql<-rep(0.001,years+proj_years+4)
 iqd<-array(c(rep(NA,(years+proj_years+5)),rep(0.01,(years+proj_years+5)*2)), dim=c((years+proj_years+5),3))
 
-iqcW<-array(rep(array(c(rep(NA,(years+proj_years+3)),rep(0.01,(years+proj_years+3)*3)),dim=c(years+proj_years+3,4)),1),
-            dim=c(years+proj_years+3,4,1))
-iqcR<-array(rep(array(c(rep(NA,(years+proj_years+3)),rep(0.01,(years+proj_years+3)*3)),dim=c(years+proj_years+3,4)),3),
-            dim=c(years+proj_years+3,4,3))
 
 inits.fn<-function() {
   list(fec=c(exp(8),exp(9),exp(9.5),exp(9.5),exp(9.7)),

@@ -255,6 +255,8 @@ ladder_count<-array(NA,dim=c(years,allstocks))
 sp_count[,1]<-spawner_counts[,1]  #Torne 
 sp_count[,2]<-spawner_counts[,2]  #Simo
 sp_count[,3]<-spawner_counts[,3]  #Kalix
+sp_count[,4]<-spawner_counts[,4]  #Råne
+sp_count[,14]<-spawner_counts[,14]  #Mörrum
 
 ladder_count[,5]<-spawner_counts[,5]  #Pite
 ladder_count[,10]<-spawner_counts[,10]  #Vindel
