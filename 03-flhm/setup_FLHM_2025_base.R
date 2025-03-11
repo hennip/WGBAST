@@ -67,7 +67,10 @@ iqcR<-array(rep(array(c(rep(NA,(years+proj_years+3)),rep(0.01,(years+proj_years+
 inits.fn<-function() {
   list(fec=c(exp(8),exp(9),exp(9.5),exp(9.5),exp(9.7)),
        K=rlnorm(length(stock_indices),M_K[stock_indices]*1.1,0.50),
-       p.detect=array(rbeta((years+proj_years+5)*length(stock_indices),rep(alpha_detect[stock_indices],each=years+proj_years+5),rep(beta_detect[stock_indices],each=years+proj_years+5)),dim=c(years+proj_years+5,stocks)),
+       p.detect=array(rbeta((years+proj_years+5)*length(stock_indices),
+                            rep(alpha_detect[stock_indices],each=years+proj_years+5),
+                            rep(beta_detect[stock_indices],each=years+proj_years+5)),
+                      dim=c(years+proj_years+5,stocks)),
        MpsW=rlnorm(years+proj_years,-1.2,0.3),
        logit_qlW=log(iql/(1-iql)),     
        logit_qdW=log(iqd/(1-iqd)),     

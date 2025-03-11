@@ -22,16 +22,16 @@
 # Note! If trolling is included as a separate fishery, estimates of nct_ObsTotX needs to be added 
 # as a separate graph. Be sure to use corresponding Catch.txt file
 
-if(trolling2==T){
-tmp<-read_tsv(str_c(PathData_FLHM, "Catch_TrollingSeparated.txt"), show_col_types = FALSE)
-colnames(tmp)<-c("river", "coast", "offs", "trolling")
-}else if(trollingCT==T){
+# if(trolling2==T){
+# tmp<-read_tsv(str_c(PathData_FLHM, "Catch_TrollingSeparated.txt"), show_col_types = FALSE)
+# colnames(tmp)<-c("river", "coast", "offs", "trolling")
+# }else if(trollingCT==T){
   tmp<-read_tsv(str_c(PathData_FLHM, "Catch_TrollingSeparated_CR.txt"), show_col_types = FALSE)
   colnames(tmp)<-c("river", "coast", "offs", "trolling")
-}else{
-tmp<-read_tsv(str_c(PathData_FLHM, "Catch.txt"), show_col_types = FALSE)
-colnames(tmp)<-c("river", "coast", "offs")
-}
+# }else{
+# tmp<-read_tsv(str_c(PathData_FLHM, "Catch.txt"), show_col_types = FALSE)
+# colnames(tmp)<-c("river", "coast", "offs")
+# }
 
 obs_r<-tmp[,1]%>%
   mutate(Type="River", Year=Years[1:length(Years)], obs_catch=river)%>%select(-river)
