@@ -54,7 +54,7 @@ full_sp_count<-F # if FALSE, Leave 2023 and 2024 data off from Ume and Testeboå
 # 1 Torne p.detect truncation
 # 2 Ume, Testeboån and Pite spawner count change
 # 3 Old base model (likely estimates way too much spawners for Torne)
-base_version<-3 
+base_version<-1 
 if(RiverCatch1==F){
   if(base_version==1){ modelName<-"FLHM_JAGS_2025_base1"} 
   if(base_version==2){ modelName<-"FLHM_JAGS_2025_base2"} 
