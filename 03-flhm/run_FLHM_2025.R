@@ -48,6 +48,7 @@ trolling<-1
 
 RiverCatch1<-F # T if stock specific river catches are included
 RaneCount<-T # T if Råne count data is included. This affects the data, but not the model 
+UT_2yroff<-T # Leave 2023 and 2024 data off from Ume and Testeboån spawner counts
 
 # Versions for base model:
 # 1 Torne p.detect truncation
