@@ -47,8 +47,18 @@ trolling<-1
 #17 "Testeboan"
 
 RiverCatch1<-F # T if stock specific river catches are included
-RaneCount<-F # T if Råne count data is included. This affects the data, but not the model 
-if(RiverCatch1==F){modelName<-"FLHM_JAGS_2025_base"} 
+RaneCount<-T # T if Råne count data is included. This affects the data, but not the model 
+
+# Versions for base model:
+# 1 Torne p.detect truncation
+# 2 Ume, Testeboån and Pite spawner count change
+# 3 Old base model (likely estimates way too much spawners for Torne)
+base_version<-1 
+if(RiverCatch1==F){
+  if(base_version==1){ modelName<-"FLHM_JAGS_2025_base1"} 
+  if(base_version==2){ modelName<-"FLHM_JAGS_2025_base2"} 
+  if(base_version==3){ modelName<-"FLHM_JAGS_2025_baseOLD"} 
+}
 if(RiverCatch1==T){modelName<-"FLHM_JAGS_2025_RiverCatch1"}
 
 source(paste0(PathModel_FLHM,"make_JAGS_data_",assessment_year,".R"))
