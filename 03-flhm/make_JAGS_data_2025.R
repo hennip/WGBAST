@@ -243,16 +243,16 @@ sd_wr[,2]<-Scale[1:years,4]
 
 #Note Testebo?n data to be added to spawner counts in 2020.  It is an index river
 if(RaneCount==T){
-  if(UT_2yroff==F){
+  if(full_sp_count==T){
   spawner_counts<-as.matrix(read.table(paste0(folder,"spawner_counts_SimoMSW.txt"),header=T, encoding="UTF-8"))
   }
-  if(UT_2yroff==T){
+  if(full_sp_count==F){
     spawner_counts<-as.matrix(read.table(paste0(folder,"spawner_counts_SimoMSW_2yOffUT.txt"),header=T, encoding="UTF-8"))
   }
 }
 if(RaneCount==F){
   spawner_counts<-as.matrix(read.table(paste0(folder,"spawner_counts_SimoMSW_withoutRane.txt"),header=T, encoding="UTF-8"))
-  if(UT_2yroff==T){print("SO FAR A VERSION OF spawner_counts.txt WITHOUT 23-24 Ume/Teste count AND WITHOUT RANE DOESN'T EXIST!")}
+  if(full_sp_count==F){print("SO FAR A VERSION OF spawner_counts.txt WITHOUT 23-24 Ume/Teste count AND WITHOUT RANE DOESN'T EXIST!")}
 }
 
 MSWladder<-as.matrix(read.table(paste0(folder,"Fishladder.txt"),header=T))

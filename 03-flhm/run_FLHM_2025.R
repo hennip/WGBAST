@@ -48,13 +48,13 @@ trolling<-1
 
 RiverCatch1<-F # T if stock specific river catches are included
 RaneCount<-T # T if Råne count data is included. This affects the data, but not the model 
-UT_2yroff<-T # Leave 2023 and 2024 data off from Ume and Testeboån spawner counts
+full_sp_count<-F # if FALSE, Leave 2023 and 2024 data off from Ume and Testeboån spawner counts
 
 # Versions for base model:
 # 1 Torne p.detect truncation
 # 2 Ume, Testeboån and Pite spawner count change
 # 3 Old base model (likely estimates way too much spawners for Torne)
-base_version<-1 
+base_version<-3 
 if(RiverCatch1==F){
   if(base_version==1){ modelName<-"FLHM_JAGS_2025_base1"} 
   if(base_version==2){ modelName<-"FLHM_JAGS_2025_base2"} 
@@ -67,7 +67,8 @@ source(paste0(PathModel_FLHM,"make_JAGS_data_",assessment_year,".R"))
 source(paste0(PathModel_FLHM,modelName,".R"))
 
 runName<-modelName
-if(RaneCount==F){runName<-str_c(modelName, "_withoutRane")}
+if(RaneCount==F & full_sp_count==T){runName<-str_c(modelName, "_withoutRane")}
+if(RaneCount==T & full_sp_count==F){runName<-str_c(modelName, "_2yOffUT")}
 print(runName)
 
 # data, initial values, parameters to monitor
