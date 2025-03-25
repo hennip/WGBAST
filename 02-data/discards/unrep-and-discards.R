@@ -25,9 +25,19 @@
 
 
 source("../run-this-first-wgbast.R")
+
+min_year<-2001
+max_year<-2024
+years<-min_year:max_year
+NumYears<-length(years)
+
+
 source("02-data/discards/functions-unrep-discards.R")
 source("02-data/discards/dat-unrep-discards.R")
 #source("02-data/discards/model-unrep-discards.R") # Original structure
+
+
+
 
 ###############
 # KORJATTAVAA:
@@ -45,6 +55,8 @@ source("02-data/discards/model-unrep-discards-cleaned.R") # Only stochastic vari
 
 
 l1<-list(
+  Nyears=NumYears,
+  
   MLLtau=as.matrix(unname(MLLtau)), MLLM=as.matrix(unname(MLLM)), 
   MDNtau=as.matrix(unname(MDNtau)), MDNM=as.matrix(unname(MDNM)), 
   MTNtau=as.matrix(unname(MTNtau)), MTNM=as.matrix(unname(MTNM)), 
@@ -63,32 +75,32 @@ datalist<-l1
 
 
 parnames<-c(
-  
   #"epsilon", 
   "MDisLL", "MDisDN", "MDisC", 
   "Oconv", "Cconv", "Rconv", 
   "DisLL", "DisDN", "DisC", 
   "SealLL", "SealDN", "SealC")
 
-# 
-# run00 <- run.jags(M1, monitor= parnames,
-#                  data=datalist,#inits = initsall,
-#                  n.chains = 2, method = 'parallel', thin=100,
-#                  burnin =10000, modules = "mix",
-#                  sample =1000, adapt = 10000,
-#                  keep.jags.files=F,
-#                  progress.bar=TRUE, jags.refresh=100)
+# # 
+run00 <- run.jags(M1, monitor= parnames,
+                 data=datalist,#inits = initsall,
+                 n.chains = 2, method = 'parallel', thin=100,
+                 burnin =10000, modules = "mix",
+                 sample =1000, adapt = 10000,
+                 keep.jags.files=F,
+                 progress.bar=TRUE, jags.refresh=100)
 
-# summary(run00)
-# summary(run00, var="DisLL")
+# summary(run00, var="Oconv")
 # summary(run00, var="DisC")
-# 
+#
 # summary(run00, var="DisC[20,2]")
-# 
+#
 # summary(chains[,"DisC[20,2]"])
-# chains<-as.mcmc.list(run00)
-# saveRDS(chains, file="02-data/discards/chains_unrep_discards_cleaned.rds")
-chains<-readRDS("02-data/discards/chains_unrep_discards_cleaned.rds")
+ chains<-as.mcmc.list(run00)
+saveRDS(chains, file="02-data/discards/chains_unrep_discards_2025.rds")
+
+# The same estimates are used for both catch in weight and catch in number
+chains<-readRDS("02-data/discards/chains_unrep_discards_2025.rds")
 
 
 
@@ -102,13 +114,13 @@ number_or_weight<-"N" # catch in number
 # Kaikki loput pitäisi pystyä laskemaan näiden ja datan pohjalta deterministisesti.
 
 Ncry<-length(cry)
-Ni<-23
+Ni<-NumYears
 Nsim<-1000
 DisLL<-DisDN<-DisC<-array(NA, dim=c(Ni, Ncry, Nsim))
 SealLL<-SealDN<-SealC<-array(NA, dim=c(Ni, Ncry, Nsim))
 Oconv<-Cconv<-Rconv<-array(NA, dim=c(Ni, Ncry, Nsim))
 for(i in 1:Ni){
-  for(j in 1:Ncry){
+    for(j in 1:Ncry){
     Oconv[i,j,]<-chains[,paste0("Oconv[",i,",",j,"]")][[1]]
     Cconv[i,j,]<-chains[,paste0("Cconv[",i,",",j,"]")][[1]]
     Rconv[i,j,]<-chains[,paste0("Rconv[",i,",",j,"]")][[1]]
@@ -120,7 +132,8 @@ for(i in 1:Ni){
     SealLL[i,j,]<-chains[,paste0("SealLL[",i,",",j,"]")][[1]]
     SealDN[i,j,]<-chains[,paste0("SealDN[",i,",",j,"]")][[1]]
     SealC[i,j,]<-chains[,paste0("SealC[",i,",",j,"]")][[1]]
-  }}
+  }
+  }
 
 MDisLL<-chains[,"MDisLL"][[1]]
 MDisDN<-chains[,"MDisDN"][[1]]
