@@ -82,21 +82,21 @@ parnames<-c(
   "SealLL", "SealDN", "SealC")
 
 # # 
-run00 <- run.jags(M1, monitor= parnames,
-                 data=datalist,#inits = initsall,
-                 n.chains = 2, method = 'parallel', thin=100,
-                 burnin =10000, modules = "mix",
-                 sample =1000, adapt = 10000,
-                 keep.jags.files=F,
-                 progress.bar=TRUE, jags.refresh=100)
-
+# run00 <- run.jags(M1, monitor= parnames,
+#                  data=datalist,#inits = initsall,
+#                  n.chains = 2, method = 'parallel', thin=100,
+#                  burnin =10000, modules = "mix",
+#                  sample =1000, adapt = 10000,
+#                  keep.jags.files=F,
+#                  progress.bar=TRUE, jags.refresh=100)
+# 
 # summary(run00, var="Oconv")
 # summary(run00, var="DisC")
 #
 # summary(run00, var="DisC[20,2]")
 #
 # summary(chains[,"DisC[20,2]"])
- chains<-as.mcmc.list(run00)
+# chains<-as.mcmc.list(run00)
 saveRDS(chains, file="02-data/discards/chains_unrep_discards_2025.rds")
 
 # The same estimates are used for both catch in weight and catch in number
@@ -209,12 +209,12 @@ for(i in 1:Ni){
 
 
 # PL
-PL_factor<-c()
+PL_SD26<-c()
 for(i in 1:Ni){ 
   for(k in 1:2){
       TMisr[i,4,1]<-as.vector(unname(PL_misrep_N))[[1]][i]#*epsilon
   }
-  PL_factor[i]<-as.vector(unname(PL_sealfac))[[1]][i]#*epsilon
+  PL_SD26[i]<-as.vector(unname(PL_sealfac))[[1]][i]#*epsilon
 }
 #PLfactor=as.vector(unname(PL_sealfac))[[1]],
 
