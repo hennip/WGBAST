@@ -308,13 +308,14 @@ for(k in 1:2){
 # country 4=PL no reported Sea_LLD and Seal_MIS until 2018
 for(k in 1:2){
 
-  for(i in 1:17){
-    #Seal_LLD[i,4,k,]<- (LLD[i,4,k] + PLMisr[i])*Oconv_trans[i,4,] *PLfactor[i]* SealLL[i,4,]/(1-SealLL[i,4,])		# Seal damages LLD+Misreporting  # no reported Seal_LLD until 2018
-    Seal_LLD[i,4,k,]<- (LLD[i,4,k] + TMisr[i,4,k])*Oconv_trans[i,4,] *PL_factor[i]* (SealLL[i,4,]/(1-SealLL[i,4,]))		# Seal damages LLD+Misreporting  # no reported Seal_LLD until 2018
+  for(i in 1:15){
+    Seal_LLD[i,4,k,]<- (LLD[i,4,k] + TMisr[i,4,k])*Oconv_trans[i,4,] *PL_SD26[i]* (SealLL[i,4,]/(1-SealLL[i,4,]))		# Seal damages LLD+Misreporting  # no reported Seal_LLD until 2018
     Seal_MIS[i,4,k,]<- MIS[i,4,k]*Cconv_trans[i,4,] * (SealC[i,4,]/(1-SealC[i,4,]))
     # no reported Seal_MIS until 2018 
   }
-  for(i in 18:Ni){# country 4=PL reported Sea_LLD and Seal_MIS from 2018 onwards
+  
+  # 2016 alkaen PL ilmoittaa hylkeenpilaamien määrän, tähän ei enää oteta väärinraportoituja mukaan
+  for(i in 16:Ni){# country 4=PL reported Sea_LLD and Seal_MIS from 2018 onwards
     Seal_LLD[i,4,k,]<- SealLLD[i,4,k]*Oconv_trans[i,4,]
     Seal_MIS[i,4,k,]<- SealMIS[i,4,k]*Cconv_trans[i,4,]
     
