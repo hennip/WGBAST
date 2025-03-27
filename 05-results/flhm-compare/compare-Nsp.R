@@ -79,9 +79,13 @@ df.2
 # 
 # df.2<-left_join(df.2,counts, by=NULL)
 
-
-counts<-read_tsv(str_c(PathData_FLHM,"spawner_counts.txt"),skip=8,col_names=T, na="NA") %>% 
+if(Rane_sp==T){
+  counts<-read_tsv(str_c(PathData_FLHM,"spawner_counts_SimoMSW.txt"),skip=9,col_names=T, na="NA") %>%
+    as.data.frame()
+}else{
+  counts<-read_tsv(str_c(PathData_FLHM,"spawner_counts_SimoMSW_withoutRane.txt"),skip=9,col_names=T, na="NA") %>% 
   as.data.frame()
+}
 
 #colnames(counts)<-rivernames
 rownames(counts) <-  1986+1:nrow(counts)

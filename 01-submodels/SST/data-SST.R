@@ -22,8 +22,8 @@ pathIn<-pathDataSST
 #############
 # Data from 8 stations
 
-(dat1<-read_xlsx(str_c(pathIn,"SMHI tempdata 8 stations jan1980-feb2023.xlsx"),
-                sheet="Data", na=c("","NaN")))%>%
+(dat1<-read_xlsx(str_c(pathIn,"SMHI tempdata 8 stations jan1980-apr 2024.xlsx"),
+                sheet="Data", na=c("","NaN")))|>
   select(Station, Year, Month,Day,Depth,Temperature)
 
 
@@ -43,33 +43,38 @@ dat1$station<-station
 
 #filter(dat1, is.na(station)==T)
 
-dat1<-filter(dat1, Month<5 & Depth<=10 & Year>1991 & is.na(Temperature)==F)%>%
-  mutate(year=Year-1991)%>%
+dat1<-filter(dat1, Month<5 & Depth<=10 & Year>1991 & is.na(Temperature)==F)|>
+  mutate(year=Year-1991)|>
   select(Temperature, Year, Month, Day, year, station)
 dat1
 
 #############
 # Knolls Grund -data (station nr. 9)
 
-dat2<-read_xlsx(str_c(pathIn,"SST Knolls grund 2023-03-21.xlsx"),
+dat2<-read_xlsx(str_c(pathIn,"Knolls grund_2025-02-06.xlsx"),
                sheet=1,
-  col_names = T, range="A7:B96246", guess_max = 100000)%>%
-  setNames(c("Date", "SST"))#%>%
+  col_names = T, #range="A4:B112779", # There is a some problem with the range when it goes over 100k. 
+            # The setup below should work, but it doesn't. 
+            # Quick fix is to remove unnecessary rows from the beginning of the file and to remove range.
+  #range=cell_limits(c(1,112779), c(1,2)),
+  guess_max = 100000)|>
+  setNames(c("Date", "SST"))#|>
   #filter(Date<"2023-03-01")
 #setNames(c("Date", "Time", "Temperature", "Quality", "Depth"))
 #setNames(c("Date", "Temperature", "Quality", "Depth"))
 dat2
 
 # Never mind the warnings about column 'Station' etc.just some bug in the package
-dat2<-dat2%>%
-  mutate(Year=year(Date))%>%
-  mutate(Month=month(Date))%>%
-  mutate(Day=day(Date))%>%
-  filter(Month<5)%>%
-  mutate(year=Year-1991)%>%
-  mutate(station=9)%>%
-  #mutate(Temperature=parse_double(SST))%>%
-  mutate(Temperature=SST)%>%
+dat2<-dat2 |> 
+  select(Date, SST) |> 
+  mutate(Year=year(Date))|>
+  mutate(Month=month(Date))|>
+  mutate(Day=day(Date))|>
+  filter(Month<5)|>
+  mutate(year=Year-1991)|>
+  mutate(station=9)|>
+  #mutate(Temperature=parse_double(SST))|>
+  mutate(Temperature=SST)|>
   select(Temperature, Year, Month, Day, year, station)
 
 #filter(dat2,Year==2023 & Month==3)
@@ -83,8 +88,8 @@ dat2<-dat2%>%
 
 #############
 # Data to be inputted to BUGS
-df.bugs<-dat%>%
-    group_by(station,year, Month) %>%
+df.bugs<-dat|>
+    group_by(station,year, Month) |>
     summarise(sst.station=mean(Temperature)) # mean SST per station
 
 # This makes an empty set of data for the assessment year +1 for scenarios 
