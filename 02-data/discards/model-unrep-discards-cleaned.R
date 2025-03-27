@@ -32,7 +32,7 @@ M1<-"model{
   #	STNmu[,,]	STNsd[,,]	share of seal damages trapnet  and other coastal gears
   
   for (j in 1:9){          # countries 1=FI, 2=SE, 3=DK, 4=PL, 5=LV, 6=LT, 7=DE, 8=EE, 9=RU
-    for (i in 1:23){       # years 2001-2023				
+    for (i in 1:Nyears){       # years 2001-2023				
       
       Oconv[i,j]~dlnorm(OM[i,j],Otau[i,j])I(0,0.6)	# unreporting all fisheries off-shore
       Cconv[i,j]~dlnorm(CM[i,j],Ctau[i,j])I(0,0.7)	# unreporting all fisheries coast

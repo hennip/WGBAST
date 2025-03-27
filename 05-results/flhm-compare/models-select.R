@@ -41,18 +41,21 @@ Years2B<-c(1992:2023)
 
 #load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_base_withoutRane_data2025.RData")); trolling2<-T;Mname2<-"2025 base model without Råne sp data"
 load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_RiverCatch1_data2025.RData")); trolling2<-T;Mname2<-"2025 RiverCatch1"
+#load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_base1_2yOffUT_data2025.RData")); trolling2<-T;Mname2<-"base1 Ume/Testeboån sp count off for 23-24"
+#load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_baseOLD_2yOffUT_data2025.RData")); trolling2<-T;Mname2<-"baseOLD Ume/Testeboån sp count off for 23-24"
+#load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_base2_data2025.RData")); trolling2<-T;Mname2<-"base2"
 
-Rane_sp<-F
+Rane_sp<-T
 
-selCH=F
-
-if(selCH==F){
-  chainsGR<-as.mcmc.list(run)
-  chains<-as.mcmc(run)
-}
+# selCH=F
+# 
+# if(selCH==F){
+#   chainsGR<-as.mcmc.list(run)
+#   chains<-as.mcmc(run)
+# }
  #chains<-chainsGR<-window(chains, thin=700) #700=350*2
 chains<-chainsGR<-as.mcmc.list(run)
-chains<-chainsGR<-window(chains, start=130000) #700=350*2
+chains<-chainsGR<-window(chains, start=100000) #700=350*2
 
    
 
