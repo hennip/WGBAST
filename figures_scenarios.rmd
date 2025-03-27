@@ -21,7 +21,7 @@ knitr::opts_chunk$set(dev = "png",
 #   setting directory for rmd document, otherwise uses location of rmd as root
 #knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 #   loading paths etc
-source("C:/Users/03195892/OneDrive - Valtion/WGBAST_git/WGBAST_2nd/run-this-first.R")                   
+source("run-this-first.R")                   
 
 ```
 
@@ -32,7 +32,7 @@ source("C:/Users/03195892/OneDrive - Valtion/WGBAST_git/WGBAST_2nd/run-this-firs
 source(paste0(PathBasics,"boxplot-functions.R"))
 source(paste0(PathBasics,"plotfunctions.R"))
 source(paste0(PathBasics,"tidy-functions_2chains.R"))
-source("rmd_figures/box_functions.R")
+source("05-results/scen-figures/rmd_figures/box_functions.R")
 
 #   libraryrs
 library(tidyverse)
@@ -68,8 +68,8 @@ if(selCH){
 Model<-"2024_JAGS_Mps"
 Model_pth <- "2024/"
 
-#PathScen<-paste0(PathOut_Scen, Model_pth) # scenario results
-PathScen<-"C:/Users/03195892/OneDrive - Valtion/WGBAST_shared/scen/2024/new_probablyok/"
+PathScen<-paste0(PathOut_Scen, Model_pth, "output/") # scenario results
+#PathScen<-""
 PathRefP = paste0(PathOut_Scen, Model_pth, "Ref pts/") # refpoints already calculated
 
 
@@ -119,49 +119,49 @@ RiverNames<-c("Tornionjoki","Simojoki","Kalixälven","Råneälven"
 
 Figure 4235 Smolts by assessmentunit
 ```{r, F4_2_3_5, warning=FALSE, message=FALSE, fig.height=7.5}
-source("rmd_figures/F4235_SmoltsByUnit_JAGS.R", local = knitr::knit_global(), encoding = "UTF-8")
+source("05-results/scen-figures/rmd_figures/F4235_SmoltsByUnit_JAGS.R", local = knitr::knit_global(), encoding = "UTF-8")
 ```
 
 Figure 4324 Catch_Graphs
 ```{r, F4_3_2_4, warning=FALSE, message=FALSE, fig.height=7.5}
-source("rmd_figures/CatchGraphs.R", local = knitr::knit_global(), encoding = "UTF-8")
+source("05-results/scen-figures/rmd_figures/CatchGraphs.R", local = knitr::knit_global(), encoding = "UTF-8")
 ```
 
 Figure 4321_Mps & M74
 ```{r, F4_3_2_1, warning=FALSE, message=FALSE, fig.height=7.5}
-source("rmd_figures/F4321_Mps&M74.R", local = knitr::knit_global(), encoding = "UTF-8")
+source("05-results/scen-figures/rmd_figures/F4321_Mps&M74.R", local = knitr::knit_global(), encoding = "UTF-8")
 ```
 
 Figure 4322_Maturation
 ```{r, F4_3_2_2, warning=FALSE, message=FALSE, fig.height=7.5}
-source("rmd_figures/F4322_Maturation.R", local = knitr::knit_global(), encoding = "UTF-8")
+source("05-results/scen-figures/rmd_figures/F4322_Maturation.R", local = knitr::knit_global(), encoding = "UTF-8")
 ```
 
 Figure 4328_HarvestRate
 ```{r, F4_3_2_8, warning=FALSE, message=FALSE}
-source("rmd_figures/HarvestRateGraphs.R", local = knitr::knit_global(), encoding = "UTF-8")
+source("05-results/scen-figures/rmd_figures/HarvestRateGraphs.R", local = knitr::knit_global(), encoding = "UTF-8")
 ```
 
 Figure 4326_IncreaseInSmoltProduction
 ```{r, F4_3_2_6, warning=FALSE, message=FALSE, fig.height=10, fig.width=7.5}
-source("rmd_figures/IncreaseInSmoltProduction.R", 
+source("05-results/scen-figures/rmd_figures/IncreaseInSmoltProduction.R", 
        local = knitr::knit_global(), encoding = "UTF-8")
 ```
 
 Figure 4323_PFA
 ```{r, F4_3_2_3, warning=FALSE, message=FALSE, fig.height=10, fig.width=7.5}
-source("rmd_figures/F4323_PFA.R", 
+source("05-results/scen-figures/rmd_figures/F4323_PFA.R", 
        local = knitr::knit_global(), encoding = "UTF-8")
 ```
 
 Figure Annual riskriver-graph
 ```{r, F4_3_2_5, warning=FALSE, message=FALSE, fig.height=10, fig.width=7.5}
-source("rmd_figures/annualriskrivergraph.R", 
+source("05-results/scen-figures/rmd_figures/annualriskrivergraph.R", 
        local = knitr::knit_global(), encoding = "UTF-8")
 ```
 
 Figure 4327
 ```{r, F4_3_2_7, warning=FALSE, message=FALSE, fig.height=10, fig.width=7.5}
-source("rmd_figures/F4328_smoltspawners.R", 
+source("05-results/scen-figures/rmd_figures/F4328_smoltspawners.R", 
        local = knitr::knit_global(), encoding = "UTF-8")
 ```
