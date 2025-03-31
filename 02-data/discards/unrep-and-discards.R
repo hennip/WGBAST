@@ -97,7 +97,7 @@ parnames<-c(
 #
 # summary(chains[,"DisC[20,2]"])
 # chains<-as.mcmc.list(run00)
-saveRDS(chains, file="02-data/discards/chains_unrep_discards_2025.rds")
+#saveRDS(chains, file="02-data/discards/chains_unrep_discards_2025.rds")
 
 # The same estimates are used for both catch in weight and catch in number
 chains<-readRDS("02-data/discards/chains_unrep_discards_2025.rds")
@@ -107,8 +107,10 @@ chains<-readRDS("02-data/discards/chains_unrep_discards_2025.rds")
 ################################################################################
 # Decide if you wish to get calculations for catch in number or in weight
 
+if(exists("skip")==F){
 number_or_weight<-"N" # catch in number
 #number_or_weight<-"W" # catch in weight
+}
 
 # Tässä kaikki stokastiset muuttujat poimittuna ajotiedostosta (poislukien epsilon, joka on vain tekninen)
 # Kaikki loput pitäisi pystyä laskemaan näiden ja datan pohjalta deterministisesti.
@@ -212,7 +214,11 @@ for(i in 1:Ni){
 PL_SD26<-c()
 for(i in 1:Ni){ 
   for(k in 1:2){
+    if(number_or_weight=="N"){
       TMisr[i,4,1]<-as.vector(unname(PL_misrep_N))[[1]][i]#*epsilon
+    }else{
+      TMisr[i,4,1]<-as.vector(unname(PL_misrep_W))[[1]][i]#*epsilon
+    }
   }
   PL_SD26[i]<-as.vector(unname(PL_sealfac))[[1]][i]#*epsilon
 }
