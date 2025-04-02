@@ -1,43 +1,36 @@
 
-library(coda)
-library(writexl)
-library(runjags)
-source("C:/tmp/path-main.r")
+source("../run-this-first-wgbast.R")
 
 
+#load(file=paste0(PathOut_FLHM,"chain_cleaned_2025_base4.RData"));modelname<-"base4_cleaned"
+load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_base4_data2025.RData"));modelname<-"base4_uncleaned"
+chains<-as.mcmc.list(run)
+# plot(run, var="Mps")
+# plot(run, var="mucL")
+# plot(run, var="delta")
+# plot(run, var="MW")
+# 
 
-#load(file="C:/output/wgbast/flhm/chain_cleaned_2021.RData"); modelname<-2021; chains<-chains_new
-#load(file="C:/output/wgbast/flhm/chains_cleaned_2503.RData"); modelname<-2021; chains<-chains_new
-#load(file=paste0(pathMain,"WGBAST_shared/flhm/2022/FLHM_2022_results_cleaned.RData"); modelname<-2022; chains<-chains_new
-#load(file=paste0(pathMain,"output/wgbast/flhm/2022/FLHM_2022_orig_1995-2018_data2022.RData"));# 
-
-load(file=paste0(pathMain,"output/wgbast/flhm/2023/FLHM_2023_rivHR_data2023_thin350.RData"))
-plot(run, var="Mps")
-plot(run, var="mucL")
-plot(run, var="delta")
-plot(run, var="MW")
-
-chains<-as.mcmc.list(run); modelname<-"FLHM23"
-
-#chains<-window(chains, start=600000)
+chains<-window(chains, start=60000)
 nchains<-2
 plot(chains[, "MpsW[16]"])
 plot(chains[, "MpsR[17]"])
 plot(chains[, "HtW[22,2]"])
 plot(chains[, "LR[19,1]"])
 plot(chains[, "mucL"])
+plot(chains[, "K[1]"])
 
 
 #print stats to file
 d<-as.matrix(chains)
 dim(d)
-#[1]   200 16500 # dimensions: iterations x number of variables
+#[1]   2000 22434 # dimensions: iterations x number of variables
 
 
+statsfile<-paste0("../../stats_",modelname,".csv")
 
 if(nchains==1){
   headtext<-c("mean","sd","cv","5%","50%","95%","90%PI", "Varname")
-  statsfile<-paste0(paste0(pathMain,"output/wgbast/flhm/2023/stats_",modelname,".csv"))
   
   write.table(t(as.matrix(headtext)),file=statsfile,sep=',',row.names=F, col.names=F)
 
@@ -60,7 +53,7 @@ if(nchains==1){
 #C:\Users\03080932\OneDrive - Valtion\output\wgbast\flhm
 if(nchains==2){
   headtext<-c("mean","sd","cv","5%","50%","95%","90%PI","grdPE", "grdUCI", "Varname")
-  statsfile<-paste0(paste0(pathMain,"output/wgbast/flhm/2023/stats_",modelname,".csv"))
+ # statsfile<-paste0(paste0(pathMain,"output/wgbast/flhm/2023/stats_",modelname,".csv"))
   
   write.table(t(as.matrix(headtext)),file=statsfile,sep=',',row.names=F, col.names=F)
   
