@@ -59,9 +59,8 @@ trolling<-1
 
 #source(paste0(PathFunctions,"plotfunctions.r"))
 #source("03-histmodel/figures/modded for rmd/make_JAGS_data_2024.R")
-source("05-results/flhm-figures/rmd_prior_data/make_JAGS_data_2024.R")
-
-#source("C:/Users/03195892/OneDrive - Valtion/WGBAST-antti/FLHM_2024/flhm/2024/make_JAGS_data_2024.R")
+#source("05-results/flhm-figures/rmd_prior_data/make_JAGS_data_2024.R")
+source("03-flhm/make_JAGS_data_2025.R")
 
 
 datalist<-list(stocks=stocks,M_R0=M_K[stock_indices],tau_R0=tau_K[stock_indices])  
