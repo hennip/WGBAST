@@ -51,7 +51,7 @@ dat1
 #############
 # Knolls Grund -data (station nr. 9)
 
-dat2<-read_xlsx(str_c(pathIn,"Knolls grund_2025-02-06.xlsx"),
+dat2<-read_xlsx(str_c(pathIn,"Knolls grund_2025-04-02.xlsx"),
                sheet=1,
   col_names = T, #range="A4:B112779", # There is a some problem with the range when it goes over 100k. 
             # The setup below should work, but it doesn't. 

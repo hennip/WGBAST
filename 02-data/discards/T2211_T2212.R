@@ -42,7 +42,7 @@ A_TotCatch_BS_res<-stats_y(A_TotCatch_BS);totcatch<-round(A_TotCatch_BS_res,0)
 totcatch<-as.data.frame(cbind(totcatch[,2], str_c(totcatch[,3], "-", totcatch[,4])))
 
 T2212<-cbind(2001:(2000+NumYears),rep_catch,misrep, unrep, dis, totcatch)
-colnames(T2212)<-c("Year","DE", "EE", "FI", "DE", "LV","LT","PL","RU","SE","Reported total",
+colnames(T2212)<-c("Year","DK", "EE", "FI", "DE", "LV","LT","PL","RU","SE","Reported total",
                    "Misreported","Unreported", "PI","Discarded","PI","Total","PI")
 write_xlsx(T2212, "../../WGBAST_shared/flhm/2025/dat/der/T2212.xlsx")
 

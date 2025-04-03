@@ -6,17 +6,17 @@ source("../run-this-first-wgbast.R")
 pathIn<-pathDataCatchEffort
 
 df_all<-read_xlsx(str_c(pathIn, 
-
-                          "dat/orig/WGBAST_2025_Catch_20.02.2025_Hennille.xlsx"), # Update!
-range="A1:Q18586", # Update!
+"WGBAST_2025_Catch_02.04.2025_Hennille.xlsx"), # Update!
+range="A1:Q18593", # Update!
 sheet="Catch data", col_names = T, guess_max = 10000, na=c("",".", "NaN", "NA"))%>%
   # filter(YEAR>2005)%>% # Include results only 2009 onwards, catch DB has only updates from those years 
   # mutate(NUMB=parse_double(NUMB))%>%
   select(SPECIES, COUNTRY, YEAR, TIME_PERIOD, TP_TYPE, sub_div2, FISHERY, F_TYPE, GEAR, NUMB, 
          EFFORT, everything()) |> 
   mutate(TP_TYPE=ifelse(TP_TYPE=="QRT", "QTR", TP_TYPE)) |> 
+  mutate(GEAR=ifelse(GEAR=="GNS", "MIS", GEAR)) |> 
   filter(SPECIES=="SAL", YEAR>2000)|> 
-  filter(F_TYPE!="ALV")
+  filter(F_TYPE!="ALV", F_TYPE!="BROOD")
 # NOTE: Alive discards are not taken into account. A way to include them should
 # be figured out at some point.
 

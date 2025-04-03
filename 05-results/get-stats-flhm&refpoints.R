@@ -1,6 +1,5 @@
-library(tidyverse)
-library(runjags)
-library(coda)
+source("../run-this-first-wgbast.R")
+       
 #################################################################
 #   writing stats file from flhm results and ref points ATSO    #
 #################################################################
@@ -30,10 +29,12 @@ round_m <- function(vec, lim=3){
 
 
 #   loading results
-load(paste0(PathOut_FLHM, "chain_cleaned_2025_base4.Rdata"))
+PathModel_FLHM
+load(str_c(PathOut_FLHM,"chain_cleaned_2025_base4.Rdata"))
+
 headtext<-c("Varname","mean","sd", "cv","5%","50%","95%", "90%PI")
-statsfile<-"nodeStats25.xlsx"
-d <- chains
+statsfile<-"../../nodeStats24.xlsx"
+d <- chains_new
 #write.table(t(as.matrix(headtext)),file=statsfile,sep=',',row.names=F, col.names=F)
 df <- data.frame()
 for(i in 1:dim(d)[2]){
@@ -71,7 +72,7 @@ df %>%
     `95%` = as.numeric(`95%`) %>% round(3)
   )
 
-write.xlsx(df, file =statsfile )
+write_xlsx(df, path =statsfile )
 
 #   referencepoints
 

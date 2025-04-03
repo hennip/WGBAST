@@ -1,7 +1,8 @@
 # First read in the chains from the assessment model (JAGS)
 
-load(file=paste0(PathOutput_FLHM,"FLHM_2023_rivHR_data2023_thin350.RData"))
-chains<-as.mcmc(run) #pool 2 chains together
+load(file=paste0(PathOut_FLHM,"chain_cleaned_2025_base4.RData"))
+#chains<-as.mcmc(run) #pool 2 chains together
+chains<-chains_new
 
 Ra<-chains[,"Ra"]
 Rb<-chains[,"Rb"]
