@@ -113,7 +113,7 @@ counts2_r <- counts2[,-1]
 
 counts2_m <- t(counts2_r) %>% 
   as.data.frame() %>% 
-  mutate(id = c(4,6,7,8,11))
+  mutate(id = c(6,7,8,11))
 
 counts2_long <- counts2_m %>% 
   melt(id.vars = c("id")) %>% 

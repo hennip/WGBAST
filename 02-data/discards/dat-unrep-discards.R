@@ -1,17 +1,15 @@
 # Catch&Effort DB - Country specific landings per gear
 ################################################################################
+source("../run-this-first-wgbast.R")
 
-min_year<-2000
-max_year<-2023
-years<-min_year:max_year
-NumYears<-length(years)
 
 pathIn<-pathDataCatchEffort
 
 df_all<-read_xlsx(str_c(pathIn, 
-                        "dat/orig/WGBAST_2024_Catch_final.xlsx"), # Update!
-                  range="A1:Q17736", # Update!
-                  sheet="Catch data", col_names = T, guess_max = 8000, na=c("",".", "NaN", "NA")) |> 
+
+                          "dat/orig/WGBAST_2025_Catch_20.02.2025_Hennille.xlsx"), # Update!
+range="A1:Q18586", # Update!
+sheet="Catch data", col_names = T, guess_max = 10000, na=c("",".", "NaN", "NA"))%>%
   # filter(YEAR>2005)%>% # Include results only 2009 onwards, catch DB has only updates from those years 
   # mutate(NUMB=parse_double(NUMB))%>%
   select(SPECIES, COUNTRY, YEAR, TIME_PERIOD, TP_TYPE, sub_div2, FISHERY, F_TYPE, GEAR, NUMB, 
@@ -39,9 +37,9 @@ df<-df_all |>
 
 
 
-yrs<-tibble(YEAR=c(2001:2023))
-yrs1<-tibble(YEAR=c(2001:2023), sub_div2="22-31")
-yrs2<-tibble(YEAR=c(2001:2023), sub_div2="32")
+yrs<-tibble(YEAR=c(2001:max_year))
+yrs1<-tibble(YEAR=c(2001:max_year), sub_div2="22-31")
+yrs2<-tibble(YEAR=c(2001:max_year), sub_div2="32")
 yrs<-full_join(yrs1, yrs2)
 
 ################################################################################
@@ -115,7 +113,7 @@ df4 <- df |> filter(F_TYPE=="DISC")
 # Eli näillä luvuilla kerrotaan Puolan ilmoittamaa saalista
 # from 2018 onwards seal damage data are given in numbers of fish (see SealLLD variable)
 # ONKO VIRHE ETTÄ PLfactor-muuttujassa on annettu arvo myös vuosille 2018->???
-PL_sealfac<-read.table("../../WGBAST_shared/submodels/reporting rates/data/PL_Seal_corr_factor.txt", header=T)
+PL_sealfac<-read.table("../../WGBAST_shared/submodels/reporting rates/data/2025/PL_Seal_corr_factor.txt", header=T)
 
 # Use unname if col names are problem
 # unname(River)
@@ -123,15 +121,15 @@ PL_sealfac<-read.table("../../WGBAST_shared/submodels/reporting rates/data/PL_Se
 ################################################################################
 # Polish misreporting
 
-PL_misrep_N<-read.table("../../WGBAST_shared/submodels/reporting rates/data/PL_Misrep_numb_2024.txt", header=T)
-PL_misrep_W<-read.table("../../WGBAST_shared/submodels/reporting rates/data/PL_Misrep_weight_2024.txt", header=T)
+PL_misrep_N<-read.table("../../WGBAST_shared/submodels/reporting rates/data/2025/PL_Misrep_numb.txt", header=T)
+PL_misrep_W<-read.table("../../WGBAST_shared/submodels/reporting rates/data/2025/PL_Misrep_weight.txt", header=T)
 
 
 ################################################################################
 # Country specific unreporting and discard rates based on expert elicitation
 
 
-df<-read.table("../../WGBAST_shared/submodels/reporting rates/data/Unrep_discard_rates_2024.txt", header=T)
+df<-read.table("../../WGBAST_shared/submodels/reporting rates/data/2025/Unrep_discard_rates.txt", header=T)
 #df<-as_tibble(df)
 
 # Kuinka suuri osuus saaliista on alamittaisia, perustuu kolmiojakaumaan ja expert elisitointiin

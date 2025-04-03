@@ -25,9 +25,19 @@
 
 
 source("../run-this-first-wgbast.R")
+
+min_year<-2001
+max_year<-2024
+years<-min_year:max_year
+NumYears<-length(years)
+
+
 source("02-data/discards/functions-unrep-discards.R")
 source("02-data/discards/dat-unrep-discards.R")
 #source("02-data/discards/model-unrep-discards.R") # Original structure
+
+
+
 
 ###############
 # KORJATTAVAA:
@@ -45,6 +55,8 @@ source("02-data/discards/model-unrep-discards-cleaned.R") # Only stochastic vari
 
 
 l1<-list(
+  Nyears=NumYears,
+  
   MLLtau=as.matrix(unname(MLLtau)), MLLM=as.matrix(unname(MLLM)), 
   MDNtau=as.matrix(unname(MDNtau)), MDNM=as.matrix(unname(MDNM)), 
   MTNtau=as.matrix(unname(MTNtau)), MTNM=as.matrix(unname(MTNM)), 
@@ -63,14 +75,13 @@ datalist<-l1
 
 
 parnames<-c(
-  
   #"epsilon", 
   "MDisLL", "MDisDN", "MDisC", 
   "Oconv", "Cconv", "Rconv", 
   "DisLL", "DisDN", "DisC", 
   "SealLL", "SealDN", "SealC")
 
-# 
+# # 
 # run00 <- run.jags(M1, monitor= parnames,
 #                  data=datalist,#inits = initsall,
 #                  n.chains = 2, method = 'parallel', thin=100,
@@ -78,37 +89,40 @@ parnames<-c(
 #                  sample =1000, adapt = 10000,
 #                  keep.jags.files=F,
 #                  progress.bar=TRUE, jags.refresh=100)
-
-# summary(run00)
-# summary(run00, var="DisLL")
+# 
+# summary(run00, var="Oconv")
 # summary(run00, var="DisC")
-# 
+#
 # summary(run00, var="DisC[20,2]")
-# 
+#
 # summary(chains[,"DisC[20,2]"])
 # chains<-as.mcmc.list(run00)
-# saveRDS(chains, file="02-data/discards/chains_unrep_discards_cleaned.rds")
-chains<-readRDS("02-data/discards/chains_unrep_discards_cleaned.rds")
+#saveRDS(chains, file="02-data/discards/chains_unrep_discards_2025.rds")
+
+# The same estimates are used for both catch in weight and catch in number
+chains<-readRDS("02-data/discards/chains_unrep_discards_2025.rds")
 
 
 
 ################################################################################
 # Decide if you wish to get calculations for catch in number or in weight
 
+if(exists("skip")==F){
 number_or_weight<-"N" # catch in number
 #number_or_weight<-"W" # catch in weight
+}
 
 # Tässä kaikki stokastiset muuttujat poimittuna ajotiedostosta (poislukien epsilon, joka on vain tekninen)
 # Kaikki loput pitäisi pystyä laskemaan näiden ja datan pohjalta deterministisesti.
 
 Ncry<-length(cry)
-Ni<-23
+Ni<-NumYears
 Nsim<-1000
 DisLL<-DisDN<-DisC<-array(NA, dim=c(Ni, Ncry, Nsim))
 SealLL<-SealDN<-SealC<-array(NA, dim=c(Ni, Ncry, Nsim))
 Oconv<-Cconv<-Rconv<-array(NA, dim=c(Ni, Ncry, Nsim))
 for(i in 1:Ni){
-  for(j in 1:Ncry){
+    for(j in 1:Ncry){
     Oconv[i,j,]<-chains[,paste0("Oconv[",i,",",j,"]")][[1]]
     Cconv[i,j,]<-chains[,paste0("Cconv[",i,",",j,"]")][[1]]
     Rconv[i,j,]<-chains[,paste0("Rconv[",i,",",j,"]")][[1]]
@@ -120,7 +134,8 @@ for(i in 1:Ni){
     SealLL[i,j,]<-chains[,paste0("SealLL[",i,",",j,"]")][[1]]
     SealDN[i,j,]<-chains[,paste0("SealDN[",i,",",j,"]")][[1]]
     SealC[i,j,]<-chains[,paste0("SealC[",i,",",j,"]")][[1]]
-  }}
+  }
+  }
 
 MDisLL<-chains[,"MDisLL"][[1]]
 MDisDN<-chains[,"MDisDN"][[1]]
@@ -196,12 +211,16 @@ for(i in 1:Ni){
 
 
 # PL
-PL_factor<-c()
+PL_SD26<-c()
 for(i in 1:Ni){ 
   for(k in 1:2){
+    if(number_or_weight=="N"){
       TMisr[i,4,1]<-as.vector(unname(PL_misrep_N))[[1]][i]#*epsilon
+    }else{
+      TMisr[i,4,1]<-as.vector(unname(PL_misrep_W))[[1]][i]#*epsilon
+    }
   }
-  PL_factor[i]<-as.vector(unname(PL_sealfac))[[1]][i]#*epsilon
+  PL_SD26[i]<-as.vector(unname(PL_sealfac))[[1]][i]#*epsilon
 }
 #PLfactor=as.vector(unname(PL_sealfac))[[1]],
 
@@ -295,13 +314,14 @@ for(k in 1:2){
 # country 4=PL no reported Sea_LLD and Seal_MIS until 2018
 for(k in 1:2){
 
-  for(i in 1:17){
-    #Seal_LLD[i,4,k,]<- (LLD[i,4,k] + PLMisr[i])*Oconv_trans[i,4,] *PLfactor[i]* SealLL[i,4,]/(1-SealLL[i,4,])		# Seal damages LLD+Misreporting  # no reported Seal_LLD until 2018
-    Seal_LLD[i,4,k,]<- (LLD[i,4,k] + TMisr[i,4,k])*Oconv_trans[i,4,] *PL_factor[i]* (SealLL[i,4,]/(1-SealLL[i,4,]))		# Seal damages LLD+Misreporting  # no reported Seal_LLD until 2018
+  for(i in 1:15){
+    Seal_LLD[i,4,k,]<- (LLD[i,4,k] + TMisr[i,4,k])*Oconv_trans[i,4,] *PL_SD26[i]* (SealLL[i,4,]/(1-SealLL[i,4,]))		# Seal damages LLD+Misreporting  # no reported Seal_LLD until 2018
     Seal_MIS[i,4,k,]<- MIS[i,4,k]*Cconv_trans[i,4,] * (SealC[i,4,]/(1-SealC[i,4,]))
     # no reported Seal_MIS until 2018 
   }
-  for(i in 18:Ni){# country 4=PL reported Sea_LLD and Seal_MIS from 2018 onwards
+  
+  # 2016 alkaen PL ilmoittaa hylkeenpilaamien määrän, tähän ei enää oteta väärinraportoituja mukaan
+  for(i in 16:Ni){# country 4=PL reported Sea_LLD and Seal_MIS from 2018 onwards
     Seal_LLD[i,4,k,]<- SealLLD[i,4,k]*Oconv_trans[i,4,]
     Seal_MIS[i,4,k,]<- SealMIS[i,4,k]*Cconv_trans[i,4,]
     

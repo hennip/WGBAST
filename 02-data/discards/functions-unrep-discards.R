@@ -1,6 +1,6 @@
 stats_y<-function(variable){
   q5<-q50<-q95<-c()
-  for(y in 1:23){
+  for(y in 1:NumYears){
     #for(i in 1:dim(variable)[2]){ # loop over all monitored variables
     q50[y]<-quantile(variable[y,],0.5)
     q5[y]<-quantile(variable[y,],0.05)
@@ -8,17 +8,17 @@ stats_y<-function(variable){
     
   }#}
   
-  return(cbind(c(2001:2023),q50,q5,q95))
+  return(cbind(c(2001:max_year),q50,q5,q95))
 }
 
 median_y_c<-function(variable){
-  q50<-array(NA, dim=c(23,9))
-  for(y in 1:23){
+  q50<-array(NA, dim=c(NumYears,9))
+  for(y in 1:NumYears){
     for(j in 1:9){
       q50[y,j]<-quantile(variable[y,j,],0.5)
     }}
   
-  l1<-cbind(c(2001:2023),round(q50,4))
+  l1<-cbind(c(2001:max_year),round(q50,4))
   
   colnames(l1)<-c("year","FI","SE","DK","PL","LV","LT","DE","EE","RU")
   return(l1)
@@ -27,9 +27,9 @@ median_y_c<-function(variable){
 
 
 median_y_c_k<-function(variable){
-  q50<-array(NA, dim=c(23,9,2))
+  q50<-array(NA, dim=c(NumYears,9,2))
   #variable<-Tdis
-  for(y in 1:23){
+  for(y in 1:NumYears){
     for(j in 1:9){
       for(k in 1:2){
         #      for(i in 1:dim(variable)[4]){ # loop over all monitored variables
@@ -37,8 +37,8 @@ median_y_c_k<-function(variable){
         
       }}}#}
   
-  l1<-cbind(c(2001:2023),round(q50[,,1],0))
-  l2<-cbind(c(2001:2023),round(q50[,,2],0))
+  l1<-cbind(c(2001:max_year),round(q50[,,1],0))
+  l2<-cbind(c(2001:max_year),round(q50[,,2],0))
   
   colnames(l1)<-colnames(l2)<-c("year","FI","SE","DK","PL","LV","LT","DE","EE","RU")
   return(list(l1, l2))
@@ -46,16 +46,16 @@ median_y_c_k<-function(variable){
 
 
 stats_y_k<-function(variable){
-  q5<-q50<-q95<-array(NA, dim=c(23,2))
-  for(y in 1:23){
+  q5<-q50<-q95<-array(NA, dim=c(NumYears,2))
+  for(y in 1:NumYears){
     for(k in 1:2){
       q5[y,k]<-quantile(variable[y,k,],0.05)
       q50[y,k]<-quantile(variable[y,k,],0.5)
       q95[y,k]<-quantile(variable[y,k,],0.95)
       
     }}
-  l1<-cbind(c(2001:2023),q50[,1],q5[,1],q95[,1])
-  l2<-cbind(c(2001:2023),q50[,2],q5[,2],q95[,2])
+  l1<-cbind(c(2001:max_year),q50[,1],q5[,1],q95[,1])
+  l2<-cbind(c(2001:max_year),q50[,2],q5[,2],q95[,2])
   colnames(l1)<-colnames(l2)<-c("year","q50", "q5", "q95")
   return(list(l1, l2))
 }
@@ -72,13 +72,14 @@ rpl<-function(var){
 
 # calculate catch per country in number or in weight
 func_country_catches<-function(df, numb_or_weight){
-  #numb_or_weight<-2
+  #df<-df2
+  #numb_or_weight<-1
     # GND, LLD, FYK & MIS
   ###############################################################################
-  GND<-array(0, dim=c(23,9,2))
-  FYK<-array(0, dim=c(23,9,2))
-  LLD<-array(0, dim=c(23,9,2))
-  MIS<-array(0, dim=c(23,9,2))
+  GND<-array(0, dim=c(NumYears,9,2))
+  FYK<-array(0, dim=c(NumYears,9,2))
+  LLD<-array(0, dim=c(NumYears,9,2))
+  MIS<-array(0, dim=c(NumYears,9,2))
   for(i in 1:9){
 #      i<-1
     tmp<-df |> filter(country_nr==i, FISHERY!="R", F_TYPE=="COMM")|> 
@@ -126,7 +127,7 @@ func_country_catches<-function(df, numb_or_weight){
     full_join(yrs)
   piv_catch<-pivot_wider(tmp, id_cols=c(sub_div2, YEAR), names_from=country_nr, values_from=catch_tot)
   #View(piv_catch)
-  Recr<-array(0, dim=c(23,9,2))
+  Recr<-array(0, dim=c(NumYears,9,2))
   Recr[,1:8,1]<-as.matrix(piv_catch |> ungroup() |>  filter(sub_div2=="22-31") |> 
                             arrange(YEAR)|>select(order(colnames(piv_catch))) |> 
                             select(-sub_div2, -YEAR))
@@ -147,8 +148,9 @@ func_country_catches<-function(df, numb_or_weight){
     full_join(yrs)
   piv_catch<-pivot_wider(tmp, id_cols=c(sub_div2, YEAR), names_from=country_nr, values_from=catch_tot)
   #View(piv_catch)
-  River<-array(0, dim=c(23,9,2))
-  piv_catch2<-piv_catch |> ungroup() |> add_column(`3`=rep(0,46))|> add_column(`7`=rep(0,46))
+  River<-array(0, dim=c(NumYears,9,2))
+  
+  piv_catch2<-piv_catch |> ungroup() |> add_column(`3`=rep(0,dim(piv_catch)[1]))|> add_column(`7`=rep(0,dim(piv_catch)[1]))
   
   River[,1:9,1]<-as.matrix(piv_catch2 |> ungroup() |>  filter(sub_div2=="22-31") |> 
                              arrange(YEAR)|> 
@@ -161,7 +163,7 @@ func_country_catches<-function(df, numb_or_weight){
   
 
   for(k in 1:2){
-    for(i in 1:23){
+    for(i in 1:NumYears){
       for(j in 1:9){
         River[i,j,k]<-rpl(River[i,j,k])
         Recr[i,j,k]<-rpl(Recr[i,j,k])
@@ -185,10 +187,10 @@ func_country_sealdam<-function(dfX, numb_or_weight){
  # dfX<-df3
   # GND, LLD, FYK & MIS
   ###############################################################################
-  SealGND<-array(0, dim=c(23,9,2))
-  SealFYK<-array(0, dim=c(23,9,2))
-  SealLLD<-array(0, dim=c(23,9,2))
-  SealMIS<-array(0, dim=c(23,9,2))
+  SealGND<-array(0, dim=c(NumYears,9,2))
+  SealFYK<-array(0, dim=c(NumYears,9,2))
+  SealLLD<-array(0, dim=c(NumYears,9,2))
+  SealMIS<-array(0, dim=c(NumYears,9,2))
   for(i in 1:9){
 #          i<-5
     tmp<-dfX |> filter(country_nr==i)|> 
@@ -229,7 +231,7 @@ func_country_sealdam<-function(dfX, numb_or_weight){
 
   }
   for(k in 1:2){
-    for(i in 1:23){
+    for(i in 1:NumYears){
       for(j in 1:9){
         SealGND[i,j,k]<-rpl(SealGND[i,j,k])
         SealLLD[i,j,k]<-rpl(SealLLD[i,j,k])
@@ -250,7 +252,7 @@ func_country_discards<-function(dfX, numb_or_weight){
  #dfX<-df4
   # GND, LLD, FYK & MIS
   ###############################################################################
-  Dis<-array(0, dim=c(23,9,2))
+  Dis<-array(0, dim=c(NumYears,9,2))
   for(i in 1:9){
   #   i<-2
   #   dfX |> group_by(country_nr, GEAR) |> summarise(n=n())
@@ -270,7 +272,7 @@ func_country_discards<-function(dfX, numb_or_weight){
   }
 
   for(k in 1:2){
-    for(i in 1:23){
+    for(i in 1:NumYears){
       for(j in 1:9){
         Dis[i,j,k]<-rpl(Dis[i,j,k])
       }}
