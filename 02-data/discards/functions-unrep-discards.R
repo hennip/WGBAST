@@ -86,7 +86,7 @@ func_country_catches<-function(df, numb_or_weight){
       group_by(sub_div2,YEAR,GEAR) |> 
       summarise(catch_tot=ifelse(numb_or_weight==1,
              round(sum(NUMB, na.rm = T),0),
-             round(sum(WEIGHT, na.rm = T),0))
+             round(sum(WEIGHT, na.rm = T),3))
              )
     
     piv_catch<-pivot_wider(tmp, id_cols=c(sub_div2, YEAR), names_from=GEAR, values_from=catch_tot) |>  
@@ -123,7 +123,7 @@ func_country_catches<-function(df, numb_or_weight){
     group_by(sub_div2,YEAR,country_nr) |> 
     summarise(catch_tot=ifelse(numb_or_weight==1,
                                round(sum(NUMB, na.rm = T),0),
-                               round(sum(WEIGHT, na.rm = T),0)))|>
+                               round(sum(WEIGHT, na.rm = T),3)))|>
     full_join(yrs)
   piv_catch<-pivot_wider(tmp, id_cols=c(sub_div2, YEAR), names_from=country_nr, values_from=catch_tot)
   #View(piv_catch)
@@ -144,7 +144,7 @@ func_country_catches<-function(df, numb_or_weight){
     group_by(sub_div2,country_nr,YEAR) |> 
     summarise(catch_tot=ifelse(numb_or_weight==1,
                                round(sum(NUMB, na.rm = T),0),
-                               round(sum(WEIGHT, na.rm = T),0))) |> 
+                               round(sum(WEIGHT, na.rm = T),3))) |> 
     full_join(yrs)
   piv_catch<-pivot_wider(tmp, id_cols=c(sub_div2, YEAR), names_from=country_nr, values_from=catch_tot)
   #View(piv_catch)
@@ -197,7 +197,7 @@ func_country_sealdam<-function(dfX, numb_or_weight){
       group_by(sub_div2,YEAR,GEAR) |> 
       summarise(catch_tot=ifelse(numb_or_weight==1,
                                  round(sum(NUMB, na.rm = T),0),
-                                 round(sum(WEIGHT, na.rm = T),0))
+                                 round(sum(WEIGHT, na.rm = T),3))
       )
 
     piv_catch<-pivot_wider(tmp, id_cols=c(sub_div2, YEAR), names_from=GEAR, values_from=catch_tot) |>  
@@ -260,7 +260,7 @@ func_country_discards<-function(dfX, numb_or_weight){
       group_by(sub_div2,YEAR) |> 
       summarise(catch_tot=ifelse(numb_or_weight==1,
                                  round(sum(NUMB, na.rm = T),0),
-                                 round(sum(WEIGHT, na.rm = T),0))
+                                 round(sum(WEIGHT, na.rm = T),3))
       )
     
   piv_catch<-full_join(tmp,yrs) 

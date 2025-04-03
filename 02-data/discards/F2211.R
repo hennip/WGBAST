@@ -12,7 +12,11 @@
 
 # programmed:		2009 hpulkkin
 ## ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
-      
+skip<-T # Skips the lines at unrep-and-discards.R where number_or_weight is defined
+number_or_weight<-"N"
+source("02-data/discards/unrep-and-discards.R")
+
+
 # Total Reported Commercial Catches for Main Basin & Gulf of Bothnia (T2.2.7) 
 # 1993-present
 #! Update
@@ -239,26 +243,27 @@ LowNew<-c(rep(NA,8),lowUD_MBGB/TAC_MBGB[9:lastYear]*100+test[2,9:lastYear]+test[
 HighNew<-c(rep(NA,8),highUD_MBGB/TAC_MBGB[9:lastYear]*100+test[2,9:lastYear]+test[3,9:lastYear])
 
 # par(mfrow=c(2,1)) #in large screen MB+GoB and GoF can be drawn in one graph
-par(mfrow=c(1,1)) #in small screen run MB+GoB and GoF separetely 
-par(mar=c(4,5,3,1)+0.1)
 
-#windows()
-barplot(test, space=1,names.arg=c(1993:(1993+lastYear-1)), ylim=c(0,400), ylab="% of TAC",
-main="Main Basin and Gulf of Bothnia, subdivisions 22-31",
-legend=T)
-abline(h=100, lwd=2)
-
-for(i in 1:8){
-segments(i+(i-1)+0.5, CRDtot[i]-LowOld[i],i+(i-1)+0.5,CRDtot[i]+HighOld[i], lwd=2)
-segments(i+(i-1)+0.1, CRDtot[i]-LowOld[i],i+(i-1)+0.75,CRDtot[i]-LowOld[i], lwd=2)
-segments(i+(i-1)+0.1, CRDtot[i]+HighOld[i],i+(i-1)+0.75,CRDtot[i]+HighOld[i], lwd=2)
-}
-for(i in 9:lastYear){
-segments(i+(i-1)+0.5, LowNew[i],i+(i-1)+0.5,HighNew[i], lwd=2)
-segments(i+(i-1)+0.1, LowNew[i],i+(i-1)+0.75,LowNew[i], lwd=2)
-segments(i+(i-1)+0.1, HighNew[i],i+(i-1)+0.75,HighNew[i], lwd=2)
-}
-
+  png("../../WGBAST_shared/flhm/2025/dat/der/F2211_SD2231.png", units = "px", width = 1920*1.2, height=1080*1.2, res = 300)
+  par(mfrow=c(1,1)) #in small screen run MB+GoB and GoF separetely 
+  par(mar=c(4,5,3,1)+0.1)
+  barplot(test, space=1,names.arg=c(1993:(1993+lastYear-1)), ylim=c(0,400), ylab="% of TAC",
+  main="Main Basin and Gulf of Bothnia, subdivisions 22-31",
+  legend=T)
+  abline(h=100, lwd=2)
+  
+  for(i in 1:8){
+  segments(i+(i-1)+0.5, CRDtot[i]-LowOld[i],i+(i-1)+0.5,CRDtot[i]+HighOld[i], lwd=2)
+  segments(i+(i-1)+0.1, CRDtot[i]-LowOld[i],i+(i-1)+0.75,CRDtot[i]-LowOld[i], lwd=2)
+  segments(i+(i-1)+0.1, CRDtot[i]+HighOld[i],i+(i-1)+0.75,CRDtot[i]+HighOld[i], lwd=2)
+  }
+  for(i in 9:lastYear){
+  segments(i+(i-1)+0.5, LowNew[i],i+(i-1)+0.5,HighNew[i], lwd=2)
+  segments(i+(i-1)+0.1, LowNew[i],i+(i-1)+0.75,LowNew[i], lwd=2)
+  segments(i+(i-1)+0.1, HighNew[i],i+(i-1)+0.75,HighNew[i], lwd=2)
+  }
+  dev.off()
+  
 
 # Gulf of Finland
 ####################################
@@ -301,6 +306,9 @@ HighNew<-c(rep(NA,8),highUD_GF/TAC_GF[9:lastYear]*100+test[2,9:lastYear]+test[3,
 
 CRDtot<-apply(test, 2, sum)
 
+png("../../WGBAST_shared/flhm/2025/dat/der/F2211_SD32.png", units = "px", width = 1920*1.2, height=1080*1.2, res = 300)
+par(mfrow=c(1,1)) #in small screen run MB+GoB and GoF separetely 
+par(mar=c(4,5,3,1)+0.1)
 barplot(test, space=1,names.arg=c(1993:(1993+lastYear-1)), ylim=c(0,275), ylab="% of TAC",
 main="Gulf of Finland, subdivision 32",
 )
@@ -316,7 +324,7 @@ segments(i+(i-1)+0.5, LowNew[i],i+(i-1)+0.5,HighNew[i], lwd=2)
 segments(i+(i-1)+0.1, LowNew[i],i+(i-1)+0.75,LowNew[i], lwd=2)
 segments(i+(i-1)+0.1, HighNew[i],i+(i-1)+0.75,HighNew[i], lwd=2)
 }
-
+dev.off()
 
 
 
