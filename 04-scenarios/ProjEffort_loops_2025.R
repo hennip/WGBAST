@@ -23,7 +23,7 @@ while(apu==0){
     CoefTRW<-ifelse(EffScen %in% c(21),Coef2,0)   #Optim=T
     CoefTRR<-ifelse(EffScen %in% c(22),Coef2,0)
  }else{
-     CoefTRW<-ifelse(EffScen %in% c(1,2,6:12),0,0.164740551136661)  #updated 10/04
+     CoefTRW<-ifelse(EffScen %in% c(1,2,6:12),0,0.238127471513223)  #updated 10/04
      CoefTRR<-ifelse(EffScen %in% c(1,2,6:12),0,1.54187156614452)
  }
   # First value is for interim year (assessment year) and next for future years
