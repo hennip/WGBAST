@@ -86,7 +86,7 @@ zero_st<-c(4,9,15:17)  #stocks with no river F, note this will be 10% of HR for 
 #EffScen<-21
 #for(EffScen in c(3:19)){
 SD31only<-F
-EffScen<-2
+EffScen<-22
 
 # workflow for effort scenarios:                                                      
 # 1. Run scenarios 1 (zero fishing sea & river) and 2 (zero fishing at sea) with Optim=F
@@ -128,7 +128,7 @@ if(EffScen==19){Coef2<-1.407341; target<-150}
   
 # Extra scenarios to find out suitable level of trolling harvesting (W/R) 
 if(EffScen==21){Coef2<-0.6127289; target<-2.03} #find wild trolling coef, plug in to ProjEffort_loops 2024 this is dead wild salmon only, value from run_Inputs
-if(EffScen==22){Coef2<-2.951814; target<-4.91} #check, this is landed median from Tapani's BUGS model 
+if(EffScen==22){Coef2<-2.951814; target<-4.95} #check, this is landed median from Tapani's BUGS model 
 
 # =============================================================
 # Set years in which the target should be met:
