@@ -39,8 +39,8 @@ Years2B<-c(1992:2023)
 # Model 2:
 # =================
 
-#load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_base_withoutRane_data2025.RData")); trolling2<-T;Mname2<-"2025 base model without Råne sp data"
-load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_RiverCatch1_data2025.RData")); trolling2<-T;Mname2<-"2025 RiverCatch1"
+load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_baseOLD_data2025.RData")); trolling2<-T;Mname2<-"2025 base model with Råne sp data and Simo sp changes"
+#load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_RiverCatch1_data2025.RData")); trolling2<-T;Mname2<-"2025 RiverCatch1"
 #load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_base1_2yOffUT_data2025.RData")); trolling2<-T;Mname2<-"base1 Ume/Testeboån sp count off for 23-24"
 #load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_baseOLD_2yOffUT_data2025.RData")); trolling2<-T;Mname2<-"baseOLD Ume/Testeboån sp count off for 23-24"
 #load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_base2_data2025.RData")); trolling2<-T;Mname2<-"base2"
@@ -67,7 +67,7 @@ nsims2<-ifelse(nchains2==1,
 fix2<-0
   
 
-  GR<-T#ifelse(nchains2==1,F,T)
+  GR<-F#ifelse(nchains2==1,F,T)
   
   
 # Is comparison for run from the same year? T if yes, F if no
