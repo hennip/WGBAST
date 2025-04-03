@@ -12,7 +12,7 @@ be at sufficient quality (300dpi)
 ```{r dir-set, include=FALSE, cache=FALSE}
 #   dev = "png" saves all figures as png
 #   fig.path is the path for saving figures
-knitr::opts_chunk$set(dev = "png",
+knitr::opts_chunk$set(#dev = "png",
                       dpi = 300,
                       echo = TRUE,
                       #cache = TRUE,
@@ -82,8 +82,7 @@ PathRefP = paste0(PathOut_Scen, Model_pth, "Ref pts/") # refpoints already calcu
 #scen_nr <- c(7,9,10,12,13,14,15) #catch
 #scen_nr <- c(1)
 #nrscen<-c(3,4)  # harvestrate
-scen_CG       <- c(6:12,20)
-#scen_CG       <- c(6:12)                 #   only trapnetting
+scen_CG       <- c(6:12,20)               #   only trapnetting
 scen_MPS      <- c(1)                       #   doesent matter, same in all
 scen_Matur    <- c(1)                       #   same in all
 scen_HR_LL    <- c(3:5)                     #   lonhlingin 
@@ -92,11 +91,9 @@ scen_HR_TR    <- c()
 scen_incrsp   <- c(1,7,9,12)                #   all
 scen_PFA      <- c(7)                       #   1
 scen_risk     <- c(1,7,9,12)                   #   all
-#scen_risk     <- c(2,6,8,12)                #   all
-#scen_smolspa  <- c(1,3,5,6,12,13,19,20)
 scen_smolspa  <- c(1,7,9,12)#   lowest and highest in evry
 
-LastHistYear<-2023
+LastHistYear<-2024
 assessment_year = LastHistYear
 #LastPredYear<-2032
 ymax<-40

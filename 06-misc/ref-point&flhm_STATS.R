@@ -30,11 +30,9 @@ round_m <- function(vec, lim=3){
 
 
 #   loading results
-PathModel_FLHM
-load(str_c(PathModel_FLHM,"flhm/2024/output/CR_2024_selected_chain.Rdata"))
-
+load(paste0(PathOut_FLHM, "chain_cleaned_2025_base4.Rdata"))
 headtext<-c("Varname","mean","sd", "cv","5%","50%","95%", "90%PI")
-statsfile<-"nodeStats24.xlsx"
+statsfile<-"nodeStats25.xlsx"
 d <- chains
 #write.table(t(as.matrix(headtext)),file=statsfile,sep=',',row.names=F, col.names=F)
 df <- data.frame()

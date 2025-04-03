@@ -1,5 +1,5 @@
 ---
-title: "Pics from flhm 2023"
+title: "Pics from flhm 2025"
 output:
   html_document:
     keep_md: true
@@ -32,9 +32,6 @@ source("run-this-first.R")
 ```{r setup, include=FALSE}
 library(tidyverse)
 
-# source(paste0(PathBasics,"boxplot-functions.R") %>% here)
-# source(paste0(PathBasics,"plotfunctions.R") %>% here)
-# source(paste0(PathBasics,"tidy-functions_2chains.R") %>% here)
 source(paste0(PathBasics,"boxplot-functions.R"))
 source(paste0(PathBasics,"plotfunctions.R"))
 source(paste0(PathBasics,"tidy-functions_2chains.R"))
@@ -53,7 +50,8 @@ library(cowplot)
 #   loading results
 #   change last part to the most recent results file
 #   loading results
-load(paste0(PathOut_FLHM, "CR_2024_selected_chain.Rdata"))
+load(paste0(PathOut_FLHM, "chain_cleaned_2025_base4.Rdata"))
+chains = chains_new
 CR=T
 CRt = T
 #   result are stored in run named object
@@ -63,10 +61,10 @@ if(selCH){
   chains_r = chains
   #chains = chains_r %>% window(thin = 800)
   chains = chains_r[
-    seq(1,nrow(chains_r), by = 7)
+    seq(1,nrow(chains_r), by = 1)
                     ,] %>% tail(1000)
 }else{
-  chains = run %>% as.mcmc()%>% window(thin = run$thin*6)
+  chains = run %>% as.mcmc()%>% window(thin = run$thin*4)
 }#   result are stored in run named object
 
 dim(chains)
@@ -78,14 +76,14 @@ folder<-PathData
 #   some pictures use matixpresentation of chains
 d <- as.matrix(chains)
 #   years
-years <- Years <- c(1987:2024)
+years <- Years <- c(1987:2025)
 #   deletes last element from years
 Years_m <- Years[-length(Years)]
 
 
 #   stocks
 Nstocks <- nstocks <- allstocks <- 17
-assessment_year <- 2024
+assessment_year <- 2025
 
 #   number of chains
 nchains = 1
@@ -94,7 +92,16 @@ nsim = nrow(chains)
 #   priors for K:s
 #source("05-results/flhm-figures/rmd_prior&data/run_FLHM_priors_2023.R")
 #source("05-results/flhm-figures/rmd_prior_data/run_FLHM_priors_2023.R")
-source("05-results/flhm-figures/rmd_prior_data/run_FLHM_priors_2024.R")
+
+
+#################################################
+#   specific to year 2025 hassle with 12 models
+#################################################
+RiverCatch1 =F
+RaneCount=T
+full_sp_count=T
+
+source("05-results/flhm-figures/rmd_prior_data/run_FLHM_priors_2025.R")
 #   Rivernames
 #Rivernames<-read.table(file="C:/Users/03195892.VALTION/OneDrive - #Valtion/WGBAST_shared/data_2021/rivernames.txt")
 
@@ -153,6 +160,8 @@ source("05-results/flhm-figures/rmd_figures/F4233_SR.R",
 
 
 ``` 
+
+
 
 Figure 4236_Catch
 ```{r, F4_2_3_6, warning=FALSE, message=FALSE, fig.height=10, fig.width=10}
