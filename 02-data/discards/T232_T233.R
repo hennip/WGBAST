@@ -1,3 +1,5 @@
+skip<-T # Skips the lines at unrep-and-discards.R where number_or_weight is defined
+number_or_weight<-"N"
 source("02-data/discards/unrep-and-discards.R")
 
 # B-taulut, mngt uniteittain
@@ -99,7 +101,7 @@ Dis_SD32<-round(cbind(
   B_TotDis_dead_MIS_res[[2]][,2]),0)
 
 Seal_SD32<-round(cbind(
-  B_TotSeal_GND_res[[2]][,2],
+  B_TotSeal_GND_res[[2]][,1:2],
   B_TotSeal_LLD_res[[2]][,2],
   B_TotSeal_FYK_res[[2]][,2],
   B_TotSeal_MIS_res[[2]][,2]),0)
@@ -107,12 +109,12 @@ Seal_SD32<-round(cbind(
 
 BStot32<-totSeal32<-totDis32<-c()
 for(i in 1:NumYears){
-  totDis32[i]<-sum(Dis_SD32[i,1:4])
-  totSeal32[i]<-sum(Seal_SD32[i,1:4])
+  totDis32[i]<-sum(Dis_SD32[i,2:5])
+  totSeal32[i]<-sum(Seal_SD32[i,2:5])
   BStot32[i]<-totDis32[i]+totSeal32[i]
 }
 
-T232_SD32<-cbind(Dis_SD32, totDis32, Seal_SD32, totSeal32, BStot32)
+T232_SD32<-cbind(Dis_SD32, totDis32, Seal_SD32[,2:5], totSeal32, BStot32)
 colnames(T232_SD32)<-c("year", "DisGND", "DisLLD", "DisTN", "DisOT", "Total",
                        "SealGND", "SealLLD", "SealTN", "SealOT", "Total", "Grand Total")
 
