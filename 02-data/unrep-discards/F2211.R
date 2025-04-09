@@ -14,7 +14,7 @@
 ## ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 skip<-T # Skips the lines at unrep-and-discards.R where number_or_weight is defined
 number_or_weight<-"N"
-source("02-data/discards/unrep-and-discards.R")
+source("02-data/unrep-discards/unrep-and-discards.R")
 
 
 # Total Reported Commercial Catches for Main Basin & Gulf of Bothnia (T2.2.7) 

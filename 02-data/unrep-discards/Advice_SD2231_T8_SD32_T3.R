@@ -1,6 +1,6 @@
 skip<-T # Skips the lines at unrep-and-discards.R where number_or_weight is defined
 number_or_weight<-"N"
-source("02-data/discards/unrep-and-discards.R")
+source("02-data/unrep-discards/unrep-and-discards.R")
 
 # SD22-31
 ############
@@ -13,11 +13,14 @@ landings_sea<-(B_TotRepCom_sea[,1]+B_TotRecr_sea[,1])/1000
 
 
 # Catch at sea
-#^^ Estimated total catches including discards, misreported catch, and unreported catch.
-catch_sea<-(B_TotRepCom_sea[,1]+B_TotRecr_sea[,1]+B_TotMisr_sea[,1]+
-            med_dis[,1]+# discards
-            med_unrep[,1]# unreported
-            )/1000
+#^^ Estimated total catches including reported catch, discards, seal damaged, misreported catch, and unreported catch.
+catch_sea<-med_TotCatchSea[,1]/1000
+  
+  # (B_TotRepCom_sea[,1]+B_TotRecr_sea[,1]+B_TotMisr_sea[,1]+
+  #           med_dis[,1]+# discards
+  #           med_seal[,1]+ # seal damaged
+  #           med_unrep[,1]# unreported
+  #           )/1000
 catch_sea
 
 # River catch
@@ -44,11 +47,14 @@ landings_sea<-(B_TotRepCom_sea[,2]+B_TotRecr_sea[,2])
 
 # Catch at sea
 #^^ Estimated total catches including discards, misreported catch, and unreported catch.
-catch_sea<-(B_TotRepCom_sea[,2]+B_TotRecr_sea[,2]+B_TotMisr_sea[,2]+
-              med_dis[,2]+# discards
-              med_unrep[,2]# unreported
-)
-catch_sea
+catch_sea<-med_TotCatchSea[,2]
+
+# catch_sea<-(B_TotRepCom_sea[,2]+B_TotRecr_sea[,2]+B_TotMisr_sea[,2]+
+#               med_dis[,2]+# discards
+#               med_seal[,2]+ # seal damaged
+#               med_unrep[,2]# unreported
+# )
+# catch_sea
 
 # River catch
 med_river
@@ -58,4 +64,4 @@ colnames(T8_32)<-c("Year", "Comm rep landings", "Landings at sea",
                 "Catch at sea", "River catch")
 T8_32<-round(T8_32,0)
 
-write_xlsx(as.data.frame(T8_32), "../../WGBAST_shared/flhm/2025/dat/der/Advice32_T8.xlsx")
+write_xlsx(as.data.frame(T8_32), "../../WGBAST_shared/flhm/2025/dat/der/Advice32_T3.xlsx")

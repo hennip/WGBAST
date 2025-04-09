@@ -12,7 +12,7 @@ F4329<-cbind(c(2001:(2000+NumYears)),
 med_river[,1],
 B_TotRecr_sea[,1],
 med_dead_dis_seal[,1],
-med_unrep[,1],
+med_unrep_sea[,1],
 misr[,1], # Data, no uncertainty
 B_TotRepCom_sea[,1]) # Data, no uncertainty
 

@@ -6,9 +6,19 @@
 
 skip<-T # Skips the lines at unrep-and-discards.R where number_or_weight is defined
 number_or_weight<-"N"
-source("02-data/discards/unrep-and-discards.R")
+source("02-data/unrep-discards/unrep-and-discards.R")
 
 # SD 32
+tot_comm_sea<-array(NA, dim=c(NumYears, Nsim))
+med_tot_comm_sea_dead<-med_tot_comm_sea<-c()
+for(i in 1:NumYears){
+  for(s in 1:Nsim){
+    tot_comm_sea[i,s]<-sum(TcatchCom[i,1:9,2])+B_TotUnrepDis_sea[i,2,s] 
+  }
+  med_tot_comm_sea[i]<-median(tot_comm_sea[i,])
+  med_tot_comm_sea_dead[i]<-median(tot_comm_sea[i,]-B_TotDis_alive[i,2,])
+}
+med_tot_comm_sea
 
 T12_SD32<-cbind(
   c(2001:(2000+NumYears)),  
@@ -23,15 +33,21 @@ T12_SD32<-cbind(
   B_TotRecr_sea[,2],
   
   rep_river[,2],
-  med_Runrep[,2]
+  med_Runrep[,2],
+  
+  # tot comm sea
+ med_tot_comm_sea,
+  
+  # tot comm dead sea
+ med_tot_comm_sea_dead
   
 )
 T12_SD32
 colnames(T12_SD32)<-c("year","reported", "alive dis", "dead dis", "seal dam", "unrep", "misrep", "recr",
-                        "rep river", "unrep river")
-T12<-round(T12_SD32[20:NumYears,],0)
+                        "rep river", "unrep river", "tot_comm_sea", "tot_comm_sea_dead")
+T12<-round(T12_SD32,0)
 
-write_xlsx(as.data.frame(T12), "../../WGBAST_shared/flhm/2025/dat/der/AdviceSD32_T12.xlsx")
+write_xlsx(as.data.frame(T12), "../../WGBAST_shared/flhm/2025/dat/der/Advice_SD32_T5.xlsx")
 
 
 
@@ -124,30 +140,4 @@ round(T12_SD29N31[20:NumYears,],0)
 write_xlsx(as.data.frame(T12_SD29N31), "../../WGBAST_shared/flhm/2025/dat/der/AdviceSD29N31_T12.xlsx")
 
 
-
-
-
-
-
-
-
-
-df_2231<-read_xlsx(str_c(pathIn, 
-                        "WGBAST_2025_Catch_02.04.2025_Hennille.xlsx"), # Update!
-                  range="A1:Q18593", # Update!
-                  sheet="Catch data", col_names = T, guess_max = 10000, na=c("",".", "NaN", "NA"))%>%
-  # filter(YEAR>2005)%>% # Include results only 2009 onwards, catch DB has only updates from those years 
-  # mutate(NUMB=parse_double(NUMB))%>%
-  select(SPECIES, COUNTRY, YEAR, TIME_PERIOD, TP_TYPE, sub_div2, FISHERY, F_TYPE, GEAR, NUMB, 
-         EFFORT, everything()) |> 
-  mutate(TP_TYPE=ifelse(TP_TYPE=="QRT", "QTR", TP_TYPE)) |> 
-  mutate(GEAR=ifelse(GEAR=="GNS", "MIS", GEAR)) |> 
-  filter(SPECIES=="SAL", YEAR>2000) |> 
-  filter(sub_div2=="22-31")
-
-
-df_2231$F_TYPE
-
-df_2231 |> filter(F_TYPE=="BMS") |> 
-  group_by(YEAR) |> summarise(dis=sum(NUMB))
 

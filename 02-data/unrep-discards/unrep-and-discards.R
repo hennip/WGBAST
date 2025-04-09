@@ -32,8 +32,8 @@ years<-min_year:max_year
 NumYears<-length(years)
 
 
-source("02-data/discards/functions-unrep-discards.R")
-source("02-data/discards/dat-unrep-discards.R")
+source("02-data/unrep-discards/functions-unrep-discards.R")
+source("02-data/unrep-discards/dat-unrep-discards.R")
 #source("02-data/discards/model-unrep-discards.R") # Original structure
 
 
@@ -51,7 +51,7 @@ source("02-data/discards/dat-unrep-discards.R")
 ###############################################################################
 # try running only stochastic variables in JAGS and calculating the rest in R
 
-source("02-data/discards/model-unrep-discards-cleaned.R") # Only stochastic variables 
+source("02-data/unrep-discards/model-unrep-discards-cleaned.R") # Only stochastic variables 
 
 
 l1<-list(
@@ -100,7 +100,7 @@ parnames<-c(
 #saveRDS(chains, file="02-data/discards/chains_unrep_discards_2025.rds")
 
 # The same estimates are used for both catch in weight and catch in number
-chains<-readRDS("02-data/discards/chains_unrep_discards_2025.rds")
+chains<-readRDS("02-data/unrep-discards/chains_unrep_discards_2025.rds")
 
 
 
@@ -182,7 +182,7 @@ Tdis<-Tseal<-Seal_MIS<-Seal_FYK<-Seal_LLD<-Seal_GND<-array(0, dim=c(Ni, Ncry, 2,
 TMisr<-array(0, dim=c(Ni, Ncry, 2))
 
 Ounrep<-Cunrep<-Runrep<-Sunrep<-array(0, dim=c(Ni, Ncry,2, Nsim))
-Tcatch<-Tunrep_F2<-Tunrep_F4<-Tunrep_T2<-array(0, dim=c(Ni, Ncry,2, Nsim))
+Tcatch<-Tunrep_F2<-Tunrep_F4<-Tunrep_OCR<-array(0, dim=c(Ni, Ncry,2, Nsim))
 TcatchCom<-TRiver<-TRecrSea<-array(0, dim=c(Ni, Ncry,2))
 
 Dis_MIS_dead<-Dis_FYK_dead<-Dis_LLD_dead<-Dis_GND_dead<-array(0, dim=c(Ni, Ncry, 2, Nsim))
@@ -403,7 +403,8 @@ for(i in 1:Ni){
       
       Tunrep_F2[i,j,k,]<- Ounrep[i,j,k,] + Cunrep[i,j,k,] + TMisr[i,j,k] # unreporting in river excluded from unreporting in F2.2.3
       Tunrep_F4[i,j,k,]<- Ounrep[i,j,k,] + Cunrep[i,j,k,]  # misreporting and unreporting in river ARE NOT included in the total  unreporting in F4.3.2.9
-      Tunrep_T2[i,j,k,]<- Ounrep[i,j,k,] + Cunrep[i,j,k,] + Runrep[i,j,k,]  # misreporting IS NOT included to the total unreporting in T2.2.1 and T2.2.2
+      #Tunrep_T2[i,j,k,]<- Ounrep[i,j,k,] + Cunrep[i,j,k,] + Runrep[i,j,k,]  # misreporting IS NOT included to the total unreporting in T2.2.1 and T2.2.2
+      Tunrep_OCR[i,j,k,]<- Ounrep[i,j,k,] + Cunrep[i,j,k,] + Runrep[i,j,k,]  # misreporting IS NOT included to the total unreporting in T2.2.1 and T2.2.2
       TRiver[i,j,k]<- River[i,j,k]
       TRecrSea[i,j,k]<- Recr[i,j,k] 
       #    TMisr[i,cry[j],k]<- 0.0001*epsilon
@@ -427,7 +428,7 @@ for(i in 1:Ni){
       Tdis_alive[i,j,k,]<-  Dis_LLD_alive[i,j,k,] + Dis_GND_alive[i,j,k,] + Dis_FYK_alive[i,j,k,]   	#Total alive discards by year, MU and country	
       
       Tcatch[i,j,k,]<- GND[i,j,k] + LLD[i,j,k] + FYK[i,j,k] + MIS[i,j,k] + 
-                          Recr[i,j,k] + River[i,j,k]  + Tunrep_T2[i,j,k,] + Tdis[i,j,k,]+TMisr[i,j,k]
+                          Recr[i,j,k] + River[i,j,k]  + Tunrep_OCR[i,j,k,] + Tdis[i,j,k,]+TMisr[i,j,k]
       TcatchCom[i,j,k]<- (GND[i,j,k] + LLD[i,j,k] + FYK[i,j,k] + MIS[i,j,k])					
       # Total catch by year, country and management unit
       
@@ -461,7 +462,7 @@ for(i in 1:Ni){
   B_TotUnrep_sea[i,k,s]<-sum(Tunrep_F4[i,1:9,k,s])	# F4.3.2.9 misreporting excluded here
   B_TotUnrep_river[i,k,s]<-sum(Runrep[i,1:9,k,s])	# T2.3.4
   B_TotDisSeal_MU[i,k,s]<-sum(Tdis[i,1:9,k,s]) + sum(Tseal[i,1:9,k,s])	# F4.3.2.9
-  B_TotUnrep_MU[i,k,s]<-sum(Tunrep_T2[i,1:9,k,s])
+  B_TotUnrep_MU[i,k,s]<-sum(Tunrep_OCR[i,1:9,k,s])
   B_TotCatch_MU[i,k,s]<-sum(Tcatch[i,1:9,k,s]) # All catches including unreporting and misreporting by MU
   
   B_TotDis_dead[i,k,s]<-sum(Tdis[i,1:9,k,s])	# Total dead discards by MU 
@@ -488,7 +489,7 @@ for(i in 1:Ni){
   for(s in 1:Nsim){  
     #  Whole Baltic sea
   A_TotDis_BS[i,s]<-sum(Tdis[i,1:9,1:2,s])+sum(Tseal[i,1:9,1:2,s]) # for T2.2.1 and T2.2.2
-  A_TotUnrep_BS[i,s]<-sum(Tunrep_T2[i,1:9,1:2,s]) # for T2.2.1 and T2.2.2 
+  A_TotUnrep_BS[i,s]<-sum(Tunrep_OCR[i,1:9,1:2,s]) # for T2.2.1 and T2.2.2 
   A_TotCatch_BS[i,s]<-sum(Tcatch[i,1:9,1:2,s]) # for T2.2.1 and T2.2.2
   A_TotSeal_BS[i,s]<-sum(Tseal[i,1:9,1:2,s]) 
 }}
@@ -496,39 +497,40 @@ for(i in 1:Ni){
 dim(B_TotSeal)
 
 # Save medians per area (SD22-31 and SD32) for further usage
-tmp100<-tmp4<-tmp3<-tmp2<-tmp22<-tmp<-array(NA, dim=c(NumYears, 2, Nsim))
+dis_seal<-unrep_river<-tot_catch<-unrep_sea<-unrep_tot<-dis<-array(NA, dim=c(NumYears, 2, Nsim))
 
-med_dead_dis_seal<-med_Runrep<-rep_river<-med_Tcatch<-med_unrep<-med_dis<-
+med_TotCatchSea<-med_dead_dis_seal<-med_Runrep<-rep_river<-med_Tcatch<-med_unrep<-med_dis<-
   med_alive_dis<-med_unrep_sea<-med_seal<-misr<-med_river<-med_dead_dis<-array(NA, dim=c(NumYears, 2))
 
 for(i in 1:NumYears){
   for(k in 1:2){
     for(s in 1:Nsim){
-      tmp[i,k,s]<-sum(Tdis[i, 1:9,k,s], na.rm=T)
-      tmp2[i,k,s]<-sum(Tunrep_T2[i, 1:9,k,s], na.rm=T)
-      tmp22[i,k,s]<-sum(Sunrep[i, 1:9,k,s], na.rm=T)
-      tmp3[i,k,s]<-sum(Tcatch[i,1:9,k,s], na.rm=T)
+      dis[i,k,s]<-sum(Tdis[i, 1:9,k,s], na.rm=T)
+      unrep_tot[i,k,s]<-sum(Tunrep_OCR[i, 1:9,k,s], na.rm=T) # Unrep O+C+R
+      unrep_sea[i,k,s]<-sum(Sunrep[i, 1:9,k,s], na.rm=T) #Unrep O+C
+      tot_catch[i,k,s]<-sum(Tcatch[i,1:9,k,s], na.rm=T)
+      unrep_river[i,k,s]<-sum(Runrep[i, 1:9,k,s], na.rm=T)
       
-      tmp4[i,k,s]<-sum(Runrep[i, 1:9,k,s], na.rm=T)
-      
-      tmp100[i,k,s]<-sum(Tdis[i, 1:9,k,s], na.rm=T)+sum(Tseal[i, 1:9,k,s], na.rm=T)
+      dis_seal[i,k,s]<-sum(Tdis[i, 1:9,k,s], na.rm=T)+sum(Tseal[i, 1:9,k,s], na.rm=T)
       
       }
-    med_dis[i,k]<-median(tmp[i,k,]) # Total discared
-    med_unrep[i,k]<-median(tmp2[i,k,]) #Total unreported
-    med_unrep_sea[i,k]<-median(tmp22[i,k,]) #Total unreported
-    med_Tcatch[i,k]<-median(tmp3[i,k,])
-    med_Runrep[i,k]<-median(tmp4[i,k,])
+    med_dis[i,k]<-median(dis[i,k,]) # Total discared
+    med_unrep[i,k]<-median(unrep_tot[i,k,]) #Total unreported
+    med_unrep_sea[i,k]<-median(unrep_sea[i,k,]) #Total unreported
+    med_Tcatch[i,k]<-median(tot_catch[i,k,])
+    med_Runrep[i,k]<-median(unrep_river[i,k,])
     
-    med_dead_dis_seal[i,k]<-median(tmp100[i,k,])
+    med_dead_dis_seal[i,k]<-median(dis_seal[i,k,])
+
+    med_TotCatchSea[i,k]<-median(B_TotCatch_sea[i,k,])
     
     
     med_river[i,k]<-median(B_TotRiver[i,k,]) 
     med_dead_dis[i,k]<-median(B_TotDis_dead[i,k,])
     med_alive_dis[i,k]<-median(B_TotDis_alive[i,k,])
+    med_seal[i,k]<-median(B_TotSeal[i,k,])
     misr[i,k]<-sum(TMisr[i,,k])
     rep_river[i,k]<-sum(River[i,,k])
-    med_seal[i,k]<-median(B_TotSeal[i,k,])
 }}
 
 
