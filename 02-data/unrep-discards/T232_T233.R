@@ -1,6 +1,6 @@
 skip<-T # Skips the lines at unrep-and-discards.R where number_or_weight is defined
 number_or_weight<-"N"
-source("02-data/discards/unrep-and-discards.R")
+source("02-data/unrep-discards/unrep-and-discards.R")
 
 # B-taulut, mngt uniteittain
 # Dim years x sd's x sims
@@ -8,20 +8,20 @@ source("02-data/discards/unrep-and-discards.R")
 # T2.3.3.
 
 # Seal damaged
-B_TotSeal_res<-stats_y_k(B_TotSeal)
+B_TotSeal_res<-stats_y_k(Bs_TotSeal)
 
 # Dead discards
-B_TotDis_dead_res<-stats_y_k(B_TotDis_dead)
+B_TotDis_dead_res<-stats_y_k(Bs_TotDis_dead)
 #Tämä on hyvä
 
 # Unreported
-B_TotUnrep_sea_res<-stats_y_k(B_TotUnrep_sea)
+B_TotUnrep_sea_res<-stats_y_k(Bs_TotUnrep_OC)
 # SD 32:lla klappia viimeisimpinä vuosina
 
 #Misreported
 
 # River unreported
-B_TotUnrep_river_res<-stats_y_k(B_TotUnrep_river)
+B_TotUnrep_river_res<-stats_y_k(Bs_TotUnrep_R)
 # Ok
 # Huom, 2021 estimaatti sd32 eri kuin edellisvuonna, johtuu siitä että ed. vuoden taulukossa mukaan on lipsahtanut ALV-kalat
 
@@ -56,15 +56,15 @@ write_xlsx(T233_SD32, "../../WGBAST_shared/flhm/2025/dat/der/T233_SD32.xlsx")
 
 
 # Table 2.3.2
-B_TotDis_dead_GND_res<-stats_y_k(B_TotDis_dead_GND)
-B_TotDis_dead_LLD_res<-stats_y_k(B_TotDis_dead_LLD)
-B_TotDis_dead_FYK_res<-stats_y_k(B_TotDis_dead_FYK)
-B_TotDis_dead_MIS_res<-stats_y_k(B_TotDis_dead_MIS)
+B_TotDis_dead_GND_res<-stats_y_k(Bs_TotDis_dead_GND)
+B_TotDis_dead_LLD_res<-stats_y_k(Bs_TotDis_dead_LLD)
+B_TotDis_dead_FYK_res<-stats_y_k(Bs_TotDis_dead_FYK)
+B_TotDis_dead_MIS_res<-stats_y_k(Bs_TotDis_dead_MIS)
 
-B_TotSeal_GND_res<-stats_y_k(B_TotSeal_GND)
-B_TotSeal_LLD_res<-stats_y_k(B_TotSeal_LLD)
-B_TotSeal_FYK_res<-stats_y_k(B_TotSeal_FYK)
-B_TotSeal_MIS_res<-stats_y_k(B_TotSeal_MIS)
+B_TotSeal_GND_res<-stats_y_k(Bs_TotSeal_GND)
+B_TotSeal_LLD_res<-stats_y_k(Bs_TotSeal_LLD)
+B_TotSeal_FYK_res<-stats_y_k(Bs_TotSeal_FYK)
+B_TotSeal_MIS_res<-stats_y_k(Bs_TotSeal_MIS)
 
 
 # Gulf of Bothnia + Baltic Main Basin (SD22-31)

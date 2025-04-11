@@ -15,19 +15,19 @@ for(i in 1: NumYears){
   # Dead catch, including non-commercial and river catches) 
   # B_TotCatch_sea includes reported comm and recr sea catch, Ounrep, Cunrep, misrep, discards and seal damaged
   # B_TotRiver includes reported and unreported river catch
-  med_dead_catch[i,k]<-median((B_TotCatch_sea+B_TotRiver)[i,k,])
+  med_dead_catch[i,k]<-median((Bs_TotCatch_sea+Bs_TotRiver)[i,k,])
 
   # Nominal landings (commercial and recreational at sea and in rivers)
-  nom_landings[i,k]<-sum(TRiver[i,1:9,k])+B_TotRepCom_sea[i,k]+B_TotRecr_sea[i,k] # Data, no uncertainty!
+  nom_landings[i,k]<-sum(TRiver[i,1:9,k])+Bd_TotRepCom_sea[i,k]+Bd_TotRecr_sea[i,k] # Data, no uncertainty!
   
   # Unreported and misreported
   for(s in 1:Nsim){
-    unrep_misrep[i,k,s]<-sum(Ounrep[i,1:9,k,s]) + sum(Cunrep[i,1:9,k,s]) + sum(Runrep[i,1:9,k,s]) +sum(TMisr[i,1:9,k])
+    unrep_misrep[i,k,s]<-Bs_TotUnrep[i,k,s]+Bd_TotMisr_sea[i,k]
   }
   med_unrep_misrep[i,k]<-median(unrep_misrep[i,k,])
 
   # Dead discards (including seal damaged)
-  med_disseal[i,k]<-median(B_TotDisSeal_MU[i,k,])
+  med_disseal[i,k]<-median(Bs_TotDisSeal[i,k,])
   
   }}
 

@@ -13,16 +13,16 @@ tot_comm_sea<-array(NA, dim=c(NumYears, Nsim))
 med_tot_comm_sea_dead<-med_tot_comm_sea<-c()
 for(i in 1:NumYears){
   for(s in 1:Nsim){
-    tot_comm_sea[i,s]<-sum(TcatchCom[i,1:9,2])+B_TotUnrepDis_sea[i,2,s] 
+    tot_comm_sea[i,s]<-sum(TcatchCom[i,1:9,2])+Bs_TotUnrepDis_sea[i,2,s] 
   }
   med_tot_comm_sea[i]<-median(tot_comm_sea[i,])
-  med_tot_comm_sea_dead[i]<-median(tot_comm_sea[i,]-B_TotDis_alive[i,2,])
+  med_tot_comm_sea_dead[i]<-median(tot_comm_sea[i,]-Bs_TotDis_alive[i,2,])
 }
 med_tot_comm_sea
 
 T12_SD32<-cbind(
   c(2001:(2000+NumYears)),  
-  B_TotRepCom_sea[,2], # Reported
+  Bd_TotRepCom_sea[,2], # Reported
   
   med_alive_dis[,2],
   med_dead_dis[,2],
@@ -30,7 +30,7 @@ T12_SD32<-cbind(
   med_unrep_sea[,2],# unreported
   
   misr[,2],
-  B_TotRecr_sea[,2],
+  Bd_TotRecr_sea[,2],
   
   rep_river[,2],
   med_Runrep[,2],
@@ -55,7 +55,7 @@ write_xlsx(as.data.frame(T12), "../../WGBAST_shared/flhm/2025/dat/der/Advice_SD3
 
 T12_SD2231<-cbind(
   c(2001:(2000+NumYears)),  
-B_TotRepCom_sea[,1], # Reported
+Bd_TotRepCom_sea[,1], # Reported
 
 med_alive_dis[,1],
 med_dead_dis[,1],
@@ -63,7 +63,7 @@ med_seal[,1],
 med_unrep_sea[,1],# unreported
 
 misr[,1],
-B_TotRecr_sea[,1],
+Bd_TotRecr_sea[,1],
 
 rep_river[,1],
 med_Runrep[,1]
@@ -78,12 +78,14 @@ write_xlsx(as.data.frame(T12), "../../WGBAST_shared/flhm/2025/dat/der/AdviceSD22
 
 
 # Åland sea and Gulf of Bothnia (SD 29N-31)
-
+###############################################
+# NOTE!!! THIS IS DIFFERENT FROM OTHER OUTPUT SINCE ONLY
+# FI AND SE CATCH COMPONENTS ARE TAKEN INTO ACCOUNT!!!!
 
 # Save medians per area (SD22-31 and SD32) for further usage
 tmp9<-tmp8<-tmp6<-tmp7<-tmp4<-tmp3<-tmp2<-tmp22<-tmp<-array(NA, dim=c(NumYears, 2, Nsim))
 
-med_Runrep<-rep_river<-med_Tcatch<-med_unrep<-med_dis<-
+med_recr_sea<-med_Runrep<-rep_river<-med_Tcatch<-med_unrep<-med_dis<-
   rep_recr_sea<- rep_catch_com<- med_alive_dis<-med_unrep_sea<-med_seal<-misr<-med_river<-med_dead_dis<-array(NA, dim=c(NumYears, 2))
 
 for(i in 1:NumYears){

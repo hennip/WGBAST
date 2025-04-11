@@ -6,7 +6,7 @@
 
 skip<-T # Skips the lines at unrep-and-discards.R where number_or_weight is defined
 number_or_weight<-"N"
-source("02-data/discards/unrep-and-discards.R")
+source("02-data/unrep-discards/unrep-and-discards.R")
 
 rep_catch<-LLD_N[,,1]+LLD_N[,,2]+
   River_N[,,1]+River_N[,,2]+
@@ -26,19 +26,19 @@ rep_catch<-cbind(tmp,tot)
 
 
 # Estimated misreported catch 
-misrep<-TMisr[,4,1]
+misrep<-misr[,1]
 
 # Estimated unreported catch (median & 90%PI)
-A_TotUnrep_BS_res<-stats_y(A_TotUnrep_BS);unrep<-round(A_TotUnrep_BS_res,0)
+As_TotUnrep_res<-stats_y(As_TotUnrep);unrep<-round(As_TotUnrep_res,0)
 unrep<-as.data.frame(cbind(unrep[,2], str_c(unrep[,3], "-", unrep[,4])))
 
 
 # Estimated discarded catch
-A_TotDis_BS_res<-stats_y(A_TotDis_BS);dis<-round(A_TotDis_BS_res,0)
+As_TotDis_res<-stats_y(As_TotDis);dis<-round(As_TotDis_res,0)
 dis<-as.data.frame(cbind(dis[,2], str_c(dis[,3], "-", dis[,4])))
 
 # Total catch
-A_TotCatch_BS_res<-stats_y(A_TotCatch_BS);totcatch<-round(A_TotCatch_BS_res,0)
+As_TotCatch_res<-stats_y(As_TotCatch);totcatch<-round(As_TotCatch_res,0)
 totcatch<-as.data.frame(cbind(totcatch[,2], str_c(totcatch[,3], "-", totcatch[,4])))
 
 T2212<-cbind(2001:(2000+NumYears),rep_catch,misrep, unrep, dis, totcatch)
@@ -58,7 +58,7 @@ write_xlsx(T2212, "../../WGBAST_shared/flhm/2025/dat/der/T2212.xlsx")
 
 skip<-T # Skips the lines at unrep-and-discards.R where number_or_weight is defined
 number_or_weight<-"W"
-source("02-data/discards/unrep-and-discards.R")
+source("02-data/unrep-discards/unrep-and-discards.R")
 
 
 rep_catch<-LLD_W[,,1]+LLD_W[,,2]+
@@ -82,16 +82,16 @@ rep_catch<-cbind(tmp,tot)
 misrep<-TMisr[,4,1]
 
 # Estimated unreported catch (median & 90%PI)
-A_TotUnrep_BS_res<-stats_y(A_TotUnrep_BS);unrep<-round(A_TotUnrep_BS_res,0)
+As_TotUnrep_res<-stats_y(As_TotUnrep);unrep<-round(As_TotUnrep_res,0)
 unrep<-as.data.frame(cbind(unrep[,2], str_c(unrep[,3], "-", unrep[,4])))
 
 
 # Estimated discarded catch
-A_TotDis_BS_res<-stats_y(A_TotDis_BS);dis<-round(A_TotDis_BS_res,0)
+As_TotDis_res<-stats_y(As_TotDis);dis<-round(As_TotDis_res,0)
 dis<-as.data.frame(cbind(dis[,2], str_c(dis[,3], "-", dis[,4])))
 
 # Total catch
-A_TotCatch_BS_res<-stats_y(A_TotCatch_BS);totcatch<-round(A_TotCatch_BS_res,0)
+As_TotCatch_res<-stats_y(As_TotCatch);totcatch<-round(As_TotCatch_res,0)
 totcatch<-as.data.frame(cbind(totcatch[,2], str_c(totcatch[,3], "-", totcatch[,4])))
 
 T2211<-cbind(2001:(2000+NumYears),rep_catch,misrep, unrep, dis, totcatch)
