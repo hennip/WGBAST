@@ -5,11 +5,11 @@ source("02-data/unrep-discards/unrep-and-discards.R")
 # SD22-31
 ############
 # Commercial reported landings at sea
-comm_rep_landings_sea<-B_TotRepCom_sea[,1]/1000
+comm_rep_landings_sea<-Bd_TotRepCom_sea[,1]/1000
 
 # Landings at sea
 # Total reported landings including recreational catches. 
-landings_sea<-(B_TotRepCom_sea[,1]+B_TotRecr_sea[,1])/1000
+landings_sea<-(Bd_TotRepCom_sea[,1]+Bd_TotRecr_sea[,1])/1000
 
 
 # Catch at sea
@@ -38,11 +38,11 @@ write_xlsx(as.data.frame(T8), "../../WGBAST_shared/flhm/2025/dat/der/Advice2231_
 ############
 
 # Commercial reported landings at sea
-comm_rep_landings_sea<-B_TotRepCom_sea[,2]
+comm_rep_landings_sea<-Bd_TotRepCom_sea[,2]
 
 # Landings at sea
 # Total reported landings including recreational catches. 
-landings_sea<-(B_TotRepCom_sea[,2]+B_TotRecr_sea[,2])
+landings_sea<-(Bd_TotRepCom_sea[,2]+Bd_TotRecr_sea[,2])
 
 
 # Catch at sea

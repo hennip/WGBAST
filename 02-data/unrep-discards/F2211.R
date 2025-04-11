@@ -23,7 +23,7 @@ source("02-data/unrep-discards/unrep-and-discards.R")
 TRC_MBGB<-c(
 676115,584404,553113,455999,
 395618,333726,286209,311989, #until 2000
-B_TotRepCom_sea[,1])
+Bd_TotRepCom_sea[,1])
 length(TRC_MBGB)
 
 # Total Reported Commercial Catches for Gulf of Finland (T2.2.7)1993->
@@ -31,7 +31,7 @@ length(TRC_MBGB)
 TRC_GF<-c(
 99565,54287,33273,76900,
 74889,28869,27456,32056, #Until 2000
-B_TotRepCom_sea[,2]
+Bd_TotRepCom_sea[,2]
 )
 length(TRC_GF)
 
@@ -176,8 +176,8 @@ lastYear<-32 #! 32=2024 Add one each year!
 # for years 2001-present
 
 # from unrep-and_discards.R:
-dim(Tunrep_F2) # : Unrep + Misrep
-dim(B_TotDis_dead)
+dim(Tunrep_misrep_OC) # : Unrep + Misrep
+dim(Bs_TotDis_dead)
 
 tmp<-array(NA, dim=c(NumYears,2,Nsim))
 #med<-array(NA, dim=c(NumYears,2))
@@ -186,7 +186,7 @@ for(i in 1: NumYears){
   for(k in 1:2){
     for(s in 1:Nsim){
 #i<-1;k<1;s<-1
-        tmp[i,k,s]<-sum(Tunrep_F2[i,1:9,k,s]) + B_TotDis_dead[i,k,s] +B_TotSeal[i,k,s]
+        tmp[i,k,s]<-sum(Tunrep_misrep_OC[i,1:9,k,s]) + Bs_TotDis_dead[i,k,s] +Bs_TotSeal[i,k,s]
     }
     #med[i,k]<-median(tmp[i,k,])
     res[i,,k]<-summary(as.mcmc(tmp[i,k,]), quantiles=c(0.5, 0.05, 0.95))$quantiles
