@@ -55,7 +55,7 @@ while(apu==0){
   for(loop in 1:(nsim/100)){
 #    for(loop in 1:5){
  #      loop<-1    
-    BH_dataFile<-paste0(PathOut_Scen, "ScenHist_", Model,"_",loop,".RData") 
+    BH_dataFile<-paste0(PathIn_Scen, "ScenHist_", Model,"_",loop,".RData") 
     load(BH_dataFile)
   
     for(y in 1:Nyears){
