@@ -34,7 +34,7 @@ source("00-basics/tidy-functions_2chains.R")
 
 # FLHM related paths
 # =============================================================================
-PathData_FLHM<-"02-data/flhm-input-files/"#"../../WGBAST_shared/data/data_2025/"
+PathData_FLHM<-"02-data/flhm-input-files/data_2025/"#"../../WGBAST_shared/data/data_2025/"
 #PathData_FLHM<-"C:/WGBAST15/WGBAST_2025/data_2025/" # extra input files 
 #PathData_FLHM<-paste0(pathMain,"WGBAST_shared/data/data_2024/") # Assessment model data files
 PathModel_FLHM<-"03-flhm/" #relative path, could be removed and used directly 
