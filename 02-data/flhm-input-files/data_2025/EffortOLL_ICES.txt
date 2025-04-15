@@ -36,6 +36,7 @@
 2021	0	0	1.27	0.493	NA
 2022	0	0	0	0	NA
 2023	0	0	0	0	NA
+2024	0	0	0	0	NA
 # Interim year (2020= autumn 2020 + spring 2021)
 # If autumn 2020 data not available for Poland, copy model year 2019 effort for 2020 
 # (in any case spring 2021 data is replaced with spring 2020 data)
