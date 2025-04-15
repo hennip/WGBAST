@@ -17,10 +17,10 @@
 # ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~
 
 rm(list=ls(all=T))
-# library(coda)
-# 
-# # Paths are specified in a separate file 
-# 
+
+source("../run-this-first-wgbast.R") 
+
+# Paths are specified in a separate file 
 # 
 # # # Becky:
 #    PathSim<-"C:/WGBAST15/Assessment results/" # results from the simulation model and output from scenarios
@@ -28,9 +28,6 @@ rm(list=ls(all=T))
 #    PathScen<-"C:/WGBAST15/2025_scenarios/" # scenario results 
 #    PathFiles<-"//storage-dh.slu.se/home$/rewh0001/My Documents/ICES WGBAST/2025/Scenarios/"
 
-#source("04-scenarios/paths_scens.r") #Henni
-source("run-this-first.R") # This file should be located at the root of the Rproject file. If not using Rstudio, pls define the location
-   
 # ===============
 
 #Give a model name
@@ -44,12 +41,29 @@ AU<-c(1,1,1,1,2,2,2,2,2,2,2,2,3,4,4,2,3)
 e_delay<-c(rep(4,times=12),3,3,3,4,3)    #Ljungan from 4 to 3 2024
 nsim<-1000
 
+# =============================================================
+
+MaxCoef<-10000 # Optimisation terminates, if a value higher than this is proposed for Coef2. 
+# if this happens, in practice it means that the target is higher than
+# the number of ish vulnerable to fishing
+
+# Run 
+Optim<-F # Turns on secant method optimisation. Initial values are not too critical, could be = 1 for all,
+# but guessing improves the speed a bit. Does not work for trolling only scenario (6) at the moment!
+
+set.seed(6789)
+
+
 # Time
 # =============================================================
 
 #! Set the last year for historic part and the last year for predictions:
 LastHistYear<-assess_year-1
-ymax<-350
+if(Optim==T){
+  ymax=10
+  }else{
+    ymax<-350
+    }
 LastPredYear<-LastHistYear+ymax
 
 #FUTURE PROJECTIONS BASED ON EFFORT SCENARIOS
@@ -63,35 +77,43 @@ Years<-c(1992:LastHistYear)
 yBreak<-length(Years)
 Nyears<-yBreak+NumFutYears
 
-# =============================================================
 
-MaxCoef<-10000 # Optimisation terminates, if a value higher than this is proposed for Coef2. 
-              # if this happens, in practice it means that the target is higher than
-              # the number of ish vulnerable to fishing
- 
-Optim<-T # Turns on secant method optimisation. Initial values are not too critical, could be = 1 for all,
-         # but guessing improves the speed a bit. Does not work for trolling only scenario (6) at the moment!
+load(file=paste0(PathSim,"chain_cleaned_2025_base4.RData"))
+d<-as.matrix(chains_new)
+d<-d[1001:2000,]
 
-set.seed(6789)
+###get wild trolling target
+tyear<-yBreak+4    #37 (2023 in 2025 assessment)
+# nctW_rel[i] <-  nctW_Tot[i]*p.rel[i] 
+pm<-d[,grep("p.mort",colnames(d))]
+pr<-d[,grep(paste0("p.rel[",tyear,"]"),colnames(d),fixed=T)] 
+ntW<-d[,grep(paste0("nctW_Tot[",tyear,"]"),colnames(d),fixed=T)] 
+
+ttargw<-median(ntW*(1-pr)+ntW*pr*pm) #2.56 2025
+rm(d,chains_new)
+
+
 
 #! Removal scenarios for the future
 
 RCzero<-T # See line 449 in ProjEffort_loops
 zero_st<-c(4,9,15:17)  #stocks with no river F, note this will be 10% of HR for other stocks in 2023
-#2025 R?ne, S?var?n, Em?n, K?ge, Test
+#2025 Rane, Savaran, Eman, Kage, Test
 
 
 #for(EffScen in c(1:2)){
 #SD31only<-FALSE
 #EffScen<-21
 #for(EffScen in c(3:19)){
-SD31only<-F
-EffScen<-21
+  for(EffScen in c(3:3)){
+    SD31only<-F
+#EffScen<-22
 
 # workflow for effort scenarios:                                                      
 # 1. Run scenarios 1 (zero fishing sea & river) and 2 (zero fishing at sea) with Optim=F
-# 2. Set Optim=T. Run scenario 22 to find coef for reared trolling HR -> plug this value into ProjEffort_loops
-# 3. Run scenario 21 to find coef for wild trolling HR -> plug this value into ProjEffort_loops
+# 2. Update the target reared trolling catch (wild is calculated above)
+# 3. Set Optim=T. Run scenario 22 to find coef for reared trolling HR -> plug this value into ProjEffort_loops
+# 4. Run scenario 21 to find coef for wild trolling HR -> plug this value into ProjEffort_loops
 
 # For all scenarios, remember to update CoefF OR Coef2 after the desired level of effort
 # has been found with the while-loop!
@@ -127,9 +149,15 @@ if(EffScen==18){Coef2<-1.407341; target<-120}
 if(EffScen==19){Coef2<-1.407341; target<-150}  
   
 # Extra scenarios to find out suitable level of trolling harvesting (W/R) 
-if(EffScen==21){Coef2<-0.6127289; target<-2.56} #find wild trolling coef, plug in to ProjEffort_loops 2024 this is dead wild salmon only, value from run_Inputs
-if(EffScen==22){Coef2<-1.54187156614452; target<-4.95} #check, this is landed median from Tapani's BUGS model 
+if(EffScen==21){Coef2<-0.6127289; target<-ttargw} #2.56#find wild trolling coef, plug in to ProjEffort_loops 2024 this is dead wild salmon only, value from run_Inputs
+if(EffScen==22){Coef2<-1; target<-4.95} #check, this is landed median from Tapani's BUGS model 
 
+# Load pre saved values for scenario specific Coef    
+if(Optim==F){
+  load(paste0(PathScen,"Coef2_",Model,"_EScen",EffScen,".RData"))
+  Coef2<-Coef
+}    
+    
 # =============================================================
 # Set years in which the target should be met:
 # calendar year 2026 is year 35 for trapnetting and 
@@ -164,19 +192,22 @@ E_CTN_SWE_31<-c(rep(6.53,2))
 
 
 # Load SR errors
-load(paste0(PathOut_Scen, "SR_devs_2025.RData"))
+#load(paste0(PathFiles, "SR_devs_2025.RData"))
+load(paste0(PathScen, "SR_devs_2025.RData"))
 
 # =============================================================
 
 # Initialise arrays
-source(paste0(PathFiles,"InitArrays_2025.r")) # time varying Htr, ql, qd
+#source(paste0(PathFiles,"InitArrays_2025.r")) # time varying Htr, ql, qd
+source("04-scenarios/InitArrays_2025.r") # time varying Htr, ql, qd
 
 # =============================================================
 
 # Run projections
 
 Sys.setlocale("LC_ALL","English")
-source(paste0(PathFiles,"ProjEffort_loops_2025.r")) # time varying Htr, ql, qd
+#source(paste0(PathFiles,"ProjEffort_loops_2025.r")) # time varying Htr, ql, qd
+source("04-scenarios/ProjEffort_loops_2025.r") # time varying Htr, ql, qd
 
 
 # =============================================================
@@ -215,22 +246,31 @@ Perform_Stats <- c(
 
 Coef<-ifelse(iter==1,Coef2-0.1,Coef2)
 
-if(SD31only==F){
-# Save to RData-file
-if(RCzero==T){File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,"_RCzero23-35.RData")}
-if(RCzero==F){File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")}
-save(list = Perform_Stats, file = File)
-save(Coef, file=paste0(PathScen,"Coef2_",Model,"_EScen",EffScen,".RData"))
-# =============================================================
-}else if(SD31only==T){
-# Save to RData-file
-if(RCzero==T){File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen+12,"_RCzero23-35.RData")}
-if(RCzero==F){File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen+12,".RData")}
-save(list = Perform_Stats, file = File)
-save(Coef, file=paste0(PathScen,"Coef2_",Model,"_EScen",EffScen+12,".RData"))
+if(Optim==T){
+  if(SD31only==F){
+    save(Coef, file=paste0(PathScen,"Coef2_",Model,"_EScen",EffScen,".RData"))
+  }
+  if(SD31only==T){
+    save(Coef, file=paste0(PathScen,"Coef2_",Model,"_EScen",EffScen+12,".RData"))
+  }
+}
+if(Optim==F){
+  if(SD31only==F){
+  # Save to RData-file
+  if(RCzero==T){File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,"_RCzero23-35.RData")}
+  if(RCzero==F){File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")}
+  save(list = Perform_Stats, file = File)
+  # =============================================================
+  }else if(SD31only==T){
+  # Save to RData-file
+  if(RCzero==T){File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen+12,"_RCzero23-35.RData")}
+  if(RCzero==F){File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen+12,".RData")}
+  save(list = Perform_Stats, file = File)
+  }
 }
 
-#} #Scens loop
+
+} #Scens loop
 
 
 #

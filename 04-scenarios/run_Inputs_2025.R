@@ -14,6 +14,8 @@ rm(list=ls(all=T))
 
 source("../run-this-first-wgbast.R") 
 
+# ONCE EVERYTHING WORKS FOR EVERYBODY, THIS BIT CAN BE REMOVED
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # library(coda)
 # library(abind)  #for M74 
 # library(reshape2) #for seal M
@@ -36,7 +38,8 @@ source("../run-this-first-wgbast.R")
 
 # Henni:
 #source(paste0("/04-scenarios/paths_scens.r"))
-  
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 #Give a model name
 assess_year<-2025

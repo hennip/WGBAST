@@ -1,0 +1,53 @@
+# Proportion of AU 1-6 smolts compared to AU 1-4 smolts
+# this is used to increase total available number of fish at sea fishery 
+# to account for the AU 5-6 salmon (note: only 50% of AU6 smolts is assumed to migrate
+# to main basin).
+
+# Wild salmon (PropCW):
+# Check smolts by assessment units in results from northern and southern river models
+# Need also smolt production from Young fish DB (AU5-6)
+# T4_2_1_1_wild smolts.xls
+
+# Reared salmon (PropCR):
+# smolt releases. see T3.4.1 (Tapsa) and T 3.3.1 Releases SAL_modified.xls (data\der)
+PropCR[]	PropCW[]	
+1.286800	1.69433
+1.307751	1.70086
+1.345361	1.62511
+1.271132	1.57842
+1.222303	1.57790
+1.220558	1.64742
+1.251446	1.41650
+1.275786	1.43200
+1.432735	1.62043
+1.328324	1.73732
+1.404848	1.68691
+1.474860	1.49389
+1.525168	1.18254
+1.472511	1.08740
+1.471841	1.06742
+1.439672	1.09299
+1.488512	1.08355
+1.442355	1.05870
+1.413659	1.02684
+1.515353	1.04013
+1.486272	1.02299
+1.504076	1.02403
+1.494868	1.03129
+1.461028	1.03362
+1.290673	1.00995
+1.363472	1.01513
+1.482693	1.01301
+1.486244	1.01760
+1.398686	1.02889
+1.406986	1.03306
+1.339403	1.02186
+1.395531	1.02055
+1.542075	1.01903
+1.542276	1.04509
+1.411985	1.03851
+1.273619	1.03024
+1.301570	1.03935
+1.374132	1.02415 # 2024
+1.374132	1.02829
+1.374132	1.02743

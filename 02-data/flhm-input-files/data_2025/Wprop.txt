@@ -1,0 +1,45 @@
+# Updates from Ville Vähä				
+# catch samples from Tornionjoki, downstream from Lappea.				
+# Only upstream migrating salmon, no strayers.				
+# -> Wild MSW-salmon, wild 1SW salmon and totals for both groups				
+# These are used for estimating the wild/reared relationship				
+# time series could be ended soon, as stocked salmon in Tornionjoki won't be adipose fin clipped any longer				
+TorneWMSW[]	TorneMSW[]	TorneWG[]	TorneG[]	
+29	36	2	4	
+10	13	7	8	
+10	12	50	66	
+9	13	20	22	
+26	27	38	45	
+62	72	57	63	
+96	117	45	56	
+33	36	5	5	
+71	75	32	38	
+472	523	8	10	
+223	243	NA	50	
+152	178	4	5	
+71	79	3	3	
+104	142	52	55	
+148	182	53	60	
+137	145	38	42	
+138	155	17	17	
+124	130	50	50	
+426	434	15	15	
+102	103	5	5	
+143	145	10	10	
+666	666	56	56	
+138	139	23	23	
+150	150	2	2	
+153	153	16	16	
+367	369	23	23	
+299	299	13	13	
+435	436	21	21	
+445	447	57	57	
+535	536	49	50	
+227	227	13	13	
+174	174	51	51	
+258	258	35	35	
+252	252	52	52	
+842	843	69	69	
+263	263	2	2
+96	96	21	21	#2023
+95	95	1	1
