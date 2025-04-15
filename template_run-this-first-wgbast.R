@@ -28,17 +28,17 @@ source("00-basics/tidy-functions_2chains.R")
 
 # Submodel related paths, these could also be directed into shared folder
 # =============================================================================
-pathDataSST<-"../../01-Projects/WGBAST/SST/2025/"
-pathM74_2021<-"../../01-Projects/WGBAST/SubE_M74/2021/" # stuff from 21 is needed to cover the older data
-pathM74_current<-"../../01-Projects/WGBAST/SubE_M74/2023/"
+#pathDataSST<-"../../01-Projects/WGBAST/SST/2025/"
+#pathM74_2021<-"../../01-Projects/WGBAST/SubE_M74/2021/" # stuff from 21 is needed to cover the older data
+#pathM74_current<-"../../01-Projects/WGBAST/SubE_M74/2023/"
 
 # FLHM related paths
 # =============================================================================
-
-PathData_FLHM<-"../../WGBAST_shared/data/data_2025/"
+PathData_FLHM<-"02-data/flhm-input-files/"#"../../WGBAST_shared/data/data_2025/"
+#PathData_FLHM<-"C:/WGBAST15/WGBAST_2025/data_2025/" # extra input files 
 #PathData_FLHM<-paste0(pathMain,"WGBAST_shared/data/data_2024/") # Assessment model data files
 PathModel_FLHM<-"03-flhm/" #relative path, could be removed and used directly 
-PathOut_FLHM<-"../../WGBAST_shared/flhm/2025/output/"
+PathOut_FLHM<-"C:/WGBAST15/Assessment results/" # results from the simulation model and output from scenarios
 
 
 # Scenario related paths
@@ -46,13 +46,17 @@ PathOut_FLHM<-"../../WGBAST_shared/flhm/2025/output/"
 PathSim<-PathOut_FLHM # simulations for scens read from where those were stored from FLHM
 PathData_Scen<-PathData_FLHM# currently the same as for FLHM data
 PathFiles<-"04-scenarios/" # Relative path, could be removed and used directly 
-PathOut_Scen<-"../../WGBAST_shared/scen/2025/" # scenario results written here. NOTE! Better not to write directly to shared folder, only copy-paste there final files
-#PathOut_Scen<-"../../" # scenario results written here. NOTE! Better not to write directly to shared folder, only copy-paste there final files
+PathScen<-"C:/WGBAST15/2025_scenarios/"# scenario results
 
 # Misc
 # =============================================================================
-pathDataCatchEffort<-"../../WGBAST_shared/flhm/2025/dat/orig/" # location for catch&effort data
+#pathDataCatchEffort<-"../../WGBAST_shared/flhm/2025/dat/orig/" # location for catch&effort data
 
+# # # Becky:
+#    PathSim<-"C:/WGBAST15/Assessment results/" # results from the simulation model and output from scenarios
+#    PathData<-"C:/WGBAST15/WGBAST_2025/data_2025/" # extra input files 
+#    PathOut_Scen<-"C:/WGBAST15/2025_scenarios/" # scenario results 
+#    PathFiles<-"//storage-dh.slu.se/home$/rewh0001/My Documents/ICES WGBAST/2025/Scenarios/"
 
 
 
