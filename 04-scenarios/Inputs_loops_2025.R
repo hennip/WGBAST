@@ -20,9 +20,8 @@ for(loop in 1:(nsim/100)){
   # We will write the simulation results to the sim folder using 10 Rdata-files 
   # under these names 
   BH_dataFile<-
-      #paste0(PathOut_Scen, "ScenHist_", Model,"_",loop,".RData") # name to separate historical part from future projections?
-  paste0("../../ScenHist_", Model,"_",loop,".RData") # name to separate historical part from future projections?
-  
+    paste0(PathScen, "ScenHist_", Model,"_",loop,".RData") # name to separate historical part from future projections?
+
   #Sims stores the numbers for the simulation in the MCMC chain
   sims<-c(1+100*(loop-1),100*loop)   #1st and last indices of sims
   sims<-c(sims[],sims[2]-sims[1]+1)   #add number of sims as 3rd member of sims
@@ -374,7 +373,7 @@ for(loop in 1:(nsim/100)){
   
   M74<-as.matrix(sims[1]:sims[2])
   
-  M74mat<-read.table(paste0(PathFiles,"M74_mtx.txt"),sep="\t",header=T)
+  M74mat<-read.table(paste0(PathData_FLHM,"M74_mtx.txt"),sep="\t",header=T)
   #Use (yBreak -1) if want to discard the last years's estimate (year yBreak has no M74 data)
   for(y in 1:(yBreak-1)){ 
   #  for(y in 1:(yBreak)){ # For 2020 assessment only!!! 

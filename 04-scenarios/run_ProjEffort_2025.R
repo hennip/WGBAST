@@ -18,16 +18,15 @@
 
 rm(list=ls(all=T))
 
-# Paths are specified in a separate file 
+source("../run-this-first-wgbast.R") 
 
+# Paths are specified in a separate file 
 # 
 # # # Becky:
 #    PathSim<-"C:/WGBAST15/Assessment results/" # results from the simulation model and output from scenarios
 #    PathData<-"C:/WGBAST15/WGBAST_2025/data_2025/" # extra input files 
-#    PathOut_Scen<-"C:/WGBAST15/2025_scenarios/" # scenario results 
+#    PathScen<-"C:/WGBAST15/2025_scenarios/" # scenario results 
 #    PathFiles<-"//storage-dh.slu.se/home$/rewh0001/My Documents/ICES WGBAST/2025/Scenarios/"
-   
-source("../run-this-first-wgbast.R") 
 
 # ===============
 
@@ -48,6 +47,7 @@ MaxCoef<-10000 # Optimisation terminates, if a value higher than this is propose
 # if this happens, in practice it means that the target is higher than
 # the number of ish vulnerable to fishing
 
+# Run 
 Optim<-F # Turns on secant method optimisation. Initial values are not too critical, could be = 1 for all,
 # but guessing improves the speed a bit. Does not work for trolling only scenario (6) at the moment!
 
@@ -104,7 +104,8 @@ zero_st<-c(4,9,15:17)  #stocks with no river F, note this will be 10% of HR for 
 #for(EffScen in c(1:2)){
 #SD31only<-FALSE
 #EffScen<-21
-for(EffScen in c(3:19)){
+#for(EffScen in c(3:19)){
+  for(EffScen in c(3:3)){
     SD31only<-F
 #EffScen<-22
 
@@ -153,7 +154,7 @@ if(EffScen==22){Coef2<-1; target<-4.95} #check, this is landed median from Tapan
 
 # Load pre saved values for scenario specific Coef    
 if(Optim==F){
-  load(paste0(PathOut_Scen,"Coef2_",Model,"_EScen",EffScen,".RData"))
+  load(paste0(PathScen,"Coef2_",Model,"_EScen",EffScen,".RData"))
   Coef2<-Coef
 }    
     
@@ -192,7 +193,7 @@ E_CTN_SWE_31<-c(rep(6.53,2))
 
 # Load SR errors
 #load(paste0(PathFiles, "SR_devs_2025.RData"))
-load(paste0(PathIn_Scen, "SR_devs_2025.RData"))
+load(paste0(PathScen, "SR_devs_2025.RData"))
 
 # =============================================================
 
@@ -247,23 +248,23 @@ Coef<-ifelse(iter==1,Coef2-0.1,Coef2)
 
 if(Optim==T){
   if(SD31only==F){
-    save(Coef, file=paste0(PathOut_Scen,"Coef2_",Model,"_EScen",EffScen,".RData"))
+    save(Coef, file=paste0(PathScen,"Coef2_",Model,"_EScen",EffScen,".RData"))
   }
   if(SD31only==T){
-    save(Coef, file=paste0(PathOut_Scen,"Coef2_",Model,"_EScen",EffScen+12,".RData"))
+    save(Coef, file=paste0(PathScen,"Coef2_",Model,"_EScen",EffScen+12,".RData"))
   }
 }
 if(Optim==F){
   if(SD31only==F){
   # Save to RData-file
-  if(RCzero==T){File<-paste0(PathOut_Scen,"ScenProj_",Model,"_EScen",EffScen,"_RCzero23-35.RData")}
-  if(RCzero==F){File<-paste0(PathOut_Scen,"ScenProj_",Model,"_EScen",EffScen,".RData")}
+  if(RCzero==T){File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,"_RCzero23-35.RData")}
+  if(RCzero==F){File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")}
   save(list = Perform_Stats, file = File)
   # =============================================================
   }else if(SD31only==T){
   # Save to RData-file
-  if(RCzero==T){File<-paste0(PathOut_Scen,"ScenProj_",Model,"_EScen",EffScen+12,"_RCzero23-35.RData")}
-  if(RCzero==F){File<-paste0(PathOut_Scen,"ScenProj_",Model,"_EScen",EffScen+12,".RData")}
+  if(RCzero==T){File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen+12,"_RCzero23-35.RData")}
+  if(RCzero==F){File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen+12,".RData")}
   save(list = Perform_Stats, file = File)
   }
 }
