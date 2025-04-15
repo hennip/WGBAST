@@ -48,7 +48,7 @@ MaxCoef<-10000 # Optimisation terminates, if a value higher than this is propose
 # if this happens, in practice it means that the target is higher than
 # the number of ish vulnerable to fishing
 
-Optim<-T # Turns on secant method optimisation. Initial values are not too critical, could be = 1 for all,
+Optim<-F # Turns on secant method optimisation. Initial values are not too critical, could be = 1 for all,
 # but guessing improves the speed a bit. Does not work for trolling only scenario (6) at the moment!
 
 set.seed(6789)
@@ -78,12 +78,12 @@ yBreak<-length(Years)
 Nyears<-yBreak+NumFutYears
 
 
-###get wild trolling target
 load(file=paste0(PathSim,"chain_cleaned_2025_base4.RData"))
 d<-as.matrix(chains_new)
 d<-d[1001:2000,]
-tyear<-yBreak+4    #37 (2023 in 2025 assessment)
 
+###get wild trolling target
+tyear<-yBreak+4    #37 (2023 in 2025 assessment)
 # nctW_rel[i] <-  nctW_Tot[i]*p.rel[i] 
 pm<-d[,grep("p.mort",colnames(d))]
 pr<-d[,grep(paste0("p.rel[",tyear,"]"),colnames(d),fixed=T)] 
@@ -104,8 +104,7 @@ zero_st<-c(4,9,15:17)  #stocks with no river F, note this will be 10% of HR for 
 #for(EffScen in c(1:2)){
 #SD31only<-FALSE
 #EffScen<-21
-#for(EffScen in c(3:19)){
-  for(EffScen in c(3:3)){
+for(EffScen in c(3:19)){
     SD31only<-F
 #EffScen<-22
 
@@ -247,7 +246,12 @@ Perform_Stats <- c(
 Coef<-ifelse(iter==1,Coef2-0.1,Coef2)
 
 if(Optim==T){
-  save(Coef, file=paste0(PathOut_Scen,"Coef2_",Model,"_EScen",EffScen,".RData"))
+  if(SD31only==F){
+    save(Coef, file=paste0(PathOut_Scen,"Coef2_",Model,"_EScen",EffScen,".RData"))
+  }
+  if(SD31only==T){
+    save(Coef, file=paste0(PathOut_Scen,"Coef2_",Model,"_EScen",EffScen+12,".RData"))
+  }
 }
 if(Optim==F){
   if(SD31only==F){
@@ -255,14 +259,12 @@ if(Optim==F){
   if(RCzero==T){File<-paste0(PathOut_Scen,"ScenProj_",Model,"_EScen",EffScen,"_RCzero23-35.RData")}
   if(RCzero==F){File<-paste0(PathOut_Scen,"ScenProj_",Model,"_EScen",EffScen,".RData")}
   save(list = Perform_Stats, file = File)
-  save(Coef, file=paste0(PathOut_Scen,"Coef2_",Model,"_EScen",EffScen,".RData"))
   # =============================================================
   }else if(SD31only==T){
   # Save to RData-file
   if(RCzero==T){File<-paste0(PathOut_Scen,"ScenProj_",Model,"_EScen",EffScen+12,"_RCzero23-35.RData")}
   if(RCzero==F){File<-paste0(PathOut_Scen,"ScenProj_",Model,"_EScen",EffScen+12,".RData")}
   save(list = Perform_Stats, file = File)
-  save(Coef, file=paste0(PathOut_Scen,"Coef2_",Model,"_EScen",EffScen+12,".RData"))
   }
 }
 
