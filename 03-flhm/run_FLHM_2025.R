@@ -60,7 +60,7 @@ runName<-modelName
 #CR<-ifelse(grepl("CR",modelName),T,F) #boolean to read correct version of catch data file
 
 # data, initial values, parameters to monitor
-source("03-flhm/setup_FLHM_2025_base.R")
+source("03-flhm/setup_FLHM_2025.R")
 
 initsall<-list(inits.fn(),inits.fn())
 
