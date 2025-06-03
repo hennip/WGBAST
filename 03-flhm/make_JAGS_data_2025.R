@@ -22,14 +22,28 @@
 #16 "Kagealven"
 #17 "Testeboan"
 
-#folder<-paste0(PathData,"data_",assessment_year,"/")  
 folder<-PathData_FLHM
 
+get_logit_mu<-function(a,b){    #matrix input
+  mu<-(a/(a+b))
+  lmean<-log(mu/(1-mu))
+  return(c(lmean))   
+}
+
+get_logit_tau<-function(a,b){    #matrix input
+  mu<-(a/(a+b))
+  lmean<-log(mu/(1-mu))
+  #qlist<-Map(function(x, y) quantile(rbeta(100000, x, y),c(0.025,0.975)), a, b)
+  qlist<-Map(function(x, y) log(quantile(rbeta(100000, x, y),c(0.025,0.975))/(1-quantile(rbeta(100000, x, y),c(0.025,0.975)))), a, b)
+  list1 <- mapply(append, qlist, lmean, SIMPLIFY = FALSE)
+  ldiff<-lapply(list1,function(x){max(abs(x[3]-x[1:2]))})
+  #qs<-matrix(unlist(qlist), ncol=2, byrow=TRUE)
+  lsd<-unlist(ldiff)/1.96
+  ltau<-1/(lsd*lsd)
+  return(c(ltau))   
+}
 
 
-# Packages are called in run-this-first.r (calls packages.r) 
-#library(reshape)
-#library(abind)
 
 avail_r<-c(1:17)  #note Emån Mörrum now added, 2023!
 avail_dc<-c(1:13,16:17)  #should Mörrum be added here next year?
@@ -82,6 +96,10 @@ if(proj_years>=1){
   M74_alpha<-rbind(M74_alpha, t(replicate(proj_years,M74_alpha[years,])))
   M74_beta<-rbind(M74_beta, t(replicate(proj_years,M74_beta[years,])))
 }
+
+
+M74_mu<-matrix(get_logit_mu(M74_alpha,M74_beta),nrow=dim(M74_alpha)[1])
+M74_tau<-matrix(get_logit_tau(M74_alpha,M74_beta),nrow=dim(M74_alpha)[1])
 
 #mean_alpha<-apply(M74_alpha[1:30, ], 2, mean)
 #mean_beta<-apply(M74_beta[1:30, ], 2, mean)
@@ -213,11 +231,7 @@ Ecgn<-abind(Ecgn,Ecgn0, along=1)
 #river catch up to current year-1, NA thereafter
 #coastal catch up to current year-1, NA thereafter
 #offshore catch up to current year-2, NA thereafter
-if(RiverCatch1==T){
-  cat<-as.matrix(read.table(paste0(folder,"Catch_TrollingSeparated_CR_riv_reared.txt"),header=T))
-}else{
-  cat<-as.matrix(read.table(paste0(folder,"Catch_TrollingSeparated_CR.txt"),header=T))
-}
+cat<-as.matrix(read.table(paste0(folder,"Catch_TrollingSeparated_CR.txt"),header=T))
 
 cat_r<-cat[,1]
 cat_c<-cat[,2]
@@ -242,18 +256,7 @@ WpropObs[,2]<-Scale[1:years,3]
 sd_wr[,2]<-Scale[1:years,4]
 
 #Note Testebo?n data to be added to spawner counts in 2020.  It is an index river
-if(RaneCount==T){
-  if(full_sp_count==T){
-  spawner_counts<-as.matrix(read.table(paste0(folder,"spawner_counts_SimoMSW.txt"),header=T, encoding="UTF-8"))
-  }
-  if(full_sp_count==F){
-    spawner_counts<-as.matrix(read.table(paste0(folder,"spawner_counts_SimoMSW_2yOffUT.txt"),header=T, encoding="UTF-8"))
-  }
-}
-if(RaneCount==F){
-  spawner_counts<-as.matrix(read.table(paste0(folder,"spawner_counts_SimoMSW_withoutRane.txt"),header=T, encoding="UTF-8"))
-  if(full_sp_count==F){print("SO FAR A VERSION OF spawner_counts.txt WITHOUT 23-24 Ume/Teste count AND WITHOUT RANE DOESN'T EXIST!")}
-}
+spawner_counts<-as.matrix(read.table(paste0(folder,"spawner_counts_SimoMSW.txt"),header=T, encoding="UTF-8"))
 
 MSWladder<-as.matrix(read.table(paste0(folder,"Fishladder.txt"),header=T))
 sp_count<-array(NA,dim=c(years,allstocks))
@@ -349,6 +352,12 @@ CV_sp_beta[4]<-30
 
 CV_sp_alpha[14]<-10   #Mörrum
 CV_sp_beta[14]<-30
+
+mu_mu_sp<-get_logit_mu(mu_sp_alpha,mu_sp_beta)
+tau_mu_sp<-get_logit_tau(mu_sp_alpha,mu_sp_beta)
+mu_CV_sp<-get_logit_mu(CV_sp_alpha,CV_sp_beta)
+tau_CV_sp<-get_logit_tau(CV_sp_alpha,CV_sp_beta)
+
 
 N_sp_count<-array(10,dim=c(years,allstocks))   #N for MSW proportion observation model
 MSWprop<-array(NA,dim=c(years,allstocks))   #N for MSW proportion observation model
