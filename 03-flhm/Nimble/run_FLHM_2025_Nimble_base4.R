@@ -17,7 +17,7 @@
 # library(extraDistr)
 source("../run-this-first-wgbast.R")
 
-parallel<-F
+parallel<-T
 CR<-T
 
 
