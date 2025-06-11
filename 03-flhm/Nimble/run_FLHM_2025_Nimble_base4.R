@@ -67,12 +67,12 @@ source(paste0(PathModel_FLHM,"make_JAGS_data_",assessment_year,".R"))
 
 source("03-flhm/Nimble/make_inits_Nimble.R")
 
-source(paste0("03-flhm/Nimble/",modelName,".R"))
+source(paste0(PathModel_Nimble,modelName,".R"))
 
 if(parallel==T){
   parr_code<-paste0("Parallel_code_Nimble_",assessment_year,".R")
-  modelfile<-paste0(PathModel,modelName,".R")
-  source(paste0(PathModel,parr_code))
+  modelfile<-paste0(PathModel_Nimble,modelName,".R")
+  source(paste0(PathModel_Nimble,parr_code))
 }
 
 

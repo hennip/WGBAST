@@ -6,7 +6,7 @@
 
 # Note! CR_2024_selected_chain.RData uploaded into 2025 flhm output folder (PathOut_FLHM)
 # Another option would be to set different path in run-this-first-file for previous year output
-PathSim<-PathOut_FLHM
+#PathSim<-PathOut_FLHM # This is defined in the run-this-first-wgbast.R-file
 
 #assessment_year<-2022
 #years<-length(seq(1987:assessment_year))
