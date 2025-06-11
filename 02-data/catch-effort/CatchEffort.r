@@ -216,7 +216,7 @@ Release_tr<-salmonALV%>%
     mutate(YEAR=YEAR-1))
 
 
-# GoB 
+# GoB (SD 29-31)
 (TR_Catch_C<-salmon%>%
     filter(YEAR>2015,
            SUB_DIV==300 |(SUB_DIV>28 & SUB_DIV<32),
@@ -224,6 +224,8 @@ Release_tr<-salmonALV%>%
            FISHERY=="O" |FISHERY=="C")%>%
     group_by(YEAR)%>%
     summarise(Catch=sum(NUMB)))
+
+# VAPAUTETUN SAALIIN KUOLEVA OSUUS (25%) PUUTTUU SD 29-31!
 
 # 
 # 
