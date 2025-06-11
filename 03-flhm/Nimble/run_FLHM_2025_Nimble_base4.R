@@ -8,13 +8,14 @@
 #Parr added to NrRsp not NrW (wild)
 
 #flexible indexing not complete!!
-library(abind)
-library(coda)
-library(nimble)
-library(nimbleHMC)
-library(parallel)
-library(reshape2)
-library(extraDistr)
+# library(abind)
+# library(coda)
+# library(nimble)
+# library(nimbleHMC)
+# library(parallel)
+# library(reshape2)
+# library(extraDistr)
+source("../run-this-first-wgbast.R")
 
 parallel<-F
 CR<-T
@@ -54,19 +55,19 @@ trolling<-1
 #17 "Testeboan"
 
 
-setwd("C:/WGBAST15/WGBAST_2025")
-source("flhm/paths_FLHM.R") #windows
+#setwd("C:/WGBAST15/WGBAST_2025")
+#source("flhm/paths_FLHM.R") #windows
 
 
 modelName<-"FLHM_Nimble_2025_CR_base4"      
 
 CR<-T
-source(paste0(PathFunctions,"plotfunctions.r"))
-source(paste0(PathModel,"make_JAGS_data_",assessment_year,"_base4.R"))
+source("00-basics/plotfunctions.r")
+source(paste0(PathModel_FLHM,"make_JAGS_data_",assessment_year,".R"))
 
-source("flhm/make_inits_Nimble.r")
+source("03-flhm/Nimble/make_inits_Nimble.R")
 
-source(paste0(PathModel,modelName,".R"))
+source(paste0("03-flhm/Nimble/",modelName,".R"))
 
 if(parallel==T){
   parr_code<-paste0("Parallel_code_Nimble_",assessment_year,".R")
