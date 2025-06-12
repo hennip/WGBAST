@@ -131,8 +131,8 @@ WGBASTCode<-nimbleCode({
       logit_M74[i,s]~dnorm(M74_mu[i,s],M74_tau[i,s])
       M74[i,s] <- ilogit(logit_M74[i,s])
       
-      error_SR[i,s] ~dnorm(mu_SR[s],tau_SR[s])
-       #error_SR[i,s] ~dnorm(mu_SR,tau_SR)
+      #error_SR[i,s] ~dnorm(mu_SR[s],tau_SR[s])
+      error_SR[i,s] ~dnorm(mu_SR,tau_SR)
       
       
     }
@@ -155,8 +155,8 @@ WGBASTCode<-nimbleCode({
       logit_M74[i,s]~dnorm(M74_mu[i,s],M74_tau[i,s])
       M74[i,s] <- ilogit(logit_M74[i,s])
       
-      error_SR[i,s] ~dnorm(mu_SR[s],tau_SR[s])
-      #error_SR[i,s] ~dnorm(mu_SR,tau_SR) 
+      #error_SR[i,s] ~dnorm(mu_SR[s],tau_SR[s])
+      error_SR[i,s] ~dnorm(mu_SR,tau_SR) 
       
       NspWtot[i,s] <- NspW[(i-1), 2,s]+NspW[(i-2), 3,s] +NspW[(i-3), 4,s] +NspW[(i-4), 5,s] + NspW[(i-5),6,s]             +NspRsp[(i-1), 2,s]+NspRsp[(i-2), 3,s] +NspRsp[(i-3), 4,s] + NspRsp[(i-4), 5,s] +NspRsp[(i-5), 6,s] 
       
@@ -203,8 +203,8 @@ WGBASTCode<-nimbleCode({
       M74[i,s] <- ilogit(logit_M74[i,s])
       
       
-      error_SR[i,s] ~dnorm(mu_SR[s],tau_SR[s])
-      #error_SR[i,s] ~dnorm(mu_SR,tau_SR)
+      #error_SR[i,s] ~dnorm(mu_SR[s],tau_SR[s])
+      error_SR[i,s] ~dnorm(mu_SR,tau_SR)
         
         
       NspWtot[i,s] <- NspW[(i-1), 2,s] +NspW[(i-2), 3,s] +NspW[(i-3), 4,s] +NspW[(i-4), 5,s] + NspW[(i-5),6,s] 
@@ -235,11 +235,11 @@ WGBASTCode<-nimbleCode({
     }
   }
   
-#  cv_SR~dlnorm(-1.5,2)
-#  tau_SR<-1/log(cv_SR*cv_SR+1)
-#  mu_SR<- -0.5/tau_SR 
-mu_CVSR~dnorm(-1.5,5)
-tau_CVSR~dgamma(5,0.10)
+  cv_SR~dlnorm(-1.5,2)
+  tau_SR<-1/log(cv_SR*cv_SR+1)
+  mu_SR<- -0.5/tau_SR 
+#mu_CVSR~dnorm(-1.5,5)
+#tau_CVSR~dgamma(5,0.10)
 
 
 
@@ -254,9 +254,9 @@ tau_CVSR~dgamma(5,0.10)
   # Stocked as parr/smolts
   #mu_Parr, tau_Parr, Smolt_Rsp from ReleaseSimoTorne data file
   for(s in 1:stocks){ 
-       cv_SR[s]~dlnorm(mu_CVSR,tau_CVSR)
-    tau_SR[s]<-1/log(cv_SR[s]*cv_SR[s]+1) 
-    mu_SR[s]<- -0.5/tau_SR[s]
+#       cv_SR[s]~dlnorm(mu_CVSR,tau_CVSR)
+#    tau_SR[s]<-1/log(cv_SR[s]*cv_SR[s]+1) 
+#    mu_SR[s]<- -0.5/tau_SR[s]
     for (i in 1:m){ 
       Parr[i,s] ~dlnorm(mu_Parr[i,s], tau_Parr[i,s])  
     }
