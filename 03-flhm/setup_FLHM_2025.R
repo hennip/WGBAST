@@ -47,7 +47,9 @@ datalist<-list(
   prop_fem=prop_fem,alpha_migr=alpha_migr,
   beta_migr=beta_migr,smolt_year=smolt_year,e_delay=e_delay,
   rivHR=as.matrix(rivHR[,stock_indices]),
-  alpha_rel=alpha_rel,beta_rel=beta_rel#,
+  alpha_rel=alpha_rel,beta_rel=beta_rel,
+  mu_mu_sp=mu_mu_sp[stock_indices],tau_mu_sp=tau_mu_sp[stock_indices],
+  mu_CV_sp=mu_CV_sp[stock_indices],tau_CV_sp=tau_CV_sp[stock_indices]
 #  au1_stocks=au1_stocks,au2_stocks=au2_stocks,au3_stocks=au3_stocks,au4_stocks=au4_stocks
   )  
 
@@ -64,25 +66,37 @@ iqcW<-array(rep(array(c(rep(NA,(years+proj_years+3)),rep(0.01,(years+proj_years+
 iqcR<-array(rep(array(c(rep(NA,(years+proj_years+3)),rep(0.01,(years+proj_years+3)*3)),dim=c(years+proj_years+3,4)),3),
             dim=c(years+proj_years+3,4,3))
 
+logit_mu_spawn<-rnorm(stocks,mu_mu_sp,sqrt(1/(tau_mu_sp*5)))
+
+logit_CV_spawn<-rnorm(stocks,mu_CV_sp,sqrt(1/(tau_CV_sp*5)))
+
+logit_mu_spawn[1]<-runif(1,0.85,3) #lower bound 0.70
+logit_CV_spawn[1]<-runif(1,-3,-1.75) 
+
+logit_mu_spawn[3]<-runif(1,0,3) #lower bound 0.70
+logit_CV_spawn[3]<-runif(1,-3,-0.4) 
+
+
+mu_a<-c(rnorm(1,-2.784,0.50),rnorm(1,-2.784,0.50))
+sd_a<-c(rlnorm(1,-0.2653,0.20),rlnorm(1,-0.2653,0.20))
+
+
 inits.fn<-function() {
   list(fec=c(exp(8),exp(9),exp(9.5),exp(9.5),exp(9.7)),
        K=rlnorm(length(stock_indices),M_K[stock_indices]*1.1,0.50),
-       p.detect=array(rbeta((years+proj_years+5)*length(stock_indices),
-                            rep(alpha_detect[stock_indices],each=years+proj_years+5),
-                            rep(beta_detect[stock_indices],each=years+proj_years+5)),
-                      dim=c(years+proj_years+5,stocks)),
+       logit_pdetect=matrix(rnorm((years+5)*stocks,logit_mu_spawn,rep(0.20,times=stocks)),nrow=(years+5),byrow=T),    
+       
+       
+       
        MpsW=rlnorm(years+proj_years,-1.2,0.3),
+       a_slope=rnorm(stocks,mu_a[SR_unit[1:stocks]],sd_a[SR_unit[1:stocks]]),
        logit_qlW=log(iql/(1-iql)),     
        logit_qdW=log(iqd/(1-iqd)),     
        MW=rlnorm(1,-2.3,0.15),MR=rlnorm(1,-2,0.15),
-       early_MpsW=rlnorm(1,0.23,0.15),cv_SR=rlnorm(1,-1.61,0.10),
-       CV_MpsW=rbeta(1,30,70),Reff_mu=rbeta(1,15,35),Reff_eta=rbeta(1,10,10)*0.5#,SCRW=rbeta(1,3,17),
-      # CV_HrW=runif(1,0.01,0.99),logit_deltaHRW=rnorm(1,0.85,0.5),mu_HrW=rnorm(stocks,-1.3862944 ,0.5), 
-       #HrW_autoc=runif(stocks, 0.1,0.99)
-      ) 																									 
-  
+       early_MpsW=rlnorm(1,0.23,0.15),
+       CV_MpsW=rbeta(1,30,70),Reff_mu=rbeta(1,15,35),Reff_eta=rbeta(1,10,10)*0.5,CV_ladder=rlnorm(1,-3,0.20),
+       cv_SR=rlnorm(1,-1.5,0.50))  #,CV_ladder=rlnorm(1,-3,0.20)
 }
-
 
 # Parameters to monitor
 
@@ -108,5 +122,5 @@ parnames<-c(
   "muCO","muCR","nc_oll_Tot","nc_odn_Tot",
   "qcgnR","qcgnW","qctnR","qctnW","qdR","qdW","qrR","qrW","qlR","qlW",
   "reportc","reportd","reportl","reportrR","reportrW","rrR",
-  "surv_migr","p.mort","p.rel","nctW_rel","nctW_Tot")
+  "surv_migr","p.mort","p.rel","nctW_rel","nctW_Tot","CV_ladder")
 

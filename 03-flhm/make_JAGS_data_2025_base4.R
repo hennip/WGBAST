@@ -2,6 +2,29 @@
 #Added priors for recreational trolling release mortality (and proportion of fish released by year)
 
 #NB modified ccd_ObsW file starts from 0SW not 1SW as before
+ilogit<-function(x){
+return(exp(x)/(exp(x)+1))                 
+}
+
+get_logit_mu<-function(a,b){    #matrix input
+mu<-(a/(a+b))
+lmean<-log(mu/(1-mu))
+return(c(lmean))   
+}
+
+get_logit_tau<-function(a,b){    #matrix input
+mu<-(a/(a+b))
+lmean<-log(mu/(1-mu))
+#qlist<-Map(function(x, y) quantile(rbeta(100000, x, y),c(0.025,0.975)), a, b)
+qlist<-Map(function(x, y) log(quantile(rbeta(100000, x, y),c(0.025,0.975))/(1-quantile(rbeta(100000, x, y),c(0.025,0.975)))), a, b)
+list1 <- mapply(append, qlist, lmean, SIMPLIFY = FALSE)
+ldiff<-lapply(list1,function(x){max(abs(x[3]-x[1:2]))})
+#qs<-matrix(unlist(qlist), ncol=2, byrow=TRUE)
+lsd<-unlist(ldiff)/1.96
+ltau<-1/(lsd*lsd)
+return(c(ltau))   
+}
+
 
 #stock codes
 #1 "Tornionjoki"
@@ -22,28 +45,11 @@
 #16 "Kagealven"
 #17 "Testeboan"
 
-folder<-PathData_FLHM
+folder<-paste0(PathData,"data_",assessment_year,"/")  
 
-get_logit_mu<-function(a,b){    #matrix input
-  mu<-(a/(a+b))
-  lmean<-log(mu/(1-mu))
-  return(c(lmean))   
-}
-
-get_logit_tau<-function(a,b){    #matrix input
-  mu<-(a/(a+b))
-  lmean<-log(mu/(1-mu))
-  #qlist<-Map(function(x, y) quantile(rbeta(100000, x, y),c(0.025,0.975)), a, b)
-  qlist<-Map(function(x, y) log(quantile(rbeta(100000, x, y),c(0.025,0.975))/(1-quantile(rbeta(100000, x, y),c(0.025,0.975)))), a, b)
-  list1 <- mapply(append, qlist, lmean, SIMPLIFY = FALSE)
-  ldiff<-lapply(list1,function(x){max(abs(x[3]-x[1:2]))})
-  #qs<-matrix(unlist(qlist), ncol=2, byrow=TRUE)
-  lsd<-unlist(ldiff)/1.96
-  ltau<-1/(lsd*lsd)
-  return(c(ltau))   
-}
-
-
+# Packages are called in run-this-first.r (calls packages.r) 
+#library(reshape)
+#library(abind)
 
 avail_r<-c(1:17)  #note Emån Mörrum now added, 2023!
 avail_dc<-c(1:13,16:17)  #should Mörrum be added here next year?
@@ -86,21 +92,19 @@ modesum<-quantile(xsum,0.50)/(cv*cv+1)
 p90<-c(quantile(xsum,0.05),quantile(xsum,0.50),quantile(xsum,0.95))
 
 
-
 #M74
 M74<-as.matrix(read.table(paste0(folder,"M74.txt"),header=T))        
 M74_alpha<-M74[ ,iinds]
 M74_beta<-M74[ ,(iinds+1)]
 
 if(proj_years>=1){
-  M74_alpha<-rbind(M74_alpha, t(replicate(proj_years,M74_alpha[years,])))
-  M74_beta<-rbind(M74_beta, t(replicate(proj_years,M74_beta[years,])))
+M74_alpha<-rbind(M74_alpha, t(replicate(proj_years,M74_alpha[years,])))
+M74_beta<-rbind(M74_beta, t(replicate(proj_years,M74_beta[years,])))
 }
-
 
 M74_mu<-matrix(get_logit_mu(M74_alpha,M74_beta),nrow=dim(M74_alpha)[1])
 M74_tau<-matrix(get_logit_tau(M74_alpha,M74_beta),nrow=dim(M74_alpha)[1])
-
+     
 #mean_alpha<-apply(M74_alpha[1:30, ], 2, mean)
 #mean_beta<-apply(M74_beta[1:30, ], 2, mean)
 #mean_m74<-mean_alpha/(mean_alpha+mean_beta)
@@ -231,7 +235,11 @@ Ecgn<-abind(Ecgn,Ecgn0, along=1)
 #river catch up to current year-1, NA thereafter
 #coastal catch up to current year-1, NA thereafter
 #offshore catch up to current year-2, NA thereafter
-cat<-as.matrix(read.table(paste0(folder,"Catch_TrollingSeparated_CR.txt"),header=T))
+#if(CR){
+  cat<-as.matrix(read.table(paste0(folder,"Catch_TrollingSeparated_CR.txt"),header=T))
+#}else{
+#  cat<-as.matrix(read.table(paste0(folder,"Catch_TrollingSeparated.txt"),header=T))
+#}
 
 cat_r<-cat[,1]
 cat_c<-cat[,2]
@@ -256,7 +264,11 @@ WpropObs[,2]<-Scale[1:years,3]
 sd_wr[,2]<-Scale[1:years,4]
 
 #Note Testebo?n data to be added to spawner counts in 2020.  It is an index river
-spawner_counts<-as.matrix(read.table(paste0(folder,"spawner_counts_SimoMSW.txt"),header=T, encoding="UTF-8"))
+#if(SimoMSW){
+  spawner_counts<-as.matrix(read.table(paste0(folder,"spawner_counts_SimoMSW.txt"),header=T, encoding="UTF-8"))
+#}else{
+#  spawner_counts<-as.matrix(read.table(paste0(folder,"spawner_counts.txt"),header=T, encoding="UTF-8"))
+#}
 
 MSWladder<-as.matrix(read.table(paste0(folder,"Fishladder.txt"),header=T))
 sp_count<-array(NA,dim=c(years,allstocks))
@@ -266,7 +278,7 @@ sp_count[,1]<-spawner_counts[,1]  #Torne
 sp_count[,2]<-spawner_counts[,2]  #Simo
 sp_count[,3]<-spawner_counts[,3]  #Kalix
 sp_count[,4]<-spawner_counts[,4]  #Råne
-sp_count[,14]<-spawner_counts[,14]  #Mörrum
+sp_count[,14]<-spawner_counts[,14]  #Mörrumsån
 
 ladder_count[,5]<-spawner_counts[,5]  #Pite
 ladder_count[,10]<-spawner_counts[,10]  #Vindel
@@ -357,7 +369,6 @@ mu_mu_sp<-get_logit_mu(mu_sp_alpha,mu_sp_beta)
 tau_mu_sp<-get_logit_tau(mu_sp_alpha,mu_sp_beta)
 mu_CV_sp<-get_logit_mu(CV_sp_alpha,CV_sp_beta)
 tau_CV_sp<-get_logit_tau(CV_sp_alpha,CV_sp_beta)
-
 
 N_sp_count<-array(10,dim=c(years,allstocks))   #N for MSW proportion observation model
 MSWprop<-array(NA,dim=c(years,allstocks))   #N for MSW proportion observation model
@@ -485,6 +496,7 @@ beta_migr[1:(years-1),10]<-Ume_migr[,2]
 
 alpha_migr[30:34,13]<-1.75  #Ljungan 2016-2020 prop that dies~Beta(2.75,1.75)
 beta_migr[30:34,13]<-2.75
+
 
 rivHR<-as.matrix(read.table(paste0(folder,"rivHR.txt"),header=T,row.names=1))
 colnames(rivHR)<-NULL      

@@ -46,35 +46,21 @@ trolling<-1
 #16 "Kagealven"
 #17 "Testeboan"
 
-RiverCatch1<-F # T if stock specific river catches are included
-RaneCount<-T # T if Råne count data is included. This affects the data, but not the model 
-full_sp_count<-F # if FALSE, Leave 2023 and 2024 data off from Ume and Testeboån spawner counts
-
-# Versions for base model:
-# 1 Torne p.detect truncation
-# 2 Ume, Testeboån and Pite spawner count change
-# 3 Old base model (likely estimates way too much spawners for Torne)
-base_version<-3 
-if(RiverCatch1==F){
-  if(base_version==1){ modelName<-"FLHM_JAGS_2025_base1"} 
-  if(base_version==2){ modelName<-"FLHM_JAGS_2025_base2"} 
-  if(base_version==3){ modelName<-"FLHM_JAGS_2025_baseOLD"} 
-}
-if(RiverCatch1==T){modelName<-"FLHM_JAGS_2025_RiverCatch1"}
+# Assessment model 2025
+modelName<-"FLHM_JAGS_2025_base4"  #variant with trolling C&R " 
+source(paste0(PathModel_FLHM,modelName,".R"))
 
 source(paste0(PathModel_FLHM,"make_JAGS_data_",assessment_year,".R"))
 
-source(paste0(PathModel_FLHM,modelName,".R"))
-
 runName<-modelName
-if(RaneCount==F & full_sp_count==T){runName<-str_c(modelName, "_withoutRane")}
-if(RaneCount==T & full_sp_count==F){runName<-str_c(modelName, "_2yOffUT")}
-print(runName)
+# if(RaneCount==F & full_sp_count==T){runName<-str_c(modelName, "_withoutRane")}
+# if(RaneCount==T & full_sp_count==F){runName<-str_c(modelName, "_2yOffUT")}
+# print(runName)
+
+#CR<-ifelse(grepl("CR",modelName),T,F) #boolean to read correct version of catch data file
 
 # data, initial values, parameters to monitor
-if(RiverCatch1==T){
-  source("03-flhm/setup_FLHM_2025_RiverCatch1.R")}else{
-    source("03-flhm/setup_FLHM_2025_base.R")}
+source("03-flhm/setup_FLHM_2025.R")
 
 initsall<-list(inits.fn(),inits.fn())
 
@@ -110,7 +96,7 @@ run<-run1
 save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
 
 t3<-Sys.time();print(t3)
-run2 <- extend.jags(run1, combine=T, sample=2700, thin=100, keep.jags.files=T)
+run2 <- extend.jags(run1, combine=T, sample=1000, thin=100, keep.jags.files=T)
 t4<-Sys.time();print(t4)
 print("run2 done");print(difftime(t4,t3))
 print("--------------------------------------------------")
