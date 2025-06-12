@@ -280,8 +280,8 @@ initsall$logit_HrW[,3,]<-rnorm((years+3)*stocks,-1.4,0.50)
 initsall$coefDS_tmp<-rlnorm(1,-2.029014,0.1211)
  
 initsall$CV_ladder<-rlnorm(1,-3,0.20)
-initsall$mu_CVSR<-rnorm(1,-1.5,0.20)
-initsall$tau_CVSR<-runif(1,5,30)
+#initsall$mu_CVSR<-rnorm(1,-1.5,0.20)
+#initsall$tau_CVSR<-runif(1,5,30)
 #initsall$cv_SR<-rlnorm(stocks,-1.5,0.50)
 initsall$cv_SR<-rlnorm(1,-1.5,0.50) 
 

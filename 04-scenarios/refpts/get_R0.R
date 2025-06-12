@@ -1,4 +1,4 @@
-get_R0<-function(stock,histyr,ymax,evec,nsim){
+get_R0<-function(Model,stock,histyr,ymax,evec,nsim){
 
 #istock<-stocks[ij]     #debugging
 #evec<-errorSR[,,stocks[ij]]
@@ -29,7 +29,9 @@ z.tmp<-array(NA,dim=c(Nstocks,years[3],100))
 z.tmp1<-array(NA,dim=c(Nstocks,years[3],100))
 z.all<-array(NA,dim=c(Nstocks,years[3],nsim))
 EPR.all<-array(NA,dim=c(Nstocks,years[3],nsim))
-zprop<-array(NA,dim=c(Nstocks,years[3]))
+Etot.all<-array(NA,dim=c(Nstocks,years[3],nsim))
+zprop<-array(NA,dim=c(Nstocks,years[3]))  
+sprop<-array(NA,dim=c(Nstocks,years[3]))
 
 eggs1SW.tmp<-array(NA,dim=c(Nstocks,years[3],100))
 eggs2SW.tmp<-array(NA,dim=c(Nstocks,years[3],100))
@@ -50,9 +52,7 @@ eggs4SW<-array(NA,dim=c(Nstocks,years[3]))
 eggs5SW<-array(NA,dim=c(Nstocks,years[3]))
 
 
-source(paste0(PathFiles,"refpts/InitArrays_R0.R"))
-
-#PathScen<-"C:/WGBAST15/2023 scenarios/" # scenario results 
+source("04-scenarios/refpts/InitArrays_R0.R")
 
 CoefRiverF<-0                      #ICES COEFS
 CoefTrollingF<-0  #value from 2019 ProjEffort code  
@@ -80,7 +80,7 @@ CoefTrollingF<-0  #value from 2019 ProjEffort code
  for(loop in 1:(nsim/100)){
  #       loop<-1
 
-    BH_dataFile<-paste0(PathOut_Scen, "2023/output/ScenHist_JAGSmodel", Model,"_",loop,".RData")
+    BH_dataFile<-paste0(PathOut_Scen, "ScenHist_", Model,"_",loop,".RData")
 
   load(BH_dataFile)
 
@@ -613,6 +613,7 @@ z.tmp1[istock,i,]<-sum(which(z.tmp[istock,i,]<0.20))
                 
                 z.all[r,y,jj:jk]<-z.tmp[r,y,]
                 EPR.all[r,y,jj:jk]<-EPR_M74[y,r,]
+                Etot.all[r,y,jj:jk]<-Etot_tmp[y,r,]
                 
                    eggs1SW.all[r,y,jj:jk]<-eggs1SW.tmp[r,y,]
                       eggs2SW.all[r,y,jj:jk]<-eggs2SW.tmp[r,y,]
@@ -733,16 +734,22 @@ z.tmp1[istock,i,]<-sum(which(z.tmp[istock,i,]<0.20))
         }
         #use apply to get distributions over samples!
      
-        smolt_MSY<- apply(WStockAll[1,((yCTN-200):yCTN),istock,1,],2,mean) 
-        spawner_MSY<-apply(WStock[((yCTN-200):yCTN),istock,],2,mean)
+        smolt0<- apply(WStockAll[1,((yCTN-200):yCTN),istock,1,],2,mean) 
+        spawner0<-apply(WStock[((yCTN-200):yCTN),istock,],2,mean)
         EPR0<-apply(EPR.all[istock,((yCTN-200):yCTN),],2,mean)
-        
+        E0<-apply(Etot.all[istock,((yCTN-200):yCTN),],2,mean)
+        #z0<-apply(z.all[istock,((yCTN-200):yCTN),],2,mean)
+        z0<-numeric(nsim)
+        for(i in 1:nsim){
+          z0[i]<-length(which(z.all[istock,((yCTN-200):yCTN),i]<0.20))/length(z.all[istock,((yCTN-200):yCTN),i])   #propn of years with z<-0.2 per sample
+        }
+       
         #smolt_MSY<- apply(WStockAll[1,((yCTN-20):yCTN),istock,1,],2,mean) 
         #spawner_MSY<-apply(WStock[((yCTN-20):yCTN),istock,],2,mean)
         
         #EPR0<-apply(EPR.all[istock,((yCTN-20):yCTN),],2,mean)
         for(y in 1:yCTN){
-        zprop[istock,y]<-sum(z.all[istock,y,])/nsim
+        zprop[istock,y]<-sum(which(z.all[istock,y,]<0.20))
         eggs1SW[istock,y]<-mean(eggs1SW.all[istock,y, ])
           eggs2SW[istock,y]<-mean(eggs2SW.all[istock,y, ])
             eggs3SW[istock,y]<-mean(eggs3SW.all[istock,y, ])
@@ -754,14 +761,15 @@ z.tmp1[istock,i,]<-sum(which(z.tmp[istock,i,]<0.20))
             "Ume","Ore","Logde","Ljungan","Morrum","Eman","Kage","Test")
         
         eggsSW<-data.frame((1:yCTN)+1991,eggs1SW[istock,],eggs2SW[istock,],eggs3SW[istock,],eggs4SW[istock,],eggs5SW[istock,])
-        write.table(zprop[istock,],file=paste0("zprop_long_",RiverNames[istock],".csv"),row.names=F,col.names=F,sep=",")
+        #write.table(zprop[istock,],file=paste0("zprop_long_",RiverNames[istock],".csv"),row.names=F,col.names=F,sep=",")
+        write.table(z.all[istock,((yCTN-200):yCTN),],file=paste0("zprop_long_",RiverNames[istock],".csv"),row.names=F,col.names=F,sep=",")
         #write.table(eggsSW[(yBreak+1):yCTN,],file=paste0("eggsSW_long_",RiverNames[istock],".csv"),row.names=F,col.names=F,sep=",")
         #return(list(-mean(CalC_tot[(yCTN-20):yCTN,istock,iind]),mean(WStockAll[1,((yCTN-20):yCTN),istock,1,iind])))
         #without wrapper
         #return(MSY)
         #with wrapper
 
-        return(list(smolt_MSY,spawner_MSY, EPR0))
+        return(list(smolt0,spawner0, E0,z0))
 }
 
 

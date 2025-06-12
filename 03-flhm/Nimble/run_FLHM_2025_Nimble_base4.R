@@ -117,8 +117,9 @@ print(paste0(modelName,"_data", assessment_year))
             "muCO","muCR","nc_oll_Tot","nc_odn_Tot",
             "qcgnR","qcgnW","qctnR","qctnW","qdR","qdW","qrR","qrW","qlR","qlW",
             "reportc","reportd","reportl","reportrR","reportrW","rrR",
-            "surv_migr","logit_qlW","early_MpsW","mu_MpsW","tau_MpsW","mu_qlW","tau_ql","nco_W","nco_R","p.mort","p.rel","nctW_rel","nctW_Tot","CV_ladder","mu_CVSR","tau_CVSR","mu_spawn","CV_spawn")         
-               #"mu_CVSR","tau_CVSR"
+            "surv_migr","logit_qlW","early_MpsW","mu_MpsW","tau_MpsW","mu_qlW","tau_ql","nco_W",
+            "nco_R","p.mort","p.rel","nctW_rel","nctW_Tot","CV_ladder",#"mu_CVSR","tau_CVSR",
+            "mu_spawn","CV_spawn")    
 ######################################################################################3
 
 
