@@ -55,7 +55,7 @@ while(apu==0){
   for(loop in 1:(nsim/100)){
 #    for(loop in 1:5){
  #      loop<-1    
-    BH_dataFile<-paste0(PathScen, "ScenHist_", Model,"_",loop,".RData") 
+    BH_dataFile<-paste0(PathOut_Scen, "ScenHist_", Model,"_",loop,".RData") 
     load(BH_dataFile)
   
     for(y in 1:Nyears){
@@ -87,8 +87,12 @@ while(apu==0){
       RRF_HR[,y,,sims[1]:sims[2]]<-RRF_HRtmp[,y,,2,]
       WCTN_HR[,y,,sims[1]:sims[2]]<-WCTN_HRtmp[,y,,2,]
       RCTN_HR[,y,,sims[1]:sims[2]]<-RCTN_HRtmp[,y,,2,]
+      WCGN_HR[,y,,sims[1]:sims[2]]<-WCGN_HRtmp[,y,,2,]
+      RCGN_HR[,y,,sims[1]:sims[2]]<-RCGN_HRtmp[,y,,2,]
       WODN_HR[,y,,sims[1]:sims[2]]<-WODN_HRtmp[,y,,1,]
       RODN_HR[,y,,sims[1]:sims[2]]<-RODN_HRtmp[,y,,1,]
+      WCDN_HR[,y,,sims[1]:sims[2]]<-WCDN_HRtmp[,y,,2,]
+      RCDN_HR[,y,,sims[1]:sims[2]]<-RCDN_HRtmp[,y,,2,]
       WOLL_HR[,y,,sims[1]:sims[2]]<-WOLL_HRtmp[,y,,1,]
       ROLL_HR[,y,,sims[1]:sims[2]]<-ROLL_HRtmp[,y,,1,]
       WTR_HR[,y,,sims[1]:sims[2]]<-WTR_HRtmp[,y,,1,]
@@ -356,11 +360,10 @@ while(apu==0){
     WOLL_HR[1,y,1:Nstocks,]<-0          
     ROLL_HR[1,y,1:4,]<-0
     
-    WCDN_HR[1,y,1:Nstocks,]<-0
     WCTN_HR[1,y,1:Nstocks,]<-0
-    RCDN_HR[1,y,1:4,]<-0
     RCTN_HR[1,y,1:4,]<-0
     
+
     for(a in 2:6){
      for(r in 1:Nstocks){
       WOLL_HR[a,y,r,]<- 1-exp(-ql_W[2,y,]* EffortAU[y,1,"OLL",])           
@@ -373,11 +376,15 @@ while(apu==0){
 #    ROLL_HR[2,y,,]<- 1-exp(-ql_R[1,y,]* EffortAU[y,1,"OLL",])
 #    ROLL_HR[3:6,y,,]<- 1-exp(-ql_R[2,y,]* EffortAU[y,1,"OLL",])
     
-    # No future DN fishery
+    # No future DN or GN fishery (small CGN fishery exists but in scenarios only CTN is used to predict coastal fishery)
     WODN_HR[,y,1:Nstocks,]<-0
     RODN_HR[,y,1:4,]<-0
     WODN_C[,y,1:Nstocks,]<-0
     RODN_C[,y,1:4,]<-0
+    WCDN_HR[,y,1:Nstocks,]<-0
+    RCDN_HR[,y,1:4,]<-0
+    WCGN_HR[,y,1:Nstocks,]<-0
+    RCGN_HR[,y,1:4,]<-0
     
     #AU4 effort=0
     for(u in 1:4){
@@ -667,6 +674,7 @@ while(apu==0){
     
     # Combined coastal harvest rate
     for(u in 1:3){
+      
       CoastW_HR[a,,u,]<-1-exp(-(-log(1-WCTN_HR[a+1,,u,])-log(1-WCGN_HR[a+1,,u,])-log(1-WCDN_HR[a+1,,u,])))
       CoastR_HR[a,,u,]<-1-exp(-(-log(1-RCTN_HR[a+1,,u,])-log(1-RCGN_HR[a+1,,u,])-log(1-RCDN_HR[a+1,,u,])))
     }
