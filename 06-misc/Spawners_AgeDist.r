@@ -1,6 +1,9 @@
-rm(list=ls(all=TRUE))
+#rm(list=ls(all=TRUE))
 
-source("run-this-first.R") # This file should be located at the root of the Rproject file. If not using Rstudio, pls define the location
+# Skip == T when running 05-results/workflow-extra-output 
+if(exists("skip")==F){
+  
+source("../run-this-first-wgbast.R") # This file should be located at the root of the Rproject file. If not using Rstudio, pls define the location
 
 Model<-"2024_JAGS_Mps" # Assessment model version
 nsim<-1000
@@ -17,7 +20,7 @@ File<-paste0(PathOut_Scen,"ScenProj_",Model,"_EScen",EffScen,"_RCzero23-35.RData
 #ScenProj_2024_JAGS_Mps_EScen1_RCzero23-35
 File
 load(File)
-
+}
 
 #! #############################################################################
 ################################################################################

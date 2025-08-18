@@ -3,11 +3,15 @@
 # ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 
 
-rm(list=ls(all=TRUE))
-
-source("run-this-first.R") # This file should be located at the root of the Rproject file. If not using Rstudio, pls define the location
+#rm(list=ls(all=TRUE))
 
 
+
+# Skip == T when running 05-results/workflow-extra-output 
+if(exists("skip")==F){
+
+source("../run-this-first-wgbast.R") # This file should be located at the root of the Rproject file. If not using Rstudio, pls define the location
+  
 Model<-"2024_JAGS_Mps" # Assessment model version
 nsim<-1000
 LastHistYear<-2023
@@ -28,7 +32,7 @@ File<-paste0(PathOut_Scen,"ScenProj_",Model,"_EScen",EffScen,"_RCzero23-35.RData
 
 File
 load(File)
-
+}
 #! #############################################################################
 ################################################################################
 
@@ -66,19 +70,19 @@ dim(Migr_AU13W)
 
 
 res<-stats(Migr_AU13tot)
-write_xlsx(as.data.frame(res),path=paste0(PathOut_Scen,"migratingAU13.xlsx"))
+write_xlsx(as.data.frame(res),path=paste0(PathOut_Scen,"migratingAU1-3.xlsx"))
 
 res<-stats(Migr_AU13W)
-write_xlsx(as.data.frame(res),path=paste0(PathOut_Scen,"migratingAU13_wild.xlsx"))
+write_xlsx(as.data.frame(res),path=paste0(PathOut_Scen,"migratingAU1-3_wild.xlsx"))
   
 res<-stats(Migr_AU13R)
-write_xlsx(as.data.frame(res),path=paste0(PathOut_Scen,"migratingAU13_reared.xlsx"))
+write_xlsx(as.data.frame(res),path=paste0(PathOut_Scen,"migratingAU1-3_reared.xlsx"))
   
 res<-stats(Migr_Tornio)
-write_xlsx(as.data.frame(res),path=paste0(PathOut_Scen,"migratingAU13_torne.xlsx"))
+write_xlsx(as.data.frame(res),path=paste0(PathOut_Scen,"migratingAU1-3_torne.xlsx"))
 
 res<-stats(Migr_Simo)
-write_xlsx(as.data.frame(res),path=paste0(PathOut_Scen,"migratingAU13_simo.xlsx"))
+write_xlsx(as.data.frame(res),path=paste0(PathOut_Scen,"migratingAU1-3_simo.xlsx"))
 
 # Torne
   
@@ -93,7 +97,7 @@ write_xlsx(as.data.frame(res),path=paste0(PathOut_Scen,"migratingAU13_simo.xlsx"
   }
   
   res<-as.data.frame(cbind(Years,mu, sd, q5, q50, q95))
-  write_xlsx(res,path=paste0(PathOut_Scen,"migratingAU13_Torne.xlsx")) 
+  write_xlsx(res,path=paste0(PathOut_Scen,"migratingAU1-3_Torne.xlsx")) 
   
   
   
@@ -131,7 +135,7 @@ for(y in 2:Nyears){
   }
 
 res<-cbind(c(1992:(1992+Nyears-1)),Q5, Q50, Q95) %>% as.data.frame
-write_xlsx(res,paste0(PathOut_Scen,"migratingAU13R_GrilseProp.xlsx"))
+write_xlsx(res,paste0(PathOut_Scen,"migratingAU1-3R_GrilseProp.xlsx"))
 
 
 

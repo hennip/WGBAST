@@ -2,8 +2,11 @@
 
 # Becky:
 # ===============
-PathSim<-"C:/WGBAST15/Assessment results/" # results from the simulation model and output from scenarios
+#PathSim<-"C:/WGBAST15/Assessment results/" # results from the simulation model and output from scenarios
 
+# Note! CR_2024_selected_chain.RData uploaded into 2025 flhm output folder (PathOut_FLHM)
+# Another option would be to set different path in run-this-first-file for previous year output
+#PathSim<-PathOut_FLHM # This is defined in the run-this-first-wgbast.R-file
 
 #assessment_year<-2022
 #years<-length(seq(1987:assessment_year))
@@ -19,7 +22,8 @@ PathSim<-"C:/WGBAST15/Assessment results/" # results from the simulation model a
 AU<-c(1,1,1,1,2,2,2,2,2,2,2,2,3,4,4,2,3)
 e_delay<-c(rep(4,times=12),3,3,3,4,3)
 
-load(paste0(PathSim,"CR_2024_selected_chain.RData"))
+#load(paste0(PathSim,"CR_2024_selected_chain.Rdata"))
+load("../../WGBAST_shared/flhm/2024/output/CR_2024_selected_chain.Rdata")
 d<-as.matrix(chains)
 
 first.word <- function(my.string){
@@ -277,10 +281,10 @@ initsall$logit_HrW[,3,]<-rnorm((years+3)*stocks,-1.4,0.50)
 initsall$coefDS_tmp<-rlnorm(1,-2.029014,0.1211)
  
 initsall$CV_ladder<-rlnorm(1,-3,0.20)
-initsall$mu_CVSR<-rnorm(1,-1.5,0.20)
-initsall$tau_CVSR<-runif(1,5,30)
-initsall$cv_SR<-rlnorm(stocks,-1.5,0.50)
-#initsall$cv_SR<-rlnorm(1,-1.5,0.50) 
+#initsall$mu_CVSR<-rnorm(1,-1.5,0.20)
+#initsall$tau_CVSR<-runif(1,5,30)
+#initsall$cv_SR<-rlnorm(stocks,-1.5,0.50)
+initsall$cv_SR<-rlnorm(1,-1.5,0.50) 
 
 initsall$logit_mu_spawn<-rnorm(stocks,mu_mu_sp,sqrt(1/(tau_mu_sp*5)))
 initsall$logit_CV_spawn<-rnorm(stocks,mu_CV_sp,sqrt(1/(tau_CV_sp*5)))
