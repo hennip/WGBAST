@@ -1,14 +1,17 @@
 # ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
-# Laskee tunnusluvut kutijam??rille vuosittain ja uniteittain,
-# erikseen villeille, viljellyille ja molemmille yhteens?, ja tallettaa
-# tiedot tiedostoon Spawners_WildAndReared_ByUnits.csv
+# Calculates number of spawners per year and assessment unit/river,
+# for wild, reared and in total
+# saves output in two xlsx files 
 # -------------------------
-# ~*~ (C): Henni (2008/2011) ~*~
+# ~*~ (C): Henni (2008/2011/2025) ~*~
 # -------------------------
 # ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 
-rm(list=ls(all=TRUE))
+#rm(list=ls(all=TRUE))
 
+# Skip == T when running 05-results/workflow-extra-output 
+if(exists("skip")==F){
+  
 source("run-this-first.R") # This file should be located at the root of the Rproject file. If not using Rstudio, pls define the location
 
 
@@ -32,6 +35,7 @@ File<-paste0(PathOut_Scen,"ScenProj_",Model,"_EScen",EffScen,"_RCzero23-35.RData
 
 File
 load(File)
+}
 #! #############################################################################
 ################################################################################
 

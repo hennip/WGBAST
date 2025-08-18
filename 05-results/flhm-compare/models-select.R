@@ -16,10 +16,11 @@ Rivername_long<-read.table(str_c(PathData_FLHM, "rivernames.txt"))[,1]
 # Model 1
 # =================
 
-#Cleaned version 2024 (no stucked chains)
-load(file=paste0("../../WGBAST_shared/flhm/2024/output/CR_2024_selected_chain.RData")); trolling1<-T;Mname1<-"2024 base model, cleaned"
+#Cleaned version 2025 (no stucked chains)
+load(file=paste0("../../WGBAST_shared/flhm/2025/output/chain_cleaned_2025_base4.RData")); trolling1<-T;Mname1<-"2025 assessment model (base4), cleaned"
 
-chains1<-chains
+#chains1<-chains
+chains1<-chains_new
 
 summary(chains1[,"MW"])
 
@@ -30,8 +31,8 @@ nsims1<-ifelse(nchains1==1,
 fix1<-1
 
 
-YearsB<-c(1987:2023)
-Years2B<-c(1992:2023)
+YearsB<-c(1987:2024)
+Years2B<-c(1992:2024)
 
   
   
@@ -39,11 +40,7 @@ Years2B<-c(1992:2023)
 # Model 2:
 # =================
 
-load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_baseOLD_data2025.RData")); trolling2<-T;Mname2<-"2025 base model with Råne sp data and Simo sp changes"
-#load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_RiverCatch1_data2025.RData")); trolling2<-T;Mname2<-"2025 RiverCatch1"
-#load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_base1_2yOffUT_data2025.RData")); trolling2<-T;Mname2<-"base1 Ume/Testeboån sp count off for 23-24"
-#load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_baseOLD_2yOffUT_data2025.RData")); trolling2<-T;Mname2<-"baseOLD Ume/Testeboån sp count off for 23-24"
-#load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_base2_data2025.RData")); trolling2<-T;Mname2<-"base2"
+load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_base4_data2025.RData")); trolling2<-T;Mname2<-"2025 base4 model, long run"
 
 Rane_sp<-T
 
@@ -55,7 +52,7 @@ Rane_sp<-T
 # }
  #chains<-chainsGR<-window(chains, thin=700) #700=350*2
 chains<-chainsGR<-as.mcmc.list(run)
-chains<-chainsGR<-window(chains, start=100000) #700=350*2
+chains<-chainsGR<-window(chains, start=600000)
 
    
 
@@ -66,13 +63,11 @@ nsims2<-ifelse(nchains2==1,
                  length(chains[,"MW"][[1]])*2)
 fix2<-0
   
+GR<-ifelse(nchains2==1,F,T)
 
-  GR<-F#ifelse(nchains2==1,F,T)
-  
-  
 # Is comparison for run from the same year? T if yes, F if no
 # Note that older version should be set as Model 1
-sameYear<-F
+sameYear<-T
 if(sameYear==T){
   Years<-YearsB
   Years2<-Years2B
