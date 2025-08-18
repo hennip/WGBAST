@@ -129,7 +129,8 @@ print(paste0(modelName,"_data", assessment_year))
  this_cluster <- makeCluster(4,outfile="")
  chain_output <- parLapply(cl = this_cluster, X = 1:2, 
                            fun = run_wgbastCode, 
-                           wdata = WGBASTData,wconsts=WGBASTConsts,winits=WGBASTInits,wmonitor=parnames,mfile=modelfile)
+                           wdata = WGBASTData,wconsts=WGBASTConsts,winits=WGBASTInits,
+                           wmonitor=parnames,mfile=modelfile)
  
  ## It's good practice to close the cluster when you're done with it.
  stopCluster(this_cluster)
