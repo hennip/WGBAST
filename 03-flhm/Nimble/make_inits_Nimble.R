@@ -22,7 +22,8 @@
 AU<-c(1,1,1,1,2,2,2,2,2,2,2,2,3,4,4,2,3)
 e_delay<-c(rep(4,times=12),3,3,3,4,3)
 
-load(paste0(PathSim,"CR_2024_selected_chain.Rdata"))
+#load(paste0(PathSim,"CR_2024_selected_chain.Rdata"))
+load("../../WGBAST_shared/flhm/2024/output/CR_2024_selected_chain.Rdata")
 d<-as.matrix(chains)
 
 first.word <- function(my.string){

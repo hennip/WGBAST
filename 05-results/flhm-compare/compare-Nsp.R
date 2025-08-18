@@ -11,7 +11,7 @@
   
 for(r in 1:nstocks){
     #r<-1
-    df<-boxplot.jags.df2(chains1, "NspWtot[",str_c(r,"]"),1:length(YearsB)+1)
+    df<-boxplot.jags.df2(chains1, "NspWtot[",str_c(r,"]"),1:(length(YearsB)+1))
     #df<-boxplot.jags.df2(dsub, "NspWtot[",str_c(r,"]"),1:length(Years))
     df<-mutate(df, River=r)
     ifelse(r>1, df2<-bind_rows(df2,df),df2<-df)
@@ -79,13 +79,13 @@ df.2
 # 
 # df.2<-left_join(df.2,counts, by=NULL)
 
-if(Rane_sp==T){
+# if(Rane_sp==T){
   counts<-read_tsv(str_c(PathData_FLHM,"spawner_counts_SimoMSW.txt"),skip=9,col_names=T, na="NA") %>%
     as.data.frame()
-}else{
-  counts<-read_tsv(str_c(PathData_FLHM,"spawner_counts_SimoMSW_withoutRane.txt"),skip=9,col_names=T, na="NA") %>% 
-  as.data.frame()
-}
+# }else{
+#   counts<-read_tsv(str_c(PathData_FLHM,"spawner_counts_SimoMSW_withoutRane.txt"),skip=9,col_names=T, na="NA") %>% 
+#   as.data.frame()
+# }
 
 #colnames(counts)<-rivernames
 rownames(counts) <-  1986+1:nrow(counts)
@@ -113,7 +113,7 @@ counts2_r <- counts2[,-1]
 
 counts2_m <- t(counts2_r) %>% 
   as.data.frame() %>% 
-  mutate(id = c(6,7,8,11))
+  mutate(id = c(4,6,7,8,11))
 
 counts2_long <- counts2_m %>% 
   melt(id.vars = c("id")) %>% 

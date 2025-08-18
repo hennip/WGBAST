@@ -25,7 +25,7 @@ source("../run-this-first-wgbast.R")
 # # # Becky:
 #    PathSim<-"C:/WGBAST15/Assessment results/" # results from the simulation model and output from scenarios
 #    PathData<-"C:/WGBAST15/WGBAST_2025/data_2025/" # extra input files 
-#    PathScen<-"C:/WGBAST15/2025_scenarios/" # scenario results 
+#    PathOut_Scen<-"C:/WGBAST15/2025_scenarios/" # scenario results 
 #    PathFiles<-"//storage-dh.slu.se/home$/rewh0001/My Documents/ICES WGBAST/2025/Scenarios/"
 
 # ===============
@@ -62,8 +62,9 @@ LastHistYear<-assess_year-1
 if(Optim==T){
   ymax=10
   }else{
-    ymax<-350
-    }
+    #ymax<-350
+    ymax<-10
+  }
 LastPredYear<-LastHistYear+ymax
 
 #FUTURE PROJECTIONS BASED ON EFFORT SCENARIOS
@@ -101,13 +102,13 @@ zero_st<-c(4,9,15:17)  #stocks with no river F, note this will be 10% of HR for 
 #2025 Rane, Savaran, Eman, Kage, Test
 
 
-#for(EffScen in c(1:2)){
+for(EffScen in c(1:1)){
 #SD31only<-FALSE
 #EffScen<-21
 #for(EffScen in c(3:19)){
-  for(EffScen in c(3:3)){
+#  for(EffScen in c(3:3)){
     SD31only<-F
-#EffScen<-22
+#EffScen<-1
 
 # workflow for effort scenarios:                                                      
 # 1. Run scenarios 1 (zero fishing sea & river) and 2 (zero fishing at sea) with Optim=F
@@ -154,7 +155,7 @@ if(EffScen==22){Coef2<-1; target<-4.95} #check, this is landed median from Tapan
 
 # Load pre saved values for scenario specific Coef    
 if(Optim==F){
-  load(paste0(PathScen,"Coef2_",Model,"_EScen",EffScen,".RData"))
+  load(paste0(PathOut_Scen,"Coef2_",Model,"_EScen",EffScen,".RData"))
   Coef2<-Coef
 }    
     
@@ -193,7 +194,7 @@ E_CTN_SWE_31<-c(rep(6.53,2))
 
 # Load SR errors
 #load(paste0(PathFiles, "SR_devs_2025.RData"))
-load(paste0(PathScen, "SR_devs_2025.RData"))
+load(paste0(PathOut_Scen, "SR_devs_2025.RData"))
 
 # =============================================================
 
@@ -248,23 +249,25 @@ Coef<-ifelse(iter==1,Coef2-0.1,Coef2)
 
 if(Optim==T){
   if(SD31only==F){
-    save(Coef, file=paste0(PathScen,"Coef2_",Model,"_EScen",EffScen,".RData"))
+    save(Coef, file=paste0(PathOut_Scen,"Coef2_",Model,"_EScen",EffScen,".RData"))
   }
   if(SD31only==T){
-    save(Coef, file=paste0(PathScen,"Coef2_",Model,"_EScen",EffScen+12,".RData"))
+    save(Coef, file=paste0(PathOut_Scen,"Coef2_",Model,"_EScen",EffScen+12,".RData"))
   }
 }
 if(Optim==F){
   if(SD31only==F){
   # Save to RData-file
-  if(RCzero==T){File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,"_RCzero23-35.RData")}
-  if(RCzero==F){File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen,".RData")}
+  # tmp added to pathname to enable different location than the read in folder in OneDrive
+  # If not needed, set in run-this-first-wgbast.r PathOut_Scen_tmp<-PathOut_Scen
+  if(RCzero==T){File<-paste0(PathOut_Scen_tmp,"ScenProj_",Model,"_EScen",EffScen,"_RCzero23-35.RData")}
+  if(RCzero==F){File<-paste0(PathOut_Scen_tmp,"ScenProj_",Model,"_EScen",EffScen,".RData")}
   save(list = Perform_Stats, file = File)
   # =============================================================
   }else if(SD31only==T){
   # Save to RData-file
-  if(RCzero==T){File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen+12,"_RCzero23-35.RData")}
-  if(RCzero==F){File<-paste0(PathScen,"ScenProj_",Model,"_EScen",EffScen+12,".RData")}
+  if(RCzero==T){File<-paste0(PathOut_Scen_tmp,"ScenProj_",Model,"_EScen",EffScen+12,"_RCzero23-35.RData")}
+  if(RCzero==F){File<-paste0(PathOut_Scen_tmp,"ScenProj_",Model,"_EScen",EffScen+12,".RData")}
   save(list = Perform_Stats, file = File)
   }
 }
