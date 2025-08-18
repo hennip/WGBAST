@@ -30,6 +30,7 @@
 # - Coastal harvest rate per AU, preferably both grilse and MSW (but at least MSW)
 # o wild
 # o reared
+source("../run-this-first-wgbast.r")
 
 # Define  
 skip<-1 # When skip exists, definitions below are used and the ones in the source files skipped
@@ -107,9 +108,42 @@ source("06-misc/Spawners_AgeDist.R")
 
 
 ################################################################################
-# - Slim, SMSY and SR0 (as number of eggs, or if possible, as number of salmon), 50%, 80% and 95% level of probability
+# - Slim, SMSY and SR0 (as number of eggs, or if possible, as number of salmon), 
+# 50%, 80% and 95% level of probability for each stock
 ################################################################################
-# o for each stock
+
+load("../../WGBAST_shared/scen/2025/Ref pts/eqm_distns_2025.RData")
+load("../../WGBAST_shared/scen/2025/Ref pts/SMSY_distributions_2025.RData")
+load("../../WGBAST_shared/scen/2025/ref_pts_2025_2025_JAGS_base4_eggs.RData")
+#"Eggs_lim"  "Eggs_MSY"  "Eggs0"     "MSY"       "Smolt_lim" "Smolt_MSY"
+
+dim(S0_all)
+dim(SMSY_sim)
+
+
+
+Eggs_tbl<-function(Eggs){
+  df<-array(NA, dim=c(Nstocks,3))
+  for(r in 1:Nstocks){
+    df[r,]<-quantile(Eggs[r,], probs=c(0.5,0.8,0.95))
+  }
+  colnames(df)<-c("50%","80%","95%")
+  rows<-c("Torne","Simo","Kalix","Rane"
+          ,"Pite","Aby","Byske","Rickle","Savaran"
+          ,"Ume","Ore","Lodge","Ljungan","Morrum"
+          ,"Eman", "Kage", "Testeboan")
+  df<-as.data.frame(cbind(rows,df))
+  df
+}
+
+write_xlsx(Eggs_tbl(S0_all),paste0(PathOut_Scen,"/Ref pts/S0_",Model,".xlsx"))
+write_xlsx(Eggs_tbl(SMSY_sim),paste0(PathOut_Scen,"/Ref pts/SMSY_",Model,".xlsx"))
+write_xlsx(Eggs_tbl(Eggs0),paste0(PathOut_Scen,"/Ref pts/E0_",Model,".xlsx"))
+write_xlsx(Eggs_tbl(Eggs_MSY),paste0(PathOut_Scen,"/Ref pts/EMSY_",Model,".xlsx"))
+write_xlsx(Eggs_tbl(Eggs_lim),paste0(PathOut_Scen,"/Ref pts/Elim_",Model,".xlsx"))
+
+
+
 
 
 ################################################################################
