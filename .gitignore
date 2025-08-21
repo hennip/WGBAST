@@ -5,6 +5,7 @@ run-this-first.R
 run-this-first-wgbast.R
 
 *.rds
+*.pdf
 
 *.html
 .here
