@@ -11,7 +11,7 @@ source("../run-this-first-wgbast.r")
 
 # Releases - from Azure data lake
 ##################################
-(releases<-read_xlsx("../../WGBAST_shared/submodels/releases/Tapsa_08_25/Releases_FI_SAL_1959-2024_TRS_1981-2024.xlsx",
+(releases<-read_xlsx("../../WGBAST_shared/submodels/releases/Releases_FI_SAL_1959-2024_TRS_1981-2024.xlsx",
                     range="A1:Y23695", guess_max = 100000))
 #  View(releases)  
 
@@ -50,7 +50,12 @@ df <-releases |>
   mutate(river=ifelse(Tunnus==82 & `osa-alue`==33, 99, NA)) |> # Åland
   mutate(sub_div=ifelse(Tunnus==82 & `osa-alue`==33, 29, sub_div)) |>  # Åland
   mutate(river=ifelse(Tunnus<=80, Tunnus, river)) |> 
-  # Pienvesistöt
+  
+  # Pienvesistöt 81-84, jokin pieni joki, ei pysty kiinnittämään selkeästi tiettyyn virtaveteen
+  # 81: 
+  # 82: Saaristomeri
+  # 83:
+  # 84: Perämeri
   mutate(river=ifelse(Tunnus %in% (81:84) & Meri=="MERI" & (is.na(river)==T | river!=99), 101, river)) |> # at sea 
 
   mutate(ass_unit=ifelse(river<=23,6, NA)) |> 
@@ -78,9 +83,6 @@ df2<-df |> select(Tunnus, river, ass_unit,everything())|>
   mutate(Tunnus=as_factor(Tunnus))
 #View(df2)
 
-#df2 |> filter(Vesisto=="Inkoonjoki")
-#df2 |> filter(Vesisto=="Ingå å")
-
 df_names2<-df_names |> 
   select(Subdivision, `River name`, National_River_ID ) |> 
   mutate(Tunnus=as_factor(National_River_ID), river_name=`River name`)# |> 
@@ -92,26 +94,14 @@ df3<-left_join(df2, df_names2) |>
   mutate(river_name=ifelse(is.na(river_name)==T & river==101, "at sea", river_name)) |> 
   mutate(river_name=ifelse(is.na(river_name)==T & river==99 & Tunnus==82, "Saaristomeren rannikkoalue, Ahvenanmaa", river_name)) |> 
   mutate(river_name=ifelse(is.na(river_name)==T & river==99 & Tunnus==81, "Suomenlahden rannikkoalue", river_name)) |> 
+# Pienvesistöjä
   mutate(river_name=ifelse(is.na(river_name)==T & Vesisto == "Inkoonjoki", Vesisto, river_name)) |> 
   mutate(river_name=ifelse(is.na(river_name)==T & Vesisto == "Ladjankoskenoja", Vesisto, river_name))
 
 # Tarkista ettei ole puuttuvia
-View(df3 |> filter(is.na(river_name==T)))
-
-
-# HUOM! Tarkasta että ei jää rivejä joilta AU puuttuu.
-# Jos jää, jokikoodilla 99 olevat pitäisi laittaa ass_unit 3:een. Jostain
-# syystä tämä ei nyt 8/25 toiminut täysin, yhdeltä riviltä putosi AU pois
-# Puuttuvia ei kuitenkaan nyt jää joten toistaiseksi tämä ok.
-#mutate(ass_unit=ifelse(river==99,3, ass_unit)) |> # Tässä vika! Tämä sotkee tunnuksen 81 
+df3 |> filter(is.na(river_name==T))
 df3 |> filter(year>=2023) |> filter(is.na(ass_unit)==T)#filter(Tunnus==81)
 df3 |> filter(year>=2023) |> filter(river==99, is.na(ass_unit)==T)#filter(Tunnus==81)
-
-
-# Vielä jää kaksi riviä joilla river on puuttuva, tunnus 81-82 mutta nämä ovatkin joki-istutuksia eli siltä osin ok
-# se outous jää, että tiivistetysttä datassa (alla) on 156 riviä, mutta Tapsan SAS-ajossa vain 148 (muistaakseni...)
-# Eli ihan yksi yhteen nämä taulut eivät vielä käy. Tapsan mukaan dataan ei ole tullut tässä välissä lisäyksiä.
-
 
 df4<-df3|> 
   filter(year>=2023) |> group_by(species, country, year, ass_unit, 
@@ -119,9 +109,12 @@ df4<-df3|>
   filter(age!="adult") |> 
   summarise(numb=sum(numb))
 View(df4)
-write_xlsx(df4, path="../../WGBAST_shared/submodels/releases/WGBAST_releases23-24_wip.xlsx")
+write_xlsx(df4, path="../../WGBAST_shared/submodels/releases/releases_FI23-24_ICESformat.xlsx")
 
 df4 |> filter(river_name=="at sea", sub_div==30)
+
+tmp<-df3 |> filter(river_name=="at sea", sub_div==30)
+View(tmp)
 
 
 df4 |> ungroup() |> summarise(N=sum(numb))
