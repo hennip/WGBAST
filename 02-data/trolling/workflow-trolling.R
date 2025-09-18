@@ -60,6 +60,16 @@ fi2931_rel<-read_xlsx(file_tr,col_names = col_nms, sheet="FIN_SD2931", range=r2)
 fi32_land<-read_xlsx(file_tr, col_names = col_nms, sheet="FIN_SD32", range=r1)
 fi32_rel<-read_xlsx(file_tr,col_names = col_nms, sheet="FIN_SD32", range=r2)
 
+# Replace 0's in german data with small constants (don't know why this was not done in BUGS, dlnorm should not work there either with zeros
+ge_land<-ge_land |> mutate(min=ifelse(min==0, 0.001, min)) |> 
+  mutate(mode=ifelse(mode==0, 0.01, mode)) |> 
+  mutate(max=ifelse(max==0, 0.1, max)) 
+
+ge_rel<-ge_rel |> mutate(min=ifelse(min==0, 0.001, min)) |> 
+  mutate(mode=ifelse(mode==0, 0.01, mode)) |> 
+  mutate(max=ifelse(max==0, 0.1, max)) 
+
+#
 # ini_min<-0.001
 # ini_mode<-0.01
 # ini_max<-0.1
@@ -70,6 +80,10 @@ ini<-cbind(rep(0.001, NumYears),
 colnames(ini)<-col_nms
 
 ini<-array(NA, dim=c(NumYears,2,2))
+
+###############################################################
+# Function to calculate mu and cv of a triangular distribution
+###############################################################
 
 stats<-function(g){
 CV<-Var<-Mu<-c()
@@ -86,11 +100,37 @@ return(cbind(Mu, CV))
 #stats(ee_land)
 #stats(as.data.frame(ini))
 
+##############################
+# Same model for all areas! 
+##############################
+M_trolling<-"
+model{
+  for (i in 1:NumYears){	# 38 = 2024
+    Tot_Landed[i]<-sum(d[i,1:NumCountries,1]) 	# Total retained catch by area = estimate without mortality from released catch
+    Tot_Released[i]<-sum(d[i,1:NumCountries,2])	# Total catch released back to sea by area
+    Tot_Catch[i]<-Tot_Landed[i] + Tot_Released[i]   # Total catch by area, no mortality accounted for relesed salmon 
+    Tot_Catch_Dead[i]<-Tot_Landed[i] + Tot_Released[i]*0.25 	# Total dead catch by area, 25% mortality accounted for released salmon
+    
+    for (j in 1:NumCountries){ #	j=country {1,...,9}; 1=SWE, 2=DEN, 3=GER, 4=POL, 5=LIT, 6=LAT, 7=EST, 8=RUS, 9=FIN
+      for (k in 1:2){ # 1: retained catch; 2: released catch 
+        M[i,j,k]<-log(mu[i,j,k])-0.5/tau[i,j,k]
+        tau[i,j,k]<-1/log(pow(cv[i,j,k],2)+1)
+        
+        d[i,j,k]~dlnorm(M[i,j,k],tau[i,j,k])
+      }
+    }
+  }
+}"
 
 
+
+####################
 # SD32
+####################
 # 6 countries with no data (close to zero)
 # -> only FI & EE in sd 32
+ini<-array(NA, dim=c(NumYears,2,2))
+
 mu32<-ini
 mu32[,1,1]<-stats(ee_land)[,1]
 mu32[,2,1]<-stats(fi32_land)[,1]
@@ -104,10 +144,74 @@ cv32[,1,2]<-stats(ee_rel)[,2]
 cv32[,2,2]<-stats(fi32_rel)[,2]
 cv32
 
+datalist<-list(
+  NumYears=NumYears,
+  NumCountries=2,
+  mu=mu32, cv=cv32
+)
 
+
+parnames<-c(
+  "Tot_Landed", "Tot_Released", "Tot_Catch", "Tot_Catch_Dead")
+
+run_sd32 <- run.jags(M1, monitor= parnames,
+                  data=datalist,
+                  n.chains = 2, method = 'parallel', thin=100,
+                  burnin =10000, modules = "mix",
+                  sample =1000, adapt = 10000,
+                  keep.jags.files=F,
+                  progress.bar=TRUE, jags.refresh=100)
+
+summary(run_sd32)
+
+
+####################
 # SD29-31
+####################
+ini<-array(NA, dim=c(NumYears,6,2))
 
+mu2931<-ini
+mu2931[,1,1]<-stats(se29_land)[,1]
+mu2931[,2,1]<-stats(fi2931_land)[,1]
+
+mu2931[,1,2]<-stats(se29_rel)[,1]
+mu2931[,2,2]<-stats(fi2931_land)[,1]
+
+cv2931<-ini
+cv2931[,1,1]<-stats(se29_land)[,2]
+cv2931[,2,1]<-stats(fi2931_rel)[,2]
+
+cv2931[,1,2]<-stats(se29_rel)[,2]
+cv2931[,2,2]<-stats(fi2931_rel)[,2]
+cv2931
+
+
+
+datalist<-list(
+  NumYears=NumYears,
+  NumCountries=2,
+  mu=mu2931, cv=cv2931
+)
+
+
+parnames<-c(
+  "Tot_Landed", "Tot_Released", "Tot_Catch", "Tot_Catch_Dead")
+
+run_sd32 <- run.jags(M1, monitor= parnames,
+                     data=datalist,
+                     n.chains = 2, method = 'parallel', thin=100,
+                     burnin =10000, modules = "mix",
+                     sample =1000, adapt = 10000,
+                     keep.jags.files=F,
+                     progress.bar=TRUE, jags.refresh=100)
+
+summary(run_sd32)
+
+####################
 # Main basin
+####################
+ini<-array(NA, dim=c(NumYears,6,2))
+
 muMB<-ini
 muMB[,1,1]<-stats(se2228_land)[,1]
 muMB[,2,1]<-stats(dk_land)[,1]
@@ -139,87 +243,29 @@ cvMB[,5,2]<-stats(li_rel)[,2]
 cvMB[,6,2]<-stats(la_rel)[,2]
 cvMB
 
+
 #	j=country {1,...,9}; 1=SWE, 2=DEN, 3=GER, 4=POL, 5=LIT, 6=LAT, 7=EST, 8=RUS, 9=FIN
-
-
-
-
-
-
-M1<-"
-model{
-  for (i in 1:NumYears){	# 38 = 2024
-    Tot_Landed[i]<-sum(d[i,1:NumCountries,1]) 	# Total retained catch by area = estimate without mortality from released catch
-    Tot_Released[i]<-sum(d[i,1:NumCountries,2])	# Total catch released back to sea by area
-    Tot_Catch[i]<-Tot_Landed[i] + Tot_Released[i]   # Total catch by area, no mortality accounted for relesed salmon 
-    Tot_Catch_Dead[i]<-Tot_Landed[i] + Tot_Released[i]*0.25 	# Total dead catch by area, 25% mortality accounted for released salmon
-    
-    for (j in 1:NumCountries){ #	j=country {1,...,9}; 1=SWE, 2=DEN, 3=GER, 4=POL, 5=LIT, 6=LAT, 7=EST, 8=RUS, 9=FIN
-      for (k in 1:2){ # 1: retained catch; 2: released catch 
-        M[i,j,k]<-log(mu[i,j,k])-0.5/tau[i,j,k]
-        tau[i,j,k]<-1/log(pow(cv[i,j,k],2)+1)
-        
-        d[i,j,k]~dlnorm(M[i,j,k],tau[i,j,k])
-      }
-    }
-  }
-}"
 
 datalist<-list(
   NumYears=NumYears,
-  NumCountries=2,
-  mu=mu, cv=cv
+  NumCountries=6,
+  mu=muMB, cv=cvMB
 )
 
 
 parnames<-c(
   "Tot_Landed", "Tot_Released", "Tot_Catch", "Tot_Catch_Dead")
 
-run00 <- run.jags(M1, monitor= parnames,
-                 data=datalist,
-                 n.chains = 2, method = 'parallel', thin=100,
-                 burnin =10000, modules = "mix",
-                 sample =1000, adapt = 10000,
-                 keep.jags.files=F,
-                 progress.bar=TRUE, jags.refresh=100)
- 
- summary(run00)
-# summary(run00, var="DisC")
-#
-# summary(run00, var="DisC[20,2]")
-#
-# summary(chains[,"DisC[20,2]"])
-# chains<-as.mcmc.list(run00)
-#saveRDS(chains, file="02-data/discards/chains_unrep_discards_2025.rds")
+run_MB <- run.jags(M1, monitor= parnames,
+                     data=datalist,
+                     n.chains = 2, method = 'parallel', thin=100,
+                     burnin =10000, modules = "mix",
+                     sample =100000, adapt = 10000,
+                     keep.jags.files=F,
+                     progress.bar=TRUE, jags.refresh=100)
+
+summary(run_MB, var="Tot_Catch")
 
 
-
-M1<-"
-model{
-  for (i in 1:NumYears){	# 38 = 2024
-    for (n in 1:1){ 	#  run one area at the time and change this loop accordingly! Only this works with the present data construction
-      
-      # Nämä ilmeisesti tuloksia, d tuotetaan koodin avulla
-      Tot_Landed[i,n]<-sum(d[i,1:9,1,n]) 	# Total retained catch by area = estimate without mortality from released catch
-      Tot_Released[i,n]<-sum(d[i,1:9,2,n])	# Total catch released back to sea by area
-      Tot_Catch[i,n]<-Tot_Landed[i,n] + Tot_Released[i,n]   # Total catch by area, no mortality accounted for relesed salmon 
-      Tot_Catch_Dead[i,n]<-Tot_Landed[i,n] + Tot_Released[i,n]*0.25 	# Total dead catch by area, 25% mortality accounted for released salmon
-      
-      for (j in 1:9){
-        for (k in 1:2){
-          
-          mu[i,j,k,n]<-(Min[i,j,k,n]+Mod[i,j,k,n]+Max[i,j,k,n])/3
-          var[i,j,k,n]<-(pow(Min[i,j,k,n],2)+pow(Mod[i,j,k,n],2)+pow(Max[i,j,k,n],2)-Min[i,j,k,n]*Max[i,j,k,n]-Min[i,j,k,n]*Mod[i,j,k,n]-Mod[i,j,k,n]*Max[i,j,k,n])/18
-          cv[i,j,k,n]<-sqrt(var[i,j,k,n])/mu[i,j,k,n]
-          
-          M[i,j,k,n]<-log(mu[i,j,k,n])-0.5/tau[i,j,k,n]
-          tau[i,j,k,n]<-1/log(pow(cv[i,j,k,n],2)+1)
-          
-          d[i,j,k,n]~dlnorm(M[i,j,k,n],tau[i,j,k,n])
-        }
-      }
-    }
-  }
-}"
 
 
