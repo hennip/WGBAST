@@ -47,7 +47,10 @@ trolling<-1
 #17 "Testeboan"
 
 # Assessment model 2025
-modelName<-"FLHM_JAGS_2025_base4"  #variant with trolling C&R " 
+#modelName<-"FLHM_JAGS_2025_base4"  #variant with trolling C&R " 
+#modelName<-"FLHM_JAGS_2025_base2"  # base 2
+#modelName<-"FLHM_JAGS_2025_base2_NoProcErrors"  # No process errors
+modelName<-"FLHM_JAGS_2025_base2_NoCarlin"  # No Carlin tag-recapture data from wild salmon
 source(paste0(PathModel_FLHM,modelName,".R"))
 
 source(paste0(PathModel_FLHM,"make_JAGS_data_",assessment_year,".R"))
