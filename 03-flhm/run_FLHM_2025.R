@@ -56,14 +56,13 @@ source(paste0(PathModel_FLHM,modelName,".R"))
 source(paste0(PathModel_FLHM,"make_JAGS_data_",assessment_year,".R"))
 
 runName<-modelName
-# if(RaneCount==F & full_sp_count==T){runName<-str_c(modelName, "_withoutRane")}
-# if(RaneCount==T & full_sp_count==F){runName<-str_c(modelName, "_2yOffUT")}
-# print(runName)
-
-#CR<-ifelse(grepl("CR",modelName),T,F) #boolean to read correct version of catch data file
 
 # data, initial values, parameters to monitor
 source("03-flhm/setup_FLHM_2025.R")
+
+# inits
+source(paste0(PathModel,"make_inits.r"))
+
 
 initsall<-list(inits.fn(),inits.fn())
 
