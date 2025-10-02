@@ -17,7 +17,7 @@ b<-a$samples
 cs<-attributes(b)$dimnames[[2]]
 length(cs) #23689
 
-pdf("traces.pdf")
+pdf("traces2.pdf")
 par(mfrow=c(3,3))
 
 for( i in cs){
@@ -33,23 +33,3 @@ dev.off()
 
 
 
-
-
-#pdf 
-pdf("traces.pdf")
-
-par(mfrow=c(3,3))
-
-for( i in cs){
-  cat("\n===Käsittelee ",i)
-  traceplot(chains[,i],main=paste(i))
-}
-
-dev.off()
-
-
-gd<-gelman.diag(chainsGR[,str_c("MpsW[",i,"]")])
-if(gd$psrf[2]>1.1){
-  #print(c(i, gd$psrf))
-  traceplot(chainsGR[,str_c("MpsW[",i,"]")], main=str_c("MpsW ",df.2$Year[i]))
-}
