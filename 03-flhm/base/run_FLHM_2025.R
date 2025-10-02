@@ -51,22 +51,23 @@ trolling<-1
 #modelName<-"FLHM_JAGS_2025_base2"  # base 2
 #modelName<-"FLHM_JAGS_2025_base2_NoProcErrors"  # No process errors
 modelName<-"FLHM_JAGS_2025_base2_NoCarlin"  # No Carlin tag-recapture data from wild salmon
-source(paste0(PathModel_FLHM,modelName,".R"))
+subfolder<-"base/" # Pick a subfolder: "base/", "Mps-trials/", "Nimble/" or (none) ""
 
-source(paste0(PathModel_FLHM,"make_JAGS_data_",assessment_year,".R"))
+source(paste0("03-flhm/",subfolder,modelName,".R"))
+source(paste0("03-flhm/",subfolder,"make_JAGS_data_",assessment_year,".R"))
 
 runName<-modelName
+print(paste0(runName,"_data", assessment_year))
 
 # data, initial values, parameters to monitor
-source("03-flhm/setup_FLHM_2025.R")
+source(paste0("03-flhm/",subfolder,"setup_FLHM_2025.R"))
 
 # inits
-source(paste0(PathModel,"make_inits.r"))
+source(paste0("03-flhm/",subfolder,"make_inits_base.r"))
 
 
 initsall<-list(inits.fn(),inits.fn())
 
-print(paste0(runName,"_data", assessment_year))
 
 ##Quick test
 ##cat(WGBAST_model,file="wgbast_model.txt")
