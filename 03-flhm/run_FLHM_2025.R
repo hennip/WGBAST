@@ -9,7 +9,6 @@
 #Parr added to NrRsp not NrW (wild)
 
 #flexible indexing not complete!!
-
 source("../run-this-first-wgbast.R")
 
 assessment_year<-2025
@@ -24,6 +23,8 @@ stocks<-length(stock_indices)
 allstocks<-17 #number of stocks in data files
 AUS<-4
 trolling<-1
+Mps_stocks<-AUS  #AUS or allstocks
+
 
 ##POPULATION DYNAMICS
 
@@ -46,38 +47,60 @@ trolling<-1
 #16 "Kagealven"
 #17 "Testeboan"
 
-# Assessment model 2025
-#modelName<-"FLHM_JAGS_2025_base4"  #variant with trolling C&R " 
-#modelName<-"FLHM_JAGS_2025_base2"  # base 2
-#modelName<-"FLHM_JAGS_2025_base2_NoProcErrors"  # No process errors
-modelName<-"FLHM_JAGS_2025_base2_NoCarlin"  # No Carlin tag-recapture data from wild salmon
-subfolder<-"base/" # Pick a subfolder: "base/", "Mps-trials/", "Nimble/" or (none) ""
+###########################
+# Pick a subfolder first!
+###########################
+subfolder<-"Mps-trials/" # Pick a subfolder: "base/" or "Mps-trials/"
 
-source(paste0("03-flhm/",subfolder,modelName,".R"))
-source(paste0("03-flhm/",subfolder,"make_JAGS_data_",assessment_year,".R"))
+
+if(subfolder=="Mps-trials/"){
+  modelName<-"FLHM_JAGS_Mps_AU"   #Mps wild by AU (from base2)
+  #modelName<-"FLHM_JAGS_Mps_river_stock"    #Mps wild by river stock (from base2)
+  source(paste0("03-flhm/Mps-trials/",modelName,".R"))
+  source(paste0("03-flhm/Mps-trials/make_JAGS_data_",assessment_year,".R"))
+  
+  # data & parameters to monitor
+  source("03-flhm/Mps-trials/setup_FLHM_2025_mps_trials.R")
+  
+  # inits
+  source("03-flhm/Mps-trials/make_inits_mps_trials.R")
+  initsall<-list(make.inits(),make.inits())
+}
+
+
+
+if(subfolder=="base/"){
+  #modelName<-"FLHM_JAGS_2025_base4"  # Assessment model 2025
+  modelName<-"FLHM_JAGS_2025_base2"  # base 2
+  #modelName<-"FLHM_JAGS_2025_base2_NoProcErrors"  # No process errors
+  #modelName<-"FLHM_JAGS_2025_base2_NoCarlin"  # No Carlin tag-recapture data from wild salmon
+  source(paste0("03-flhm/",subfolder,modelName,".R"))
+  source(paste0("03-flhm/",subfolder,"make_JAGS_data_",assessment_year,".R"))
+  
+  # data & parameters to monitor
+  source(paste0("03-flhm/",subfolder,"setup_FLHM_2025.R"))
+  
+  # inits
+  source(paste0("03-flhm/",subfolder,"make_inits_base.r"))
+  initsall<-list(inits.fn(),inits.fn())
+}
+
+
 
 runName<-modelName
+print(runName)
 print(paste0(runName,"_data", assessment_year))
 
-# data, initial values, parameters to monitor
-source(paste0("03-flhm/",subfolder,"setup_FLHM_2025.R"))
+#Quick test
+#source(paste0(PathModel,modelName,".R"))
+# cat(WGBAST_model,file="wgbast_model.txt")
+# jm<-jags.model("wgbast_model.txt",n.adapt=100,
+# data=datalist,inits=make.inits())
+# 
+# chains<-coda.samples(jm,variable.names=parnames,n.iter=100,thin=10)
+# v<-as.matrix(chains)
 
-# inits
-source(paste0("03-flhm/",subfolder,"make_inits_base.r"))
-
-
-initsall<-list(inits.fn(),inits.fn())
-
-
-##Quick test
-##cat(WGBAST_model,file="wgbast_model.txt")
-##jm<-jags.model("wgbast_model.txt",n.adapt=100,
-##data=datalist,inits=inits.fn())
-##
-##chains<-coda.samples(jm,variable.names=parnames,n.iter=100,thin=10)
-##v<-as.matrix(chains)
-
-# Burn-in
+## Burn-in
 t01<-Sys.time();print(t01)
 run0 <- run.jags(WGBAST_model, monitor= parnames,
                  data=datalist,inits = initsall,
@@ -107,7 +130,7 @@ run<-run2
 save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
 
 # t5<-Sys.time();print(t5)
-# run3 <- extend.jags(run2, combine=T, sample=5000, thin=100, keep.jags.files=T)
+# run3 <- extend.jags(run2, combine=T, sample=1000, thin=100, keep.jags.files=T,method = 'parallel')
 # t6<-Sys.time();print(t6)
 # print("run3 done");print(difftime(t6,t5))
 # print("--------------------------------------------------")
@@ -115,7 +138,7 @@ save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
 # save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
 # 
 # t7<-Sys.time();print(t7)
-# run4 <- extend.jags(run3, combine=T, sample=1000, thin=100, keep.jags.files=T)
+# run4 <- extend.jags(run3, combine=T, sample=1000, thin=100, keep.jags.files=T,method = 'parallel',)
 # t8<-Sys.time();print(t8)
 # print("run4 done");print(difftime(t8,t7))
 # print("--------------------------------------------------")
@@ -124,7 +147,7 @@ save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
 # save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
 # 
 # t9<-Sys.time();print(t9)
-# run5 <- extend.jags(run4, combine=T, sample=1000, thin=100, keep.jags.files=T)
+# run5 <- extend.jags(run4, combine=T, sample=1000, thin=100, keep.jags.files=T,method = 'parallel',)
 # t10<-Sys.time();print(t10)
 # print("run5 done");print(difftime(t9,t10))
 # print("--------------------------------------------------")
@@ -132,28 +155,13 @@ save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
 # save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
 # 
 # t11<-Sys.time();print(t11)
-# run6 <- extend.jags(run5, combine=T, sample=1000, thin=100, keep.jags.files=T)
+# run6 <- extend.jags(run5, combine=T, sample=1000, thin=100, keep.jags.files=T,method = 'parallel')
 # t12<-Sys.time();print(t12)
 # print("run6 done");print(difftime(t11,t12))
 # print("--------------------------------------------------")
 # run<-run6
 # save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData")) 			   
-# 				
-#t13<-Sys.time();print(t13)
-# run7 <- extend.jags(run6, combine=T, sample=1000, thin=350, keep.jags.files=T)
-# t14<-Sys.time();print(t14)
-# print("run6 done");print(difftime(t13,t14))
-# run<-run7
-# save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData")) 			   
-				
-#t15<-Sys.time();print(t15)
-# run8 <- extend.jags(run6, combine=T, sample=2000, thin=350, keep.jags.files=T)
-# t16<-Sys.time();print(t16)
-# print("run8 done");print(difftime(t16,t15))
-# run<-run8
-# save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData")) 			   
-
-		  
-														  
-
-
+# 		  
+# 														  
+# 
+# 
