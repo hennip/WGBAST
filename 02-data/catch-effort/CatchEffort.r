@@ -16,8 +16,16 @@ source("../run-this-first-wgbast.R")
 #source("00-basics/packages.R")
 pathIn<-pathDataCatchEffort
 
-source("02-data/catch-effort/read-in-wgbast-catch&effort.r")
-df_all<-wgbast_catch_data
+df_all<-read_xlsx(str_c(pathIn, 
+              "dat/orig/WGBAST_2025_Catch_20.02.2025_Hennille.xlsx"), # Update!
+range="A1:Q18586", # Update!
+              sheet="Catch data", col_names = T, guess_max = 10000, na=c("",".", "NaN", "NA"))%>%
+ # filter(YEAR>2005)%>% # Include results only 2009 onwards, catch DB has only updates from those years 
+ # mutate(NUMB=parse_double(NUMB))%>%
+  select(SPECIES, COUNTRY, YEAR, TIME_PERIOD, TP_TYPE, sub_div2, FISHERY, F_TYPE, GEAR, NUMB, EFFORT, everything())%>%
+  mutate(TP_TYPE=ifelse(TP_TYPE=="QRT", "QTR", TP_TYPE))
+
+
 
 (tmpx<-df_all%>%filter(SPECIES=="SAL",F_TYPE=="RECR", FISHERY=="R", COUNTRY=="LV", YEAR==2018))
 tmpx%>%distinct()

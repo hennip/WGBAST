@@ -1,10 +1,10 @@
 # packages.R contains all packages needed in the WGBAST scripts
 library(abind)
-library(nimble)
-library(nimbleHMC)
+#library(nimble)
+#library(nimbleHMC)
 library(parallel)
 library(reshape2)
-library(extraDistr)
+#library(extraDistr)
 
 library(tidyverse)
 library(lubridate)
