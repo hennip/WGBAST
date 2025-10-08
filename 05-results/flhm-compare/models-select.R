@@ -17,10 +17,13 @@ Rivername_long<-read.table(str_c(PathData_FLHM, "rivernames.txt"))[,1]
 # =================
 
 #Cleaned version 2025 (no stucked chains)
-load(file=paste0("../../WGBAST_shared/flhm/2025/output/chain_cleaned_2025_base4.RData")); trolling1<-T;Mname1<-"2025 assessment model (base4), cleaned"
+#load(file=paste0("../../WGBAST_shared/flhm/2025/output/chain_cleaned_2025_base4.RData")); trolling1<-T;Mname1<-"2025 assessment model (base4), cleaned"
+load(file=paste0(paste0(PathOut_FLHM,"FLHM_JAGS_2025_base4_data2025.RData"))); trolling1<-T;Mname1<-"2025 base4 model, long run"
 
 #chains1<-chains
-chains1<-chains_new
+#chains1<-chains_new
+chains1<-as.mcmc.list(run)
+chains1<-window(chains1, start=600000)
 
 summary(chains1[,"MW"])
 
@@ -40,7 +43,18 @@ Years2B<-c(1992:2024)
 # Model 2:
 # =================
 
-load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_base4_data2025.RData")); trolling2<-T;Mname2<-"2025 base4 model, long run"
+#load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_base4_data2025.RData")); trolling2<-T;Mname2<-"2025 base4 model, long run"
+#chains<-chainsGR<-window(chains, thin=700) #700=350*2
+#chains<-chainsGR<-as.mcmc.list(run)
+#chains<-chainsGR<-window(chains, start=600000)
+
+load(file=paste0(PathOut_FLHM,"Nimble_base4_2025.RData")); trolling2<-T;Mname2<-"2025 base4 Nimble"
+
+v1 <- mcmc(chain_output[[1]]$samples)
+v2 <- mcmc(chain_output[[2]]$samples)
+
+chains<-mcmc.list(list(v1,v2))
+
 
 Rane_sp<-T
 
@@ -50,9 +64,6 @@ Rane_sp<-T
 #   chainsGR<-as.mcmc.list(run)
 #   chains<-as.mcmc(run)
 # }
- #chains<-chainsGR<-window(chains, thin=700) #700=350*2
-chains<-chainsGR<-as.mcmc.list(run)
-chains<-chainsGR<-window(chains, start=600000)
 
    
 
