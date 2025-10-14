@@ -3,7 +3,8 @@ source("../run-this-first-wgbast.R")
 
 
 #load(file=paste0(PathOut_FLHM,"chain_cleaned_2025_base4.RData"));modelname<-"base4_cleaned"
-load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_base4_data2025.RData"));modelname<-"base4_uncleaned"
+#load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_base4_data2025.RData"));modelname<-"base4_uncleaned"
+load(file=paste0(PathOut_FLHM,"FLHM_JAGS_2025_base4_data2025.RData"));modelname<-"base4_long"
 chains<-as.mcmc.list(run)
 # plot(run, var="Mps")
 # plot(run, var="mucL")
@@ -11,7 +12,7 @@ chains<-as.mcmc.list(run)
 # plot(run, var="MW")
 # 
 
-chains<-window(chains, start=60000)
+chains<-window(chains, start=600000)
 nchains<-2
 plot(chains[, "MpsW[16]"])
 plot(chains[, "MpsR[17]"])
