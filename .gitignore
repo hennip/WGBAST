@@ -6,6 +6,9 @@ run-this-first-wgbast.R
 
 *.rds
 
+# sink files that run_FLHM produces
+/03-flhm/*.txt
+
 *.html
 .here
 # JAGS output
