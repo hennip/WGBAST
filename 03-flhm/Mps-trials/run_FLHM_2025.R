@@ -76,22 +76,25 @@ print(paste0(runName,"_data", assessment_year))
 # 
 # chains<-coda.samples(jm,variable.names=parnames,n.iter=100,thin=10)
 # v<-as.matrix(chains)
+sink(paste0("03-flhm/sink_",runName,"_",Sys.time(),".txt"))
+set.seed(Sys.time())
 
 ## Burn-in
 t01<-Sys.time();print(t01)
 run0 <- run.jags(WGBAST_model, monitor= parnames,
                  data=datalist,inits = initsall,
-                 n.chains = 2, method = 'parallel', thin=1,
+                 n.chains = 1, method = 'parallel', thin=1,
                  burnin =10000, modules = "mix",
                  sample =10, adapt = 10000,
-                 keep.jags.files=paste0(runName, assessment_year),
+                 #keep.jags.files=paste0(runName, assessment_year),
+                 keep.jags.files=F,
                  progress.bar=TRUE, jags.refresh=100)
 t02<-Sys.time();print(t02)
 print("run0 done");print(difftime(t02,t01))
 print("--------------------------------------------------")
 
 t1<-Sys.time();print(t1)
-run1 <- extend.jags(run0, combine=F, sample=1000, thin=100, keep.jags.files=T,method = 'parallel')
+run1 <- extend.jags(run0, combine=F, sample=5000, thin=100, keep.jags.files=F,method = 'parallel')
 t2<-Sys.time();print(t2)
 print("run1 done"); print(difftime(t2,t1))
 print("--------------------------------------------------")
@@ -100,7 +103,7 @@ save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
 
 
 t3<-Sys.time();print(t3)
-run2 <- extend.jags(run1, combine=T, sample=1000, thin=100, keep.jags.files=T,method = 'parallel')
+run2 <- extend.jags(run1, combine=T, sample=5000, thin=100, keep.jags.files=F,method = 'parallel')
 t4<-Sys.time();print(t4)
 print("run2 done");print(difftime(t4,t3))
 print("--------------------------------------------------")
@@ -108,7 +111,7 @@ run<-run2
 save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
 
 t5<-Sys.time();print(t5)
-run3 <- extend.jags(run2, combine=T, sample=1000, thin=100, keep.jags.files=T,method = 'parallel')
+run3 <- extend.jags(run2, combine=T, sample=5000, thin=100, keep.jags.files=F,method = 'parallel')
 t6<-Sys.time();print(t6)
 print("run3 done");print(difftime(t6,t5))
 print("--------------------------------------------------")
@@ -116,30 +119,31 @@ run<-run3
 save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
 
 t7<-Sys.time();print(t7)
-run4 <- extend.jags(run3, combine=T, sample=1000, thin=100, keep.jags.files=T,method = 'parallel',)
+run4 <- extend.jags(run3, combine=T, sample=5000, thin=100, keep.jags.files=F,method = 'parallel',)
 t8<-Sys.time();print(t8)
 print("run4 done");print(difftime(t8,t7))
 print("--------------------------------------------------")
-
-run<-run4
-save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
-
-t9<-Sys.time();print(t9)
-run5 <- extend.jags(run4, combine=T, sample=1000, thin=100, keep.jags.files=T,method = 'parallel',)
-t10<-Sys.time();print(t10)
-print("run5 done");print(difftime(t9,t10))
-print("--------------------------------------------------")
-run<-run5
-save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
-
-t11<-Sys.time();print(t11)
-run6 <- extend.jags(run5, combine=T, sample=1000, thin=100, keep.jags.files=T,method = 'parallel')
-t12<-Sys.time();print(t12)
-print("run6 done");print(difftime(t11,t12))
-print("--------------------------------------------------")
-run<-run6
-save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData")) 			   
+# 
+# run<-run4
+# save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
+# 
+# t9<-Sys.time();print(t9)
+# run5 <- extend.jags(run4, combine=T, sample=1000, thin=100, keep.jags.files=F,method = 'parallel',)
+# t10<-Sys.time();print(t10)
+# print("run5 done");print(difftime(t9,t10))
+# print("--------------------------------------------------")
+# run<-run5
+# save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
+# 
+# t11<-Sys.time();print(t11)
+# run6 <- extend.jags(run5, combine=T, sample=1000, thin=100, keep.jags.files=F,method = 'parallel')
+# t12<-Sys.time();print(t12)
+# print("run6 done");print(difftime(t11,t12))
+# print("--------------------------------------------------")
+# run<-run6
+# save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData")) 			   
 		  
 														  
+sink()
 
 
