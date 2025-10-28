@@ -993,7 +993,7 @@ for(i in 1:(m+proj_years)){
 
 ##################################### Process errors ###########################
 
-# simplePE1: pool age and gear specific termes, leaving one PE for each W/R, 
+# simplePE1: pool gear specific termes, leaving one PE for each W/R, 
 # age and year combination (for post smolts PE is removed).
 # For j==1, remove PE
 

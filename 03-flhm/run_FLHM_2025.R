@@ -51,7 +51,7 @@ trolling<-1
 #modelName<-"FLHM_JAGS_2025_base2"  # base 2
 #modelName<-"FLHM_JAGS_2025_base2_NoProcErrors"  # No process errors
 #modelName<-"FLHM_JAGS_2025_base2_NoCarlin"  # No Carlin tag-recapture data from wild salmon
-modelName<-"FLHM_JAGS_2025_base2_simplePE1"  # No process errors
+modelName<-"FLHM_JAGS_2025_base2_simplePE2"  # No process errors
 
 source(paste0(PathModel_FLHM,modelName,".R"))
 
