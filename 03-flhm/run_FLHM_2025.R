@@ -142,7 +142,7 @@ run<-run3
 save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,"_",Sys.time(),".RData"))
 
 t7<-Sys.time();print(t7)
-run4 <- extend.jags(run3, combine=T, sample=5000, thin=100, keep.jags.files=F,method = 'parallel',)
+run4 <- extend.jags(run3, combine=T, sample=5000, thin=100, keep.jags.files=F,method = 'parallel')
 t8<-Sys.time();print(t8)
 print("run4 done");print(difftime(t8,t7))
 print("--------------------------------------------------")
