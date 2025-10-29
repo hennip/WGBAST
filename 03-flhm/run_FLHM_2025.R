@@ -122,7 +122,7 @@ t2<-Sys.time();print(t2)
 print("run1 done"); print(difftime(t2,t1))
 print("--------------------------------------------------")
 run<-run1
-save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
+save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,"_",Sys.time(),".RData"))
 
 
 t3<-Sys.time();print(t3)
@@ -131,7 +131,7 @@ t4<-Sys.time();print(t4)
 print("run2 done");print(difftime(t4,t3))
 print("--------------------------------------------------")
 run<-run2
-save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
+save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,"_",Sys.time(),".RData"))
 
 t5<-Sys.time();print(t5)
 run3 <- extend.jags(run2, combine=T, sample=5000, thin=100, keep.jags.files=F,method = 'parallel')
@@ -139,16 +139,16 @@ t6<-Sys.time();print(t6)
 print("run3 done");print(difftime(t6,t5))
 print("--------------------------------------------------")
 run<-run3
-save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
+save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,"_",Sys.time(),".RData"))
 
 t7<-Sys.time();print(t7)
 run4 <- extend.jags(run3, combine=T, sample=5000, thin=100, keep.jags.files=F,method = 'parallel',)
 t8<-Sys.time();print(t8)
 print("run4 done");print(difftime(t8,t7))
 print("--------------------------------------------------")
-# 
-# run<-run4
-# save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
+ 
+run<-run4
+save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,"_",Sys.time(),".RData"))
 # 
 # t9<-Sys.time();print(t9)
 # run5 <- extend.jags(run4, combine=T, sample=1000, thin=100, keep.jags.files=F,method = 'parallel',)
