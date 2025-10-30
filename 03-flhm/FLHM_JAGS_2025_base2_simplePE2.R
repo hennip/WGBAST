@@ -409,7 +409,7 @@ for (i in 1:(m+proj_years)){
            
         # Offshore salmon in the beginning of May in year 2-6  
         #NccRsp[i,j,s] <- NlRsp[i,(j-1),s]*surv[i,(j-1),2,2]*kE[i,(j-1),2]  
-        NccRsp[i,j,s] <- NtRsp[i,(j-1),s]*surv[i,(j-1),6,2]*kE[i,(j-1)]  
+        NccRsp[i,j,s] <- NtRsp[i,(j-1),s]*surv[i,(j-1),6,2]*kE[i+j-2]  
         
 		
         #Immature salmon in coastal areas in the beginning of May    
@@ -512,11 +512,11 @@ for(s in 1:AUS){              #s index denotes AU here
         # Offshore salmon in the beginning of May in year 2
       		 
         #NccR[i,j,s] <- NlR[i,(j-1),s]*surv[i,(j-1),2,2]*kE[i,(j-1),2]	
-			  NccR[i,j,s] <- NtR[i,(j-1),s]*surv[i,(j-1),6,2]*kE[i,(j-1)]	
+			  NccR[i,j,s] <- NtR[i,(j-1),s]*surv[i,(j-1),6,2]*kE[i+j-2]	
 
-        TccW[i,j,s]<-TlW[i,(j-1),s]*surv[i,(j-1),2,1]*kE[i,(j-1)]	
-        TccR[i,j,s] <-TlR[i,(j-1),s]*surv[i,(j-1),2,2]*kE[i,(j-1)]	
-		    TccRsp[i,j,s] <-TlRsp[i,(j-1),s]*surv[i,(j-1),2,2]*kE[i,(j-1)]	
+        TccW[i,j,s]<-TlW[i,(j-1),s]*surv[i,(j-1),2,1]*kE[i+j-2]	
+        TccR[i,j,s] <-TlR[i,(j-1),s]*surv[i,(j-1),2,2]*kE[i+j-2]	
+		    TccRsp[i,j,s] <-TlRsp[i,(j-1),s]*surv[i,(j-1),2,2]*kE[i+j-2]	
             		 
         ##Immature salmon in coastal areas in the beginning of May       
             
