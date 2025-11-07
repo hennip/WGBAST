@@ -11,6 +11,7 @@
 #flexible indexing not complete!!
 
 source("../run-this-first-wgbast.R")
+set.seed(Sys.time())
 
 assessment_year<-2025
 years<-length(seq(1987:assessment_year))
@@ -51,8 +52,7 @@ trolling<-1
 #modelName<-"FLHM_JAGS_2025_base2"  # base 2
 #modelName<-"FLHM_JAGS_2025_base2_NoProcErrors"  # No process errors
 #modelName<-"FLHM_JAGS_2025_base2_NoCarlin"  # No Carlin tag-recapture data from wild salmon
-
-modelName<-"FLHM_JAGS_2025_base2_simplePE1"  # No process errors
+modelName<-"FLHM_JAGS_2025_base2_simplePE2"  # No process errors
 
 source(paste0(PathModel_FLHM,modelName,".R"))
 
@@ -72,6 +72,11 @@ initsall<-list(inits.fn(),inits.fn())
 
 print(paste0(runName,"_data", assessment_year))
 
+#sink(paste0("03-flhm/sink_",runName,"_",Sys.time(),".txt")) # Tämä ei kelpaa
+#sink(paste0("03-flhm/sink_",runName,".txt")) # tämä kelpaa
+sink(paste0("03-flhm/sink_",runName,"_",".txt"))
+
+
 ##Quick test
 ##cat(WGBAST_model,file="wgbast_model.txt")
 ##jm<-jags.model("wgbast_model.txt",n.adapt=100,
@@ -87,7 +92,8 @@ run0 <- run.jags(WGBAST_model, monitor= parnames,
                  n.chains = 2, method = 'parallel', thin=1,
                  burnin =10000, modules = "mix",
                  sample =10, adapt = 10000,
-                 keep.jags.files=paste0(runName, assessment_year),
+                 keep.jags.files=F,
+                 #keep.jags.files=paste0(runName, assessment_year),
                  progress.bar=TRUE, jags.refresh=100)
 t02<-Sys.time();print(t02)
 print("run0 done");print(difftime(t02,t01))
@@ -99,7 +105,9 @@ t2<-Sys.time();print(t2)
 print("run1 done"); print(difftime(t2,t1))
 print("--------------------------------------------------")
 run<-run1
-save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,".RData"))
+save(run, file=paste0(PathOut_FLHM,runName, "_data",assessment_year,"_",Sys.time(),".RData"))
+
+sink()
 
 # t3<-Sys.time();print(t3)
 # run2 <- extend.jags(run1, combine=T, sample=1000, thin=100, keep.jags.files=T)

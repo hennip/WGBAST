@@ -341,35 +341,35 @@ for (i in 1:(m+proj_years)){
            
         # Offshore salmon in the beginning of May in year 2-6  
         #NccW[i,j,s]<-NlW[i,(j-1),s]*surv[i,(j-1),2,1]*kE[i,(j-1),2]
-		    NccW[i,j,s]<-NtW[i,(j-1),s]*surv[i,(j-1),6,1]*kE[i,j-1]	 
+		    NccW[i,j,s]<-NtW[i,(j-1),s]*surv[i,(j-1),6,1]*kE[i+j-2]	 
 	 
         #Immature salmon in coastal areas in the beginning of May    
         NdcWI[i,j,s] <- NccW[i,j,s]* (1-LW[(i+j-1),(j-1)])  #index 1 of LW is current year, 2 of LW is sea winters  
           
         # Offshore salmon in the beginning of January 
-        NdoW[i,j,s] <- NdcWI[i,j,s]*surv[i,j,3,1]*kE[i,j] # Immature 
+        NdoW[i,j,s] <- NdcWI[i,j,s]*surv[i,j,3,1]*kE[i+j-1] # Immature 
        
         #Offshore salmon in the beginning of February
-        NlW[i,j,s] <- NdoW[i,j,s]*surv[i,j,4,1]*kE[i,j]   #Immature 
+        NlW[i,j,s] <- NdoW[i,j,s]*surv[i,j,4,1]*kE[i+j-1]   #Immature 
   
 		    # Offshore salmon in the beginning of April        
-        NtW[i,j,s] <- NlW[i,j,s]*surv[i,j,2,1]*kE[i,j]												   
+        NtW[i,j,s] <- NlW[i,j,s]*surv[i,j,2,1]*kE[i+j-1]												   
 
         #Salmon in coastal areas in the beginning of May.     #Mature
         NdcW[i,j,s] <- NccW[i,j,s]*LW[(i+j-1),(j-1)]   #Maturation
         
         # Salmon in the coastal area in the beginning of June 
-        NcW[i,j,s] <- NdcW[i,j,s]*survdc[i,j,1,AU[s]]*kEdc[i,j] 
+        NcW[i,j,s] <- NdcW[i,j,s]*survdc[i,j,1,AU[s]]*kE[i+j-1] 
         
         # Salmon in the river in the beginning of August                  #Mature
-        NrW[i,j,s] <- NcW[i,j,s]*survc[i,j,1,AU[s]]*kEc[i,j] 
+        NrW[i,j,s] <- NcW[i,j,s]*survc[i,j,1,AU[s]]*kE[i+j-1] 
         
         # Number of salmon available to river fishery and spawning        #Mature
         #added to deal with different situation in Ume, p.ladder=1 for all rivers except Ume
         NladderW[i,j,s]<-NrW[i,j,s]*p.ladder[(i+j-1),s]	   
         
         # Number of spawners in the river in the beginning of October    #Mature
-        NspW[i,j,s]<-NladderW[i,j,s]*surv.riv[i,j,s]*surv_migr[(i+j-1),s]*kE[i,j]	   	   
+        NspW[i,j,s]<-NladderW[i,j,s]*surv.riv[i,j,s]*surv_migr[(i+j-1),s]*kE[i+j-1]	   	   
 
         
     }
@@ -409,29 +409,29 @@ for (i in 1:(m+proj_years)){
            
         # Offshore salmon in the beginning of May in year 2-6  
         #NccRsp[i,j,s] <- NlRsp[i,(j-1),s]*surv[i,(j-1),2,2]*kE[i,(j-1),2]  
-        NccRsp[i,j,s] <- NtRsp[i,(j-1),s]*surv[i,(j-1),6,2]*kE[i,(j-1)]  
+        NccRsp[i,j,s] <- NtRsp[i,(j-1),s]*surv[i,(j-1),6,2]*kE[i+j-2]  
         
 		
         #Immature salmon in coastal areas in the beginning of May    
         NdcRspI[i,j,s] <-NccRsp[i,j,s]*(1-LR[(i+j-1),(j-1)])
           
         # Offshore salmon in the beginning of January 
-        NdoRsp[i,j,s]<- NdcRspI[i,j,s]*surv[i,j,3,2]*kE[i,j]    
+        NdoRsp[i,j,s]<- NdcRspI[i,j,s]*surv[i,j,3,2]*kE[i+j-1]    
         
         #Offshore salmon in the beginning of February
-        NlRsp[i,j,s] <- NdoRsp[i,j,s]*surv[i,j,4,2]*kE[i,j]	 
+        NlRsp[i,j,s] <- NdoRsp[i,j,s]*surv[i,j,4,2]*kE[i+j-1]	 
   												  															  
 		    #Offshore salmon in the beginning of April
-        NtRsp[i,j,s] <- NlRsp[i,j,s]*surv[i,j,2,2]*kE[i,j]															 
+        NtRsp[i,j,s] <- NlRsp[i,j,s]*surv[i,j,2,2]*kE[i+j-1]															 
         
 		    #Salmon in coastal areas in the beginning of May.     #Mature
         NdcRsp[i,j,s] <- NccRsp[i,j,s]*LR[(i+j-1),(j-1)]	            
         
         # Salmon in the coastal area in the beginning of June 
-        NcRsp[i,j,s] <- NdcRsp[i,j,s]*survdc[i,j,2,AU[s]]*kEdc[i,j]	          
+        NcRsp[i,j,s] <- NdcRsp[i,j,s]*survdc[i,j,2,AU[s]]*kE[i+j-1]	          
         
         # Salmon in the river in the beginning of August              #Mature
-        NrRsp[i,j,s] <- NcRsp[i,j,s]*survc[i,j,2,AU[s]]*kEc[i,j]  
+        NrRsp[i,j,s] <- NcRsp[i,j,s]*survc[i,j,2,AU[s]]*kE[i+j-1]  
         
         # Number of salmon available to river fishery and spawning         #Mature
         #added to deal with different situation in Ume. p.ladder=1 for all rivers except Ume
@@ -439,7 +439,7 @@ for (i in 1:(m+proj_years)){
         
         # Number of spawners in the river in the beginning of October    #Mature
         #NspRsp[i,j,s] <- NladderRsp[i,j,s]*(1-HrW[i,j])* exp(-2*MR/Tstep)*surv_migr[(i+j-1),s]*kE[i,j,5]	
-        NspRsp[i,j,s] <- NladderRsp[i,j,s]*(1-HrW[i,j]*rivHR[(i+j-1),s])* exp(-2*MR/Tstep)*surv_migr[(i+j-1),s]*kE[i,j]	
+        NspRsp[i,j,s] <- NladderRsp[i,j,s]*(1-HrW[i,j]*rivHR[(i+j-1),s])* exp(-2*MR/Tstep)*surv_migr[(i+j-1),s]*kE[i+j-1]	
         }
     }
 }
@@ -462,30 +462,30 @@ for(s in 1:AUS){              #s index denotes AU here
 
 		# Coastal fish in the beginning of July in year 1
       
-        NcR[i,1,s] <- NrR[i,1,s]*surv[i,1,5,2]*kE[i,1]
+        NcR[i,1,s] <- NrR[i,1,s]*surv[i,1,5,2]#*kE[i,1]
             
-        TcW[i,1,s] <- TrW[i,1,s]*surv[i,1,5,1]*kE[i,1]	#rivHR change needed? surv.riv[i,1,AU_stock[s]]?? or leave as is....see process errors	     
-        TcR[i,1,s] <- TrR[i,1,s]*surv[i,1,5,2]*kE[i,1]	      
-        TcRsp[i,1,s] <- TrRsp[i,1,s]*(1-HrW[i,1])*exp(-MpsR[i]*sealMort[i,1,1]/Tstep)*kE[i,1]	  
+        TcW[i,1,s] <- TrW[i,1,s]*surv[i,1,5,1]#*kE[i,1]	#rivHR change needed? surv.riv[i,1,AU_stock[s]]?? or leave as is....see process errors	     
+        TcR[i,1,s] <- TrR[i,1,s]*surv[i,1,5,2]#*kE[i,1]	      
+        TcRsp[i,1,s] <- TrRsp[i,1,s]*(1-HrW[i,1])*exp(-MpsR[i]*sealMort[i,1,1]/Tstep)#*kE[i,1]	  
 	
 		# Offshore salmon in the beginning of January in year 1
-      
- 	 	    NdoR[i,1,s] <- NcR[i,1,s]*survc[i,1,2,s]*kEc[i,1]	
+    # SHOULD THIS PE BE REMOVED AS WELL? LEAVING IT FOR NOW JUST IN CASE...   
+ 	 	    NdoR[i,1,s] <- NcR[i,1,s]*survc[i,1,2,s]#*kE[i,1]	
        
-        TdoW[i,1,s] <- TcW[i,1,s]*survc[i,1,1,s]*kEc[i,1]
-        TdoR[i,1,s] <- TcR[i,1,s]*survc[i,1,2,s]*kEc[i,1] 
-		    TdoRsp[i,1,s] <- TcRsp[i,1,s]*survc[i,1,2,s]*kEc[i,1] 
+        TdoW[i,1,s] <- TcW[i,1,s]*survc[i,1,1,s]#*kE[i,1]
+        TdoR[i,1,s] <- TcR[i,1,s]*survc[i,1,2,s]#*kE[i,1] 
+		    TdoRsp[i,1,s] <- TcRsp[i,1,s]*survc[i,1,2,s]#*kE[i,1] 
 
 		# Offshore salmon in the beginning of February in year 1
       
-  	  	NlR[i,1,s] <- NdoR[i,1,s]*surv[i,1,4,2]*kE[i,1]	
+  	  	NlR[i,1,s] <- NdoR[i,1,s]*surv[i,1,4,2]#*kE[i,1]	
 
 		# Offshore salmon in the beginning of April in year 1
-  	  	NtR[i,1,s] <- NlR[i,1,s]*surv[i,1,2,2]*kE[i,1]												   
+  	  	NtR[i,1,s] <- NlR[i,1,s]*surv[i,1,2,2]#*kE[i,1]												   
 													   
-        TlW[i,1,s] <- TdoW[i,1,s]*surv[i,1,4,1]*kE[i,1]	
-        TlR[i,1,s] <- TdoR[i,1,s]*surv[i,1,4,2]*kE[i,1]	
-		    TlRsp[i,1,s] <- TdoRsp[i,1,s]*surv[i,1,4,2]*kE[i,1]		
+        TlW[i,1,s] <- TdoW[i,1,s]*surv[i,1,4,1]#*kE[i,1]	
+        TlR[i,1,s] <- TdoR[i,1,s]*surv[i,1,4,2]#*kE[i,1]	
+		    TlRsp[i,1,s] <- TdoRsp[i,1,s]*surv[i,1,4,2]#*kE[i,1]		
     
         NccR[i,1,s]<-0
         TccW[i,1,s]<-0
@@ -512,11 +512,11 @@ for(s in 1:AUS){              #s index denotes AU here
         # Offshore salmon in the beginning of May in year 2
       		 
         #NccR[i,j,s] <- NlR[i,(j-1),s]*surv[i,(j-1),2,2]*kE[i,(j-1),2]	
-			  NccR[i,j,s] <- NtR[i,(j-1),s]*surv[i,(j-1),6,2]*kE[i,(j-1)]	
+			  NccR[i,j,s] <- NtR[i,(j-1),s]*surv[i,(j-1),6,2]*kE[i+j-2]	
 
-        TccW[i,j,s]<-TlW[i,(j-1),s]*surv[i,(j-1),2,1]*kE[i,(j-1)]	
-        TccR[i,j,s] <-TlR[i,(j-1),s]*surv[i,(j-1),2,2]*kE[i,(j-1)]	
-		    TccRsp[i,j,s] <-TlRsp[i,(j-1),s]*surv[i,(j-1),2,2]*kE[i,(j-1)]	
+        TccW[i,j,s]<-TlW[i,(j-1),s]*surv[i,(j-1),2,1]*kE[i+j-2]	
+        TccR[i,j,s] <-TlR[i,(j-1),s]*surv[i,(j-1),2,2]*kE[i+j-2]	
+		    TccRsp[i,j,s] <-TlRsp[i,(j-1),s]*surv[i,(j-1),2,2]*kE[i+j-2]	
             		 
         ##Immature salmon in coastal areas in the beginning of May       
             
@@ -528,23 +528,23 @@ for(s in 1:AUS){              #s index denotes AU here
           
         # Offshore salmon in the beginning of January 
        	    
-        NdoR[i,j,s] <-  NdcRI[i,j,s]*surv[i,j,3,2]*kE[i,j]
+        NdoR[i,j,s] <-  NdcRI[i,j,s]*surv[i,j,3,2]*kE[i+j-1]
 
-        TdoW[i,j,s] <- TdcWI[i,j,s]*surv[i,j,3,1]*kE[i,j]
-        TdoR[i,j,s] <- TdcRI[i,j,s]*surv[i,j,3,2]*kE[i,j]
-        TdoRsp[i,j,s]<- TdcRspI[i,j,s]*surv[i,j,3,2]*kE[i,j]
+        TdoW[i,j,s] <- TdcWI[i,j,s]*surv[i,j,3,1]*kE[i+j-1]
+        TdoR[i,j,s] <- TdcRI[i,j,s]*surv[i,j,3,2]*kE[i+j-1]
+        TdoRsp[i,j,s]<- TdcRspI[i,j,s]*surv[i,j,3,2]*kE[i+j-1]
             
         # Offshore salmon in the beginning of February
             
-        NlR[i,j,s] <- NdoR[i,j,s]*surv[i,j,4,2]*kE[i,j]	
+        NlR[i,j,s] <- NdoR[i,j,s]*surv[i,j,4,2]*kE[i+j-1]	
 	   
-        TlW[i,j,s] <- TdoW[i,j,s]*surv[i,j,4,1]*kE[i,j]	 
-        TlR[i,j,s] <- TdoR[i,j,s]*surv[i,j,4,2]*kE[i,j]	
-			  TlRsp[i,j,s] <- TdoRsp[i,j,s]*surv[i,j,4,2]*kE[i,j]	
+        TlW[i,j,s] <- TdoW[i,j,s]*surv[i,j,4,1]*kE[i+j-1]	 
+        TlR[i,j,s] <- TdoR[i,j,s]*surv[i,j,4,2]*kE[i+j-1]	
+			  TlRsp[i,j,s] <- TdoRsp[i,j,s]*surv[i,j,4,2]*kE[i+j-1]	
                  												 
 		# Offshore salmon in the beginning of April
         
-        NtR[i,j,s] <- NlR[i,j,s]*surv[i,j,2,2]*kE[i,j]															 
+        NtR[i,j,s] <- NlR[i,j,s]*surv[i,j,2,2]*kE[i+j-1]															 
         
 		#Salmon in coastal areas in the beginning of May.     #Mature
             
@@ -556,27 +556,27 @@ for(s in 1:AUS){              #s index denotes AU here
                           
        	# Salmon in the coastal area in the beginning of June 
       		  
-        NcR[i,j,s] <- NdcR[i,j,s]*survdc[i,j,2,s]*kEdc[i,j]	
+        NcR[i,j,s] <- NdcR[i,j,s]*survdc[i,j,2,s]*kE[i+j-1]	
              
-        TcW[i,j,s] <- TdcW[i,j,s]*survdc[i,j,1,s]*kEdc[i,j]	         
-        TcR[i,j,s] <- TdcR[i,j,s]*survdc[i,j,2,s]*kEdc[i,j]	
-        TcRsp[i,j,s] <- TdcRsp[i,j,s]*survdc[i,j,2,s]*kEdc[i,j]	
+        TcW[i,j,s] <- TdcW[i,j,s]*survdc[i,j,1,s]*kE[i+j-1]	         
+        TcR[i,j,s] <- TdcR[i,j,s]*survdc[i,j,2,s]*kE[i+j-1]	
+        TcRsp[i,j,s] <- TdcRsp[i,j,s]*survdc[i,j,2,s]*kE[i+j-1]	
              
         # Salmon in the river in the beginning of August              #Mature
 		        
-        NrR[i,j,s]<- NcR[i,j,s]*survc[i,j,2,s]*kEc[i,j]
+        NrR[i,j,s]<- NcR[i,j,s]*survc[i,j,2,s]*kE[i+j-1]
  
-        TrW[i,j,s] <- TcW[i,j,s]*survc[i,j,1,s]*kEc[i,j]	
-        TrR[i,j,s]<- TcR[i,j,s]*survc[i,j,2,s]*kEc[i,j]	             #s stands for AU here
-        TrRsp[i,j,s] <- TcRsp[i,j,s]*survc[i,j,2,s]*kEc[i,j]	 
+        TrW[i,j,s] <- TcW[i,j,s]*survc[i,j,1,s]*kE[i+j-1]	
+        TrR[i,j,s]<- TcR[i,j,s]*survc[i,j,2,s]*kE[i+j-1]	             #s stands for AU here
+        TrRsp[i,j,s] <- TcRsp[i,j,s]*survc[i,j,2,s]*kE[i+j-1]	 
 
         # Number of spawners in the river in the beginning of October    #Mature
             
-        NspR[i,j,s]  <- NrR[i,j,s]*surv[i,j,5,2]*kE[i,j]	
+        NspR[i,j,s]  <- NrR[i,j,s]*surv[i,j,5,2]*kE[i+j-1]	
 		        
-			  TspW[i,j,s]<-TrW[i,j,s]*surv[i,j,5,1]*kE[i,j]		   #rivHR change needed? see TcW above
-        TspR[i,j,s]  <- TrR[i,j,s]*surv[i,j,5,2]*kE[i,j]		
-        TspRsp[i,j,s] <- TrRsp[i,j,s]*(1-HrW[i,j])* exp(-2*MR/Tstep) *kE[i,j]		
+			  TspW[i,j,s]<-TrW[i,j,s]*surv[i,j,5,1]*kE[i+j-1]		   #rivHR change needed? see TcW above
+        TspR[i,j,s]  <- TrR[i,j,s]*surv[i,j,5,2]*kE[i+j-1]		
+        TspRsp[i,j,s] <- TrRsp[i,j,s]*(1-HrW[i,j])* exp(-2*MR/Tstep) *kE[i+j-1]		
         }			
     }
 }
@@ -993,119 +993,141 @@ for(i in 1:(m+proj_years)){
 
 ##################################### Process errors ###########################
 
-# simplePE1: pool age and gear specific termes, leaving one PE for each W/R and year combination (for post smolts PE is removed).
+# simplePE2: pool age and gear specific termes, leaving one PE for each W/R and 
+# year combination (for post smolts PE is removed).
 # For j==1, remove PE
 
+for(i in (m+proj_years+1):(m+proj_years+7)){
+
+# recycle the last on which surv params exist
+  kE[i] ~ dunif(minError[m+proj_years], maxError[m+proj_years])
+
+}
 for(i in 1:(m+proj_years)){
-    for(j in 1:6){           
-           zz[i,j]~ dgamma(2, 50)I( , maxvar)
-        for(ii in 1:4){
+  
+  # One error for gears 1-8 and ages 2:6
+  ###########################
+  min_E[i]<-min(vE[i,2:6,1:8], minv[i,2:6,1:8])
+  maxError[i] <- 1 + pow((3 * min_E[i]), 0.5)   #variance depending on time step
+  minError[i] <- 1 - pow((3 * min_E[i]), 0.5) 
+    
+  kE[i] ~ dunif(minError[i], maxError[i])
+  ###########################
 
-            #1 survmort        
-            #2 survl          
-            #3 survnoh       
-            #4 survdo 
-            
-            #zz[i,j,ii]~ dgamma(2, 50)I( , maxvar)
+  zz[i]~ dgamma(2, 50)I( , maxvar)
+  
+  for(j in 1:6){           
+    
+    
+    for(ii in 1:4){
+      
+      #1 survmort        
+      #2 survl          
+      #3 survnoh       
+      #4 survdo 
+      
+      #zz[i,j,ii]~ dgamma(2, 50)I( , maxvar)
+      
+      for(ij in 1:2){  #reared or wild
         
-            for(ij in 1:2){  #reared or wild
-                kk[i,j,ii,ij] <- step(surv[i,j,ii,ij] - 0.5) # if surv >=0.5 then kk=1 else kk=0 
-                maxE[i,j,ii,ij] <- ((1 / surv[i,j,ii,ij]) * kk[i,j,ii,ij]) + (2 * (1 - kk[i,j,ii,ij]))	
-                minE[i,j,ii,ij] <- (1 - (maxE[i,j,ii,ij] - 1))  
-                vvE[i,j,ii,ij] <- pow((maxE[i,j,ii,ij] - minE[i,j,ii,ij]), 2) / 12   # variance depending on survival 
-            }
-            }
-            minv[i,j]<-min(vvE[i,j,1:6,1],vvE[i,j,1:6,2],
-                           vvErw[i,j,1:stocks],vvErr[i,j])      # choose min from all gear and w/r combinations
-            
-            vE[i,j]<-1*zz[i,j]/12 # min(mon_E[j,ii])=1
-            maxError[i,j] <- 1 + pow((3 * min(vE[i,j], minv[i,j])), 0.5)   #variance depending on time step
-            minError[i,j] <- 1 - pow((3 * min(vE[i,j], minv[i,j])), 0.5) 
-                
-            kE[i,j] ~ dunif(minError[i,j], maxError[i,j])
-        
-        #5 survr  
-        #zzr[i,j]~ dgamma(2, 50)I( , maxvar)         
-        
-        for(s in 1:stocks){  
-        
-            kkrw[i,j,s] <- step(surv.riv[i,j,s]*surv_migr[(i+j-1),s] - 0.5) # if surv >=0.5 then kk=1 else kk=0 
-            maxErw[i,j,s] <- ((1 / (surv.riv[i,j,s]*surv_migr[(i+j-1),s])) * kkrw[i,j,s]) + (2 * (1 - kkrw[i,j,s]))
-            minErw[i,j,s] <- (1 - (maxErw[i,j,s] - 1))
-            vvErw[i,j,s] <- pow((maxErw[i,j,s] - minErw[i,j,s]), 2) / 12   # variance depending on survival 
-
-        }
-
-         kkrr[i,j] <- step(surv[i,j,5,2] - 0.5) # if surv >=0.5 then kk=1 else kk=0 
-         maxErr[i,j] <- ((1 / surv[i,j,5,2]) * kkrr[i,j]) + (2 * (1 - kkrr[i,j]))
-         minErr[i,j] <- (1 - (maxErr[i,j] - 1))
-         vvErr[i,j] <- pow((maxErr[i,j] - minErr[i,j]), 2) / 12   # variance depending on survival 
-         
-        # minvr[i,j]<-min(vvErw[i,j,1:stocks],vvErr[i,j])      #compare W with R
-        # vEr[i,j]<-mon_E[j,5]*zzr[i,j]/12
-        # maxErrorr[i,j] <- 1 + pow((3 * min(vEr[i,j], minvr[i,j])), 0.5)   #variance depending on time step
-        # minErrorr[i,j] <- 1 - pow((3 * min(vEr[i,j], minvr[i,j])), 0.5) 
-        #         
-        # kE[i,j,5] ~ dunif(minErrorr[i,j], maxErrorr[i,j])
-        
-		# 6 survt
-        for(ii in 6:6){
-          #zz[i,j,ii]~ dgamma(2, 50)I( , maxvar)
-          
-          for(ij in 1:2){  #reared or wild
-          
-          kk[i,j,ii,ij] <- step(surv[i,j,ii,ij] - 0.5) # if surv >=0.5 then kk=1 else kk=0 
-          maxE[i,j,ii,ij] <- ((1 / surv[i,j,ii,ij]) * kk[i,j,ii,ij]) + (2 * (1 - kk[i,j,ii,ij]))	
-          minE[i,j,ii,ij] <- (1 - (maxE[i,j,ii,ij] - 1))  
-          vvE[i,j,ii,ij] <- pow((maxE[i,j,ii,ij] - minE[i,j,ii,ij]), 2) / 12   # variance depending on survival 
-          }
-          
-        #   minv[i,j,ii]<-min(vvE[i,j,ii,1],vvE[i,j,ii,2])      #compare W with R
-        #   vE[i,j,ii]<-mon_E[j,ii]*zz[i,j,ii]/12
-        #   maxError[i,j,ii] <- 1 + pow((3 * min(vE[i,j,ii], minv[i,j,ii])), 0.5)   #variance depending on time step
-        #   minError[i,j,ii] <- 1 - pow((3 * min(vE[i,j,ii], minv[i,j,ii])), 0.5) 
-        #   
-        #   kE[i,j,ii] ~ dunif(minError[i,j,ii], maxError[i,j,ii])
-        # 
-        }		 
-
-        #########################################################################
-        #survc      
-        #survdc (was surv6)      
-        
-        zzc[i,j]~ dgamma(2, 50)I( , maxvar)         #survc
-        zzdc[i,j]~ dgamma(2, 50)I( , maxvar)         #survdc
-
-        
-        for(ij in 1:2){  #reared or wild
-           for(au in 1:AUS){  
-              kkc[i,j,ij,au] <- step(survc[i,j,ij,au] - 0.5) # if surv >=0.5 then kk=1 else kk=0 
-              kkdc[i,j,ij,au] <- step(survdc[i,j,ij,au] - 0.5)
-              maxEc[i,j,ij,au] <- ((1 / survc[i,j,ij,au]) * kkc[i,j,ij,au]) + (2 * (1 - kkc[i,j,ij,au]))
-              maxEdc[i,j,ij,au] <- ((1 / survdc[i,j,ij,au]) * kkdc[i,j,ij,au]) + (2 * (1 - kkdc[i,j,ij,au]))	
-              minEc[i,j,ij,au] <- (1 - (maxEc[i,j,ij,au] - 1))
-              minEdc[i,j,ij,au] <- (1 - (maxEdc[i,j,ij,au] - 1))  
-              vvEc[i,j,ij,au] <- pow((maxEc[i,j,ij,au] - minEc[i,j,ij,au]), 2) / 12   # variance depending on survival 
-              vvEdc[i,j,ij,au] <- pow((maxEdc[i,j,ij,au] - minEdc[i,j,ij,au]), 2) / 12   # variance depending on survival 
-           }
-        }
-                                                                         
-        minvc[i,j]<-min(vvEc[i,j,1:2,1:AUS])      #compare W with R
-        minvdc[i,j]<-min(vvEdc[i,j,1:2,1:AUS])      #compare W with R
-            
-        vEc[i,j]<-mon_Ec[j]*zzc[i,j]/12               #variance depending on time step
-        vEdc[i,j]<-mon_Edc[j]*zzdc[i,j]/12            #variance depending on time step
-
-        maxErrorc[i,j] <- 1 + pow((3 * min(vEc[i,j], minvc[i,j])), 0.5)   
-        maxErrordc[i,j] <- 1 + pow((3 * min(vEdc[i,j], minvdc[i,j])), 0.5)    
-        
-        minErrorc[i,j] <- 1 - pow((3 * min(vEc[i,j], minvc[i,j])), 0.5)
-        minErrordc[i,j] <- 1 - pow((3 * min(vEdc[i,j], minvdc[i,j])), 0.5)  
-                
-        kEc[i,j] ~ dunif(minErrorc[i,j], maxErrorc[i,j])
-        kEdc[i,j] ~ dunif(minErrordc[i,j], maxErrordc[i,j])
-
+        kk[i,j,ii,ij] <- step(surv[i,j,ii,ij] - 0.5) # if surv >=0.5 then kk=1 else kk=0 
+        maxE[i,j,ii,ij] <- ((1 / surv[i,j,ii,ij]) * kk[i,j,ii,ij]) + (2 * (1 - kk[i,j,ii,ij]))	
+        minE[i,j,ii,ij] <- (1 - (maxE[i,j,ii,ij] - 1))  
+        vvE[i,j,ii,ij] <- pow((maxE[i,j,ii,ij] - minE[i,j,ii,ij]), 2) / 12   # variance depending on survival 
+      }
+      
+      minv[i,j,ii]<-min(vvE[i,j,ii,1],vvE[i,j,ii,2])      #compare W with R
+      
+      vE[i,j,ii]<-mon_E[j,ii]*zz[i]/12
+      
     }
+    
+    
+    #5 survr  
+    #zzr[i,j]~ dgamma(2, 50)I( , maxvar)         
+    
+    for(s in 1:stocks){  
+      
+      kkrw[i,j,s] <- step(surv.riv[i,j,s]*surv_migr[(i+j-1),s] - 0.5) # if surv >=0.5 then kk=1 else kk=0 
+      maxErw[i,j,s] <- ((1 / (surv.riv[i,j,s]*surv_migr[(i+j-1),s])) * kkrw[i,j,s]) + (2 * (1 - kkrw[i,j,s]))
+      minErw[i,j,s] <- (1 - (maxErw[i,j,s] - 1))
+      vvErw[i,j,s] <- pow((maxErw[i,j,s] - minErw[i,j,s]), 2) / 12   # variance depending on survival 
+      
+    }
+    
+    kkrr[i,j] <- step(surv[i,j,5,2] - 0.5) # if surv >=0.5 then kk=1 else kk=0 
+    maxErr[i,j] <- ((1 / surv[i,j,5,2]) * kkrr[i,j]) + (2 * (1 - kkrr[i,j]))
+    minErr[i,j] <- (1 - (maxErr[i,j] - 1))
+    vvErr[i,j] <- pow((maxErr[i,j] - minErr[i,j]), 2) / 12   # variance depending on survival 
+    
+    #minvr[i,j]<-min(vvErw[i,j,1:stocks],vvErr[i,j])      #compare W with R
+    #vEr[i,j]<-mon_E[j,5]*zzr[i,j]/12
+    minv[i,j,5]<-min(vvErw[i,j,1:stocks],vvErr[i,j])      #compare W with R
+    vE[i,j,5]<-mon_E[j,5]*zz[i]/12
+    
+    # maxErrorr[i,j] <- 1 + pow((3 * min(vEr[i,j], minvr[i,j])), 0.5)   #variance depending on time step
+    # minErrorr[i,j] <- 1 - pow((3 * min(vEr[i,j], minvr[i,j])), 0.5) 
+    # 
+    # kE[i,j,5] ~ dunif(minErrorr[i,j], maxErrorr[i,j])
+    # 
+    
+    # 6 survt
+    for(ii in 6:6){
+      #zz[i,j,ii]~ dgamma(2, 50)I( , maxvar)
+      
+      for(ij in 1:2){  #reared or wild
+        
+        kk[i,j,ii,ij] <- step(surv[i,j,ii,ij] - 0.5) # if surv >=0.5 then kk=1 else kk=0 
+        maxE[i,j,ii,ij] <- ((1 / surv[i,j,ii,ij]) * kk[i,j,ii,ij]) + (2 * (1 - kk[i,j,ii,ij]))	
+        minE[i,j,ii,ij] <- (1 - (maxE[i,j,ii,ij] - 1))  
+        vvE[i,j,ii,ij] <- pow((maxE[i,j,ii,ij] - minE[i,j,ii,ij]), 2) / 12   # variance depending on survival 
+      }
+      
+      minv[i,j,ii]<-min(vvE[i,j,ii,1],vvE[i,j,ii,2])      #compare W with R
+      vE[i,j,ii]<-mon_E[j,ii]*zz[i]/12
+      # maxError[i,j,ii] <- 1 + pow((3 * min(vE[i,j,ii], minv[i,j,ii])), 0.5)   #variance depending on time step
+      # minError[i,j,ii] <- 1 - pow((3 * min(vE[i,j,ii], minv[i,j,ii])), 0.5) 
+      # 
+      # kE[i,j,ii] ~ dunif(minError[i,j,ii], maxError[i,j,ii])
+    }	
+
+    #########################################################################
+    #survc      
+    #survdc (was surv6)      
+    
+    #zzc[i,j]~ dgamma(2, 50)I( , maxvar)         #survc
+    #zzdc[i,j]~ dgamma(2, 50)I( , maxvar)         #survdc
+    
+    
+    for(ij in 1:2){  #reared or wild
+      for(au in 1:AUS){  
+        kkc[i,j,ij,au] <- step(survc[i,j,ij,au] - 0.5) # if surv >=0.5 then kk=1 else kk=0 
+        kkdc[i,j,ij,au] <- step(survdc[i,j,ij,au] - 0.5)
+        maxEc[i,j,ij,au] <- ((1 / survc[i,j,ij,au]) * kkc[i,j,ij,au]) + (2 * (1 - kkc[i,j,ij,au]))
+        maxEdc[i,j,ij,au] <- ((1 / survdc[i,j,ij,au]) * kkdc[i,j,ij,au]) + (2 * (1 - kkdc[i,j,ij,au]))	
+        minEc[i,j,ij,au] <- (1 - (maxEc[i,j,ij,au] - 1))
+        minEdc[i,j,ij,au] <- (1 - (maxEdc[i,j,ij,au] - 1))  
+        vvEc[i,j,ij,au] <- pow((maxEc[i,j,ij,au] - minEc[i,j,ij,au]), 2) / 12   # variance depending on survival 
+        vvEdc[i,j,ij,au] <- pow((maxEdc[i,j,ij,au] - minEdc[i,j,ij,au]), 2) / 12   # variance depending on survival 
+      }
+    }
+    
+    minv[i,j,7]<-min(vvEc[i,j,1:2,1:AUS])      #compare W with R
+    minv[i,j,8]<-min(vvEdc[i,j,1:2,1:AUS])      #compare W with R
+    
+    vE[i,j,7]<-mon_Ec[j]*zz[i]/12               #variance depending on time step
+    vE[i,j,8]<-mon_Edc[j]*zz[i]/12            #variance depending on time step
+    
+    # maxErrorc[i,j] <- 1 + pow((3 * min(vEc[i,j], minvc[i,j])), 0.5)   
+    # maxErrordc[i,j] <- 1 + pow((3 * min(vEdc[i,j], minvdc[i,j])), 0.5)    
+    # 
+    # minErrorc[i,j] <- 1 - pow((3 * min(vEc[i,j], minvc[i,j])), 0.5)
+    # minErrordc[i,j] <- 1 - pow((3 * min(vEdc[i,j], minvdc[i,j])), 0.5)  
+    # 
+    # kEc[i,j] ~ dunif(minErrorc[i,j], maxErrorc[i,j])
+    # kEdc[i,j] ~ dunif(minErrordc[i,j], maxErrordc[i,j])
+    
+  }
 }
 
 

@@ -10,7 +10,8 @@
 #summary(chains1[ ,regexpr("HrW",varnames(chains))>0])
 #summary(chains1[,"HrW[2,2]"])
 
-
+if(nchains1==1){
+  
   # from cohort+age to calendar years
   hrW<-hrR<-hcW.au1<-hcR.au1<-array(NA, dim=c(2,length(Years)-2, nsims1))
   hdcW<-hdcR<-array(NA, dim=c(3,length(Years)-3, nsims1))
@@ -55,7 +56,56 @@
     }}
   #summary(chains[ ,regexpr("HdoW",varnames(chains))>0])  
   #summary(chains1[ ,regexpr("HdoW",varnames(chains1))>0])  
+}
 
+
+if(nchains1==2){
+  
+  # from cohort+age to calendar years
+  hrW<-hrR<-hcW.au1<-hcR.au1<-array(NA, dim=c(2,length(Years)-2, nsims1))
+  hdcW<-hdcR<-array(NA, dim=c(3,length(Years)-3, nsims1))
+  for(y in 3:(length(Years))){ 
+    for(a in 2:3){ # Grilse & 2SW (=MSW)
+      #hrW[grilse:MSW, ]
+      hrW[a-1,y-2,]<-chains1[,str_c("HrW[",y-(a-1),",",a,"]")][[1]]
+      hrR[a-1,y-2,]<-chains1[,str_c("HrR[",y-(a-1),",",a,"]")][[1]]
+      
+      #hcW[grilse:MSW, ] AU1
+      hcW.au1[a-1,y-2,]<-chains1[,str_c("HcW[",y-(a-1),",",a,",1]")][[1]]
+      hcR.au1[a-1,y-2,]<-chains1[,str_c("HcR[",y-(a-1),",",a,",1]")][[1]]
+    }
+  }   
+  for(y in 4:(length(Years))){ 
+    for(a in 2:4){ # Grilse, 2SW, 3SW=MSW
+      #hdcW[grilse:MSW, ]
+      hdcW[a-1,y-3,]<-chains1[,str_c("HdcW[",y-(a-1),",",a,"]")][[1]]
+      hdcR[a-1,y-3,]<-chains1[,str_c("HdcR[",y-(a-1),",",a,"]")][[1]]
+      
+    }}
+  
+  hdoW<-hdoR<-array(NA, dim=c(4,length(Years)-4, nsims1))
+  for(y in 5:(length(Years))){ 
+    for(a in 1:4){ # PS, Grilse, 2SW, 3SW=MSW
+      hdoW[a,y-4,]<-chains1[,str_c("HdoW[",y-a,",",a,"]")][[1]]
+      hdoR[a,y-4,]<-chains1[,str_c("HdoR[",y-a,",",a,"]")][[1]]
+    }}  
+  
+  if(trolling1==T){
+    htW<-htR<-array(NA, dim=c(3,length(Years)-3, nsims1))
+  }
+  hlW<-hlR<-array(NA, dim=c(3,length(Years)-3, nsims1))
+  for(y in 4:(length(Years))){ 
+    for(a in 1:3){ # PS, 2SW, 3SW=MSW
+      hlW[a,y-3,]<-chains1[,str_c("HlW[",y-a,",",a,"]")][[1]]
+      hlR[a,y-3,]<-chains1[,str_c("HlR[",y-a,",",a,"]")][[1]]
+      if(trolling1==T){ 
+        htW[a,y-3,]<-chains1[,str_c("HtW[",y-a,",",a,"]")][[1]]
+        htR[a,y-3,]<-chains1[,str_c("HtR[",y-a,",",a,"]")][[1]]
+      }
+    }}
+  #summary(chains[ ,regexpr("HdoW",varnames(chains))>0])  
+  #summary(chains1[ ,regexpr("HdoW",varnames(chains1))>0])  
+}
   # wrangle
   ##########################
   
