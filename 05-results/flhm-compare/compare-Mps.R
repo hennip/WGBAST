@@ -12,14 +12,14 @@ survMpsR<-array(NA, dim=c(nsims1,length(YearsB)))
 ratio<-array(NA, dim=c(nsims1,length(YearsB)))
 
 for(y in 1:(length(YearsB))){
-#  if(nchains1==1){
+  if(nchains1==1){
     survMpsW[,y]<-exp(-as.matrix(chains1[,str_c("MpsW[",y,"]")]))
     survMpsR[,y]<-exp(-as.matrix(chains1[,str_c("MpsR[",y,"]")]))
-#  } 
-  # if(nchains1==2){
-  #   survMpsW[,y]<-exp(-as.matrix(chains1[,str_c("MpsW[",y,"]")][[1]]))
-  #   survMpsR[,y]<-exp(-as.matrix(chains1[,str_c("MpsR[",y,"]")][[1]]))
-  # }
+  } 
+   if(nchains1==2){
+     survMpsW[,y]<-exp(-as.matrix(chains1[,str_c("MpsW[",y,"]")][[1]]))
+     survMpsR[,y]<-exp(-as.matrix(chains1[,str_c("MpsR[",y,"]")][[1]]))
+   }
   
   ratio[,y]<-survMpsR[,y]/survMpsW[,y]
 }
