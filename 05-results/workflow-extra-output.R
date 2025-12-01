@@ -55,6 +55,10 @@ File<-paste0(PathOut_Scen_tmp,"ScenProj_",Model,"_EScen",EffScen,"_RCzero23-35.R
 File
 load(File)
 
+################################################################################
+# May 1st per age class (all stocks together)
+# (and Tornionjoki alone)
+################################################################################
 
 
 ################################################################################
@@ -111,6 +115,9 @@ source("06-misc/Spawners_AgeDist.R")
 # - Slim, SMSY and SR0 (as number of eggs, or if possible, as number of salmon), 
 # 50%, 80% and 95% level of probability for each stock
 ################################################################################
+
+# Would be good to add 80% of R0 as a target
+
 
 load("../../WGBAST_shared/scen/2025/Ref pts/eqm_distns_2025.RData")
 load("../../WGBAST_shared/scen/2025/Ref pts/SMSY_distributions_2025.RData")
