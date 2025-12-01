@@ -60,6 +60,32 @@ load(File)
 # (and Tornionjoki alone)
 ################################################################################
 
+dim(May1stW)
+dim(May1stR)
+
+
+# medians, summed over stocks/AU's
+nyears_tmp<-100
+May1stR_tot<-May1stW_tot<-array(NA, dim=c(6,nyears_tmp,nsim))
+May1stW_Torne_med<-May1stR_tot_med<-May1stW_tot_med<-array(NA, dim=c(6,nyears_tmp))
+for(y in 1:nyears_tmp){ # First 100 years
+  for(a in 1:6){
+    for(s in 1:nsim){
+      May1stR_tot[a,y,s]<-sum(May1stR[a,y,,s]) # sum over AU's
+      May1stW_tot[a,y,s]<-sum(May1stW[a,y,,s]) # sum over stocks
+    }
+    May1stR_tot_med[a,y]<-median(May1stR_tot[a,y,])
+    May1stW_tot_med[a,y]<-median(May1stW_tot[a,y,])
+    May1stW_Torne_med[a,y]<-median(May1stW[a,y,1,])
+    
+  }}
+
+colnames(May1stW_Torne_med)<-colnames(May1stW_tot_med)<-colnames(May1stR_tot_med)<-Years[1:nyears_tmp]
+
+write_xlsx(as.data.frame(May1stW_tot_med), paste0(PathOut_Scen, "May1st_Torne_medians.xlsx"))
+write_xlsx(as.data.frame(May1stW_tot_med), paste0(PathOut_Scen, "May1st_wild_medians.xlsx"))
+write_xlsx(as.data.frame(May1stR_tot_med), paste0(PathOut_Scen, "May1st_reared_medians.xlsx"))
+
 
 ################################################################################
 # Number of salmon arriving to Gulf of Bothnia
