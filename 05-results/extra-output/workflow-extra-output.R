@@ -63,7 +63,6 @@ load(File)
 dim(May1stW)
 dim(May1stR)
 
-
 # medians, summed over stocks/AU's
 nyears_tmp<-100
 May1stR_tot<-May1stW_tot<-array(NA, dim=c(6,nyears_tmp,nsim))
@@ -151,8 +150,8 @@ load("../../WGBAST_shared/scen/2025/ref_pts_2025_2025_JAGS_base4_eggs.RData")
 #"Eggs_lim"  "Eggs_MSY"  "Eggs0"     "MSY"       "Smolt_lim" "Smolt_MSY"
 
 dim(S0_all)
+dim(R0_all)
 dim(SMSY_sim)
-
 
 
 Eggs_tbl<-function(Eggs){
@@ -175,6 +174,8 @@ write_xlsx(Eggs_tbl(Eggs0),paste0(PathOut_Scen,"/Ref pts/E0_",Model,".xlsx"))
 write_xlsx(Eggs_tbl(Eggs_MSY),paste0(PathOut_Scen,"/Ref pts/EMSY_",Model,".xlsx"))
 write_xlsx(Eggs_tbl(Eggs_lim),paste0(PathOut_Scen,"/Ref pts/Elim_",Model,".xlsx"))
 
+# R0 obviously not eggs but the same format will do :)
+write_xlsx(Eggs_tbl(R0_all),paste0(PathOut_Scen,"/Ref pts/R0_",Model,".xlsx"))
 
 
 
