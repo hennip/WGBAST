@@ -95,7 +95,7 @@ write_xlsx(as.data.frame(May1stR_tot_med), paste0(PathOut_Scen, "May1st_reared_m
 # o total Simojoki
 # o total Tornionjoki
 
-source("06-misc/MigratingAU13tot.R")
+source("05-results/extra-output/MigratingAU13tot.R")
 
 
 # Saves in "../../WGBAST_shared/scen/2025/" files
@@ -116,7 +116,7 @@ source("06-misc/MigratingAU13tot.R")
 # o total Simojoki
 # o total Tornionjoki
 
-source("06-misc/SpawnersByRiversAndUnits.R")
+source("05-results/extra-output/SpawnersByRiversAndUnits.R")
 
 # Saves in "../../WGBAST_shared/scen/2025/" files
 # SpawnersByUnit.xlsx, wild, reared and tot per AU 
@@ -130,7 +130,7 @@ source("06-misc/SpawnersByRiversAndUnits.R")
 # o total reared
 # o Tornionjoki
 
-source("06-misc/Spawners_AgeDist.R")
+source("05-results/extra-output/Spawners_AgeDist.R")
 
 # Saves in "../../WGBAST_shared/scen/2025/" files
 # AgePropsW.xlsx per river and AgePropR.xlsx per AU
@@ -144,9 +144,9 @@ source("06-misc/Spawners_AgeDist.R")
 # Would be good to add 80% of R0 as a target
 
 
-load("../../WGBAST_shared/scen/2025/Ref pts/eqm_distns_2025.RData")
-load("../../WGBAST_shared/scen/2025/Ref pts/SMSY_distributions_2025.RData")
-load("../../WGBAST_shared/scen/2025/ref_pts_2025_2025_JAGS_base4_eggs.RData")
+load(paste0(PathOut_Scen,"Ref pts/eqm_distns_2025.RData"))
+load(paste0(PathOut_Scen,"Ref pts/SMSY_distributions_2025.RData"))
+load(paste0(PathOut_Scen,"Ref pts/ref_pts_2025_2025_JAGS_base4_eggs.RData"))
 #"Eggs_lim"  "Eggs_MSY"  "Eggs0"     "MSY"       "Smolt_lim" "Smolt_MSY"
 
 dim(S0_all)
@@ -186,7 +186,7 @@ write_xlsx(Eggs_tbl(R0_all),paste0(PathOut_Scen,"/Ref pts/R0_",Model,".xlsx"))
 # o wild
 # o reared
 
-source("06-misc/combinedHRs.R")
+source("05-results/extra-output/combinedHRs.R")
 
 
 
