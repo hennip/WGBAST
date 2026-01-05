@@ -92,8 +92,8 @@ run0 <- run.jags(WGBAST_model, monitor= parnames,
                  n.chains = 2, method = 'parallel', thin=1,
                  burnin =10000, modules = "mix",
                  sample =10, adapt = 10000,
-                 keep.jags.files=F,
-                 #keep.jags.files=paste0(runName, assessment_year),
+                 #keep.jags.files=F,
+                 keep.jags.files=paste0(runName, assessment_year),
                  progress.bar=TRUE, jags.refresh=100)
 t02<-Sys.time();print(t02)
 print("run0 done");print(difftime(t02,t01))
