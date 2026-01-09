@@ -20,7 +20,7 @@ for(loop in 1:(nsim/100)){
   # We will write the simulation results to the sim folder using 10 Rdata-files 
   # under these names 
   BH_dataFile<-
-    paste0(PathScen, "ScenHist_", Model,"_",loop,".RData") # name to separate historical part from future projections?
+    paste0(PathOut_Scen, "ScenHist_", Model,"_",loop,".RData") # name to separate historical part from future projections?
 
   #Sims stores the numbers for the simulation in the MCMC chain
   sims<-c(1+100*(loop-1),100*loop)   #1st and last indices of sims
