@@ -1,3 +1,10 @@
+# This script takes in the national estimates of offshore trolling catches
+# in the form of triangular distributions (mode, min, max)
+# and translates those to lognormal distributions.
+# These estimates are then summed together -> Annual total trolling catches
+# 
+
+
 # Model: Trolling_catch_all_countries_Tot_Landed_and_Released_separeated
 # Model translates the triangular distributions as Lognormal distributions
 # and sums the distributions in totals
@@ -37,6 +44,9 @@ col_nms<-c("min", "mode", "max")
 r1<-"B5:D42"
 r2<-"F5:H42"
 
+# Pick up mode, min and max for each country and area,
+# _land: number of landed
+# _rel: number of released
 se2228_land<-read_xlsx(file_tr, col_names = col_nms, sheet="SWE_SD22-28", range=r1)
 se2228_rel<-read_xlsx(file_tr,col_names = col_nms, sheet="SWE_SD22-28", range=r2)
 se29_land<-read_xlsx(file_tr, col_names = col_nms, sheet="SWE_SD29", range=r1)
@@ -60,7 +70,7 @@ fi2931_rel<-read_xlsx(file_tr,col_names = col_nms, sheet="FIN_SD2931", range=r2)
 fi32_land<-read_xlsx(file_tr, col_names = col_nms, sheet="FIN_SD32", range=r1)
 fi32_rel<-read_xlsx(file_tr,col_names = col_nms, sheet="FIN_SD32", range=r2)
 
-# Replace 0's in german data with small constants (don't know why this was not done in BUGS, dlnorm should not work there either with zeros
+# Replace 0's in german data with small constants 
 ge_land<-ge_land |> mutate(min=ifelse(min==0, 0.001, min)) |> 
   mutate(mode=ifelse(mode==0, 0.01, mode)) |> 
   mutate(max=ifelse(max==0, 0.1, max)) 
@@ -69,17 +79,12 @@ ge_rel<-ge_rel |> mutate(min=ifelse(min==0, 0.001, min)) |>
   mutate(mode=ifelse(mode==0, 0.01, mode)) |> 
   mutate(max=ifelse(max==0, 0.1, max)) 
 
-#
-# ini_min<-0.001
-# ini_mode<-0.01
-# ini_max<-0.1
-
-ini<-cbind(rep(0.001, NumYears), 
-           rep(0.01, NumYears),
-           rep(0.1, NumYears))
-colnames(ini)<-col_nms
-
-ini<-array(NA, dim=c(NumYears,2,2))
+# ini<-cbind(rep(0.001, NumYears), 
+#            rep(0.01, NumYears),
+#            rep(0.1, NumYears))
+# colnames(ini)<-col_nms
+# 
+# ini<-array(NA, dim=c(NumYears,2,2))
 
 ###############################################################
 # Function to calculate mu and cv of a triangular distribution
@@ -154,7 +159,7 @@ datalist<-list(
 parnames<-c(
   "Tot_Landed", "Tot_Released", "Tot_Catch", "Tot_Catch_Dead")
 
-run_sd32 <- run.jags(M1, monitor= parnames,
+run_sd32 <- run.jags(M_trolling, monitor= parnames,
                   data=datalist,
                   n.chains = 2, method = 'parallel', thin=100,
                   burnin =10000, modules = "mix",
@@ -197,7 +202,7 @@ datalist<-list(
 parnames<-c(
   "Tot_Landed", "Tot_Released", "Tot_Catch", "Tot_Catch_Dead")
 
-run_sd32 <- run.jags(M1, monitor= parnames,
+run_sd32 <- run.jags(M_trolling, monitor= parnames,
                      data=datalist,
                      n.chains = 2, method = 'parallel', thin=100,
                      burnin =10000, modules = "mix",
@@ -256,7 +261,7 @@ datalist<-list(
 parnames<-c(
   "Tot_Landed", "Tot_Released", "Tot_Catch", "Tot_Catch_Dead")
 
-run_MB <- run.jags(M1, monitor= parnames,
+run_MB <- run.jags(M_trolline, monitor= parnames,
                      data=datalist,
                      n.chains = 2, method = 'parallel', thin=100,
                      burnin =10000, modules = "mix",
