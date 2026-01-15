@@ -3,7 +3,7 @@
 # This object is used for compiling catch&effort data, ureported&discards and trolling catch data
 
 wgbast_catch_data<-read_xlsx(str_c(pathIn, 
-                "WGBAST_2025_Catch_20.02.2025_Hennille.xlsx"), # Update!
+                "WGBAST_2025_Catch_20.02.2025.xlsx"), # Update!
           range="A1:Q18586", # Update!
           sheet="Catch data", col_names = T, guess_max = 10000, na=c("",".", "NaN", "NA"))%>%
   # filter(YEAR>2005)%>% # Include results only 2009 onwards, catch DB has only updates from those years 

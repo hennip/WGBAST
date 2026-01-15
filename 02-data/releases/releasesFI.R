@@ -1,4 +1,7 @@
-
+################################################################################
+# This script modifies Finnish release data into form that can be 
+# submitted to ICES during the data call
+# ##############################################################################
 
 
 
@@ -9,7 +12,7 @@ source("../run-this-first-wgbast.r")
 # catch related datasets
 ################################################################################
 
-# Releases - from Azure data lake
+# Releases - later from Azure data lake
 ##################################
 (releases<-read_xlsx("../../WGBAST_shared/submodels/releases/Releases_FI_SAL_1959-2024_TRS_1981-2024.xlsx",
                     range="A1:Y23695", guess_max = 100000))
@@ -29,6 +32,8 @@ source("../run-this-first-wgbast.r")
 (df_names<-read_xlsx("../../WGBAST_shared/submodels/releases/WGBAST_Rivers_FI_revised_Aug2025.xlsx"))
 #View(df_names)
 
+
+# Aineiston käsittely, vastaa Tapsan aiempaa SAS proseduuria
 df <-releases |> 
   mutate(Meri=recode(Meri, Meri="MERI", Joki="JOKI")) |> 
   mutate(year=Istvuosi, country="FI", numb=Kpl/1000, sub_div=`osa-alue`) |>
@@ -109,14 +114,13 @@ df4<-df3|>
   filter(age!="adult") |> 
   summarise(numb=sum(numb))
 View(df4)
+
+# Lopullinen tiedosto, ICES formaatti 
 write_xlsx(df4, path="../../WGBAST_shared/submodels/releases/releases_FI23-24_ICESformat.xlsx")
 
-df4 |> filter(river_name=="at sea", sub_div==30)
-
-tmp<-df3 |> filter(river_name=="at sea", sub_div==30)
-View(tmp)
-
-
-df4 |> ungroup() |> summarise(N=sum(numb))
+#df4 |> filter(river_name=="at sea", sub_div==30)
+#tmp<-df3 |> filter(river_name=="at sea", sub_div==30)
+#View(tmp)
+#df4 |> ungroup() |> summarise(N=sum(numb))
 
 
