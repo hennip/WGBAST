@@ -21,6 +21,7 @@ run-this-first-wgbast.R
 # History files
 .Rhistory
 .Rapp.history
+*.Rhistory
 
 # Session Data files
 .RData
