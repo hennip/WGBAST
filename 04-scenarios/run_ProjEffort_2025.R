@@ -18,7 +18,7 @@
 
 rm(list=ls(all=T))
 
-source("../run-this-first-wgbast.R") 
+source("run-this-first-wgbast.R") 
 
 # Paths are specified in a separate file 
 # 

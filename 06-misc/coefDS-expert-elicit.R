@@ -1,4 +1,4 @@
-source("../run-this-first-wgbast.R")
+source("run-this-first-wgbast.R")
 
 
 M1<-"model{
