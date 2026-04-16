@@ -12,7 +12,7 @@ max_year<-2024
 years<-min_year:max_year
 NumYears<-length(years)
 
-source("../run-this-first-wgbast.R")
+source("run-this-first-wgbast.R")
 #source("00-basics/packages.R")
 pathIn<-pathDataCatchEffort
 

@@ -28,7 +28,7 @@
 #	n=fishery {1,2,3}; 1=Main Basin, 2=Northern Baltic sea and Gulf of Bothnia, 3=Gulf of Finland
 
 
-source("../run-this-first-wgbast.R")
+source("run-this-first-wgbast.R")
 min_year<-1987
 max_year<-2024
 years<-min_year:max_year

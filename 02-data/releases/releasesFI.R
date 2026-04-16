@@ -5,7 +5,7 @@
 
 
 
-source("../run-this-first-wgbast.r")
+source("run-this-first-wgbast.r")
 
 ################################################################################
 # Sorry about a bit bad logic, but releases are under submodels together with 
@@ -14,7 +14,7 @@ source("../run-this-first-wgbast.r")
 
 # Releases - later from Azure data lake
 ##################################
-(releases<-read_xlsx("../../WGBAST_shared/submodels/releases/Releases_FI_SAL_1959-2024_TRS_1981-2024.xlsx",
+(releases<-read_xlsx(paste0(pathReleasesFI,"Releases_FI_SAL_1959-2024_TRS_1981-2024.xlsx"),
                     range="A1:Y23695", guess_max = 100000))
 #  View(releases)  
 
@@ -29,7 +29,7 @@ source("../run-this-first-wgbast.r")
 # AU -numerointi, mutta lisää se mukaan). Katso myös ICES Reference Codes - RECO 
 # ja siellä RiversAndCatchments (https://vocab.ices.dk/)
 
-(df_names<-read_xlsx("../../WGBAST_shared/submodels/releases/WGBAST_Rivers_FI_revised_Aug2025.xlsx"))
+(df_names<-read_xlsx(paste0(pathReleasesFI,"WGBAST_Rivers_FI_revised_Aug2025.xlsx")))
 #View(df_names)
 
 
