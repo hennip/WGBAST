@@ -34,8 +34,8 @@ NumYears<-length(years)
 # .. But for now it is collected in this excel on various sheets:
 file_tr<-"../../WGBAST_shared/submodels/trolling/Baltic salmon trolling catches_expert elicitation ver_19-02-2025.xlsx"
 col_nms<-c("min", "mode", "max")
-r1<-"B5:D42"
-r2<-"F5:H42"
+r1<-"B5:D42" #muista päivittää
+r2<-"F5:H42" #muista päivittää
 
 se2228_land<-read_xlsx(file_tr, col_names = col_nms, sheet="SWE_SD22-28", range=r1)
 se2228_rel<-read_xlsx(file_tr,col_names = col_nms, sheet="SWE_SD22-28", range=r2)
@@ -69,33 +69,20 @@ ge_rel<-ge_rel |> mutate(min=ifelse(min==0, 0.001, min)) |>
   mutate(mode=ifelse(mode==0, 0.01, mode)) |> 
   mutate(max=ifelse(max==0, 0.1, max)) 
 
-#
-# ini_min<-0.001
-# ini_mode<-0.01
-# ini_max<-0.1
 
-ini<-cbind(rep(0.001, NumYears), 
-           rep(0.01, NumYears),
-           rep(0.1, NumYears))
-colnames(ini)<-col_nms
-
-ini<-array(NA, dim=c(NumYears,2,2))
 
 ###############################################################
 # Function to calculate mu and cv of a triangular distribution
 ###############################################################
 
 stats<-function(g){
-CV<-Var<-Mu<-c()
-for( i in 1:NumYears){
-  #mu[i,j,k,n]<-(Min[i,j,k,n]+Mod[i,j,k,n]+Max[i,j,k,n])/3
-  #var[i,j,k,n]<-(pow(Min[i,j,k,n],2)+pow(Mod[i,j,k,n],2)+pow(Max[i,j,k,n],2)-Min[i,j,k,n]*Max[i,j,k,n]-Min[i,j,k,n]*Mod[i,j,k,n]-Mod[i,j,k,n]*Max[i,j,k,n])/18
-  #cv[i,j,k,n]<-sqrt(var[i,j,k,n])/mu[i,j,k,n]
-  Mu[i]<-sum(g[i,])/3
-  Var[i]<-(g$min[i]^2+g$mode[i]^2+g$max[i]^2-g$min[i]*g$max[i]-g$min[i]*g$mode[i]-g$mode[i]*g$max[i])/18
-  CV[i]<-sqrt(Var[i])/Mu[i]
-}
-return(cbind(Mu, CV))
+  CV<-Var<-Mu<-c()
+  for( i in 1:NumYears){
+    Mu[i]<-sum(g[i,])/3
+    Var[i]<-(g$min[i]^2+g$mode[i]^2+g$max[i]^2-g$min[i]*g$max[i]-g$min[i]*g$mode[i]-g$mode[i]*g$max[i])/18
+    CV[i]<-sqrt(Var[i])/Mu[i]
+  }
+  return(cbind(Mu, CV))
 }
 #stats(ee_land)
 #stats(as.data.frame(ini))
@@ -154,13 +141,13 @@ datalist<-list(
 parnames<-c(
   "Tot_Landed", "Tot_Released", "Tot_Catch", "Tot_Catch_Dead")
 
-run_sd32 <- run.jags(M1, monitor= parnames,
-                  data=datalist,
-                  n.chains = 2, method = 'parallel', thin=100,
-                  burnin =10000, modules = "mix",
-                  sample =1000, adapt = 10000,
-                  keep.jags.files=F,
-                  progress.bar=TRUE, jags.refresh=100)
+run_sd32 <- run.jags(M_trolling, monitor= parnames,
+                     data=datalist,
+                     n.chains = 2, method = 'parallel', thin=100,
+                     burnin =10000, modules = "mix",
+                     sample =1000, adapt = 10000,
+                     keep.jags.files=F,
+                     progress.bar=TRUE, jags.refresh=100)
 
 summary(run_sd32)
 
@@ -168,7 +155,7 @@ summary(run_sd32)
 ####################
 # SD29-31
 ####################
-ini<-array(NA, dim=c(NumYears,6,2))
+ini<-array(NA, dim=c(NumYears,2,2))
 
 mu2931<-ini
 mu2931[,1,1]<-stats(se29_land)[,1]
@@ -197,7 +184,7 @@ datalist<-list(
 parnames<-c(
   "Tot_Landed", "Tot_Released", "Tot_Catch", "Tot_Catch_Dead")
 
-run_sd32 <- run.jags(M1, monitor= parnames,
+run_sd32 <- run.jags(M_trolling, monitor= parnames,
                      data=datalist,
                      n.chains = 2, method = 'parallel', thin=100,
                      burnin =10000, modules = "mix",
@@ -256,16 +243,15 @@ datalist<-list(
 parnames<-c(
   "Tot_Landed", "Tot_Released", "Tot_Catch", "Tot_Catch_Dead")
 
-run_MB <- run.jags(M1, monitor= parnames,
-                     data=datalist,
-                     n.chains = 2, method = 'parallel', thin=100,
-                     burnin =10000, modules = "mix",
-                     sample =100000, adapt = 10000,
-                     keep.jags.files=F,
-                     progress.bar=TRUE, jags.refresh=100)
+run_MB <- run.jags(M_trolline, monitor= parnames,
+                   data=datalist,
+                   n.chains = 2, method = 'parallel', thin=100,
+                   burnin =10000, modules = "mix",
+                   sample =100000, adapt = 10000,
+                   keep.jags.files=F,
+                   progress.bar=TRUE, jags.refresh=100)
 
 summary(run_MB, var="Tot_Catch")
-
-
-
-
+#chains<-as.mcmc(run_sd32)
+#summary(chains, quantiles = c(0.05, 0.5, 0.95))
+#write_xlsx(as.data.frame(summary_mcmc_sd32$quantiles), "../summary_sd32.xlsx")
