@@ -10,7 +10,7 @@
 # Skip == T when running 05-results/workflow-extra-output 
 if(exists("skip")==F){
 
-source("../run-this-first-wgbast.R") # This file should be located at the root of the Rproject file. If not using Rstudio, pls define the location
+source("run-this-first-wgbast.R") # This file should be located at the root of the Rproject file. If not using Rstudio, pls define the location
   
 Model<-"2024_JAGS_Mps" # Assessment model version
 nsim<-1000

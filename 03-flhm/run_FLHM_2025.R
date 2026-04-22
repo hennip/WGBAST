@@ -10,7 +10,7 @@
 
 #flexible indexing not complete!!
 
-source("../run-this-first-wgbast.R")
+source("run-this-first-wgbast.R")
 set.seed(Sys.time())
 
 assessment_year<-2025

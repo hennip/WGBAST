@@ -1,3 +1,10 @@
+# This script takes in the national estimates of offshore trolling catches
+# in the form of triangular distributions (mode, min, max)
+# and translates those to lognormal distributions.
+# These estimates are then summed together -> Annual total trolling catches
+# 
+
+
 # Model: Trolling_catch_all_countries_Tot_Landed_and_Released_separeated
 # Model translates the triangular distributions as Lognormal distributions
 # and sums the distributions in totals
@@ -21,7 +28,7 @@
 #	n=fishery {1,2,3}; 1=Main Basin, 2=Northern Baltic sea and Gulf of Bothnia, 3=Gulf of Finland
 
 
-source("../run-this-first-wgbast.R")
+source("run-this-first-wgbast.R")
 min_year<-1987
 max_year<-2024
 years<-min_year:max_year
@@ -37,6 +44,9 @@ col_nms<-c("min", "mode", "max")
 r1<-"B5:D42" #muista päivittää
 r2<-"F5:H42" #muista päivittää
 
+# Pick up mode, min and max for each country and area,
+# _land: number of landed
+# _rel: number of released
 se2228_land<-read_xlsx(file_tr, col_names = col_nms, sheet="SWE_SD22-28", range=r1)
 se2228_rel<-read_xlsx(file_tr,col_names = col_nms, sheet="SWE_SD22-28", range=r2)
 se29_land<-read_xlsx(file_tr, col_names = col_nms, sheet="SWE_SD29", range=r1)
@@ -60,7 +70,7 @@ fi2931_rel<-read_xlsx(file_tr,col_names = col_nms, sheet="FIN_SD2931", range=r2)
 fi32_land<-read_xlsx(file_tr, col_names = col_nms, sheet="FIN_SD32", range=r1)
 fi32_rel<-read_xlsx(file_tr,col_names = col_nms, sheet="FIN_SD32", range=r2)
 
-# Replace 0's in german data with small constants (don't know why this was not done in BUGS, dlnorm should not work there either with zeros
+# Replace 0's in german data with small constants 
 ge_land<-ge_land |> mutate(min=ifelse(min==0, 0.001, min)) |> 
   mutate(mode=ifelse(mode==0, 0.01, mode)) |> 
   mutate(max=ifelse(max==0, 0.1, max)) 
@@ -68,7 +78,6 @@ ge_land<-ge_land |> mutate(min=ifelse(min==0, 0.001, min)) |>
 ge_rel<-ge_rel |> mutate(min=ifelse(min==0, 0.001, min)) |> 
   mutate(mode=ifelse(mode==0, 0.01, mode)) |> 
   mutate(max=ifelse(max==0, 0.1, max)) 
-
 
 
 ###############################################################
@@ -142,6 +151,7 @@ parnames<-c(
   "Tot_Landed", "Tot_Released", "Tot_Catch", "Tot_Catch_Dead")
 
 run_sd32 <- run.jags(M_trolling, monitor= parnames,
+
                      data=datalist,
                      n.chains = 2, method = 'parallel', thin=100,
                      burnin =10000, modules = "mix",
@@ -244,6 +254,7 @@ parnames<-c(
   "Tot_Landed", "Tot_Released", "Tot_Catch", "Tot_Catch_Dead")
 
 run_MB <- run.jags(M_trolline, monitor= parnames,
+
                    data=datalist,
                    n.chains = 2, method = 'parallel', thin=100,
                    burnin =10000, modules = "mix",

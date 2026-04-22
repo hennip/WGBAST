@@ -15,7 +15,7 @@
 # library(parallel)
 # library(reshape2)
 # library(extraDistr)
-source("../run-this-first-wgbast.R")
+source("run-this-first-wgbast.R")
 
 parallel<-T
 CR<-T
