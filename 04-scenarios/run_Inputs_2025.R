@@ -12,7 +12,7 @@
 # ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~               
 rm(list=ls(all=T))
 
-source("../run-this-first-wgbast.R") 
+source("run-this-first-wgbast.R") 
 
 # ONCE EVERYTHING WORKS FOR EVERYBODY, THIS BIT CAN BE REMOVED
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

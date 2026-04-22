@@ -30,7 +30,7 @@
 # - Coastal harvest rate per AU, preferably both grilse and MSW (but at least MSW)
 # o wild
 # o reared
-source("../run-this-first-wgbast.r")
+source("run-this-first-wgbast.r")
 
 # Define  
 skip<-1 # When skip exists, definitions below are used and the ones in the source files skipped

@@ -1,17 +1,20 @@
+################################################################################
+# This script modifies Finnish release data into form that can be 
+# submitted to ICES during the data call
+# ##############################################################################
 
 
 
-
-source("../run-this-first-wgbast.r")
+source("run-this-first-wgbast.r")
 
 ################################################################################
 # Sorry about a bit bad logic, but releases are under submodels together with 
 # catch related datasets
 ################################################################################
 
-# Releases - from Azure data lake
+# Releases - later from Azure data lake
 ##################################
-(releases<-read_xlsx("../../WGBAST_shared/submodels/releases/Releases_FI_SAL_1959-2024_TRS_1981-2024.xlsx",
+(releases<-read_xlsx(paste0(pathReleasesFI,"Releases_FI_SAL_1959-2024_TRS_1981-2024.xlsx"),
                     range="A1:Y23695", guess_max = 100000))
 #  View(releases)  
 
@@ -26,9 +29,11 @@ source("../run-this-first-wgbast.r")
 # AU -numerointi, mutta lisää se mukaan). Katso myös ICES Reference Codes - RECO 
 # ja siellä RiversAndCatchments (https://vocab.ices.dk/)
 
-(df_names<-read_xlsx("../../WGBAST_shared/submodels/releases/WGBAST_Rivers_FI_revised_Aug2025.xlsx"))
+(df_names<-read_xlsx(paste0(pathReleasesFI,"WGBAST_Rivers_FI_revised_Aug2025.xlsx")))
 #View(df_names)
 
+
+# Aineiston käsittely, vastaa Tapsan aiempaa SAS proseduuria
 df <-releases |> 
   mutate(Meri=recode(Meri, Meri="MERI", Joki="JOKI")) |> 
   mutate(year=Istvuosi, country="FI", numb=Kpl/1000, sub_div=`osa-alue`) |>
@@ -109,14 +114,13 @@ df4<-df3|>
   filter(age!="adult") |> 
   summarise(numb=sum(numb))
 View(df4)
+
+# Lopullinen tiedosto, ICES formaatti 
 write_xlsx(df4, path="../../WGBAST_shared/submodels/releases/releases_FI23-24_ICESformat.xlsx")
 
-df4 |> filter(river_name=="at sea", sub_div==30)
-
-tmp<-df3 |> filter(river_name=="at sea", sub_div==30)
-View(tmp)
-
-
-df4 |> ungroup() |> summarise(N=sum(numb))
+#df4 |> filter(river_name=="at sea", sub_div==30)
+#tmp<-df3 |> filter(river_name=="at sea", sub_div==30)
+#View(tmp)
+#df4 |> ungroup() |> summarise(N=sum(numb))
 
 
